@@ -60,7 +60,7 @@ class PatientModel {
       city: data['city'],
       province: data['province'],
       postalCode: data['postalCode'],
-      appointments: data['appointments'],
+      appointments: data['appointments'] != null ? List<String>.from(data['appointments']) : null,
     );
   }
 }
