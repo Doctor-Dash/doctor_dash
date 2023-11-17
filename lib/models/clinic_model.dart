@@ -1,54 +1,54 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Clinic_model {
-  final String Clinic_ID;
-  final String Name;
-  final String Street;
-  final String City;
-  final String Province;
-  final String Postal_Code;
-  final String Phone_Number;
-  final String Email;
-  final List<String> Doctors;
+class ClinicModel {
+  final String clinicID;
+  final String name;
+  final String street;
+  final String city;
+  final String province;
+  final String postalCode;
+  final String phoneNumber;
+  final String email;
+  final List<String> doctors;
 
-  Clinic_model({
-    required this.Clinic_ID,
-    required this.Name,
-    required this.Street,
-    required this.City,
-    required this.Province,
-    required this.Postal_Code,
-    required this.Phone_Number,
-    required this.Email,
-    required this.Doctors,
+  ClinicModel({
+    required this.clinicID,
+    required this.name,
+    required this.street,
+    required this.city,
+    required this.province,
+    required this.postalCode,
+    required this.phoneNumber,
+    required this.email,
+    required this.doctors,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'Clinic_ID': Clinic_ID,
-      'Name': Name,
-      'Street': Street,
-      'City': City,
-      'Province': Province,
-      'Postal_Code': Postal_Code,
-      'Phone_Number': Phone_Number,
-      'Email': Email,
-      'Doctors': Doctors,
+      'clinicID': clinicID,
+      'name': name,
+      'street': street,
+      'city': city,
+      'province': province,
+      'postalCode': postalCode,
+      'phoneNumber': phoneNumber,
+      'email': email,
+      'doctors': doctors,
     };
   }
 
-  static Clinic_model fromMap(DocumentSnapshot doc) {
+  static ClinicModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
-    return Clinic_model(
-      Clinic_ID: map['Clinic_ID'] as String,
-      Name: map['Name'] as String,
-      Street: map['Street'] as String,
-      City: map['City'] as String,
-      Province: map['Province'] as String,
-      Postal_Code: map['Postal_Code'] as String,
-      Phone_Number: map['Phone_Number'] as String,
-      Email: map['Email'] as String,
-      Doctors: map['Doctors'] as List<String>,
+    return ClinicModel(
+      clinicID: map['clinicID'] as String,
+      name: map['name'] as String,
+      street: map['street'] as String,
+      city: map['city'] as String,
+      province: map['province'] as String,
+      postalCode: map['postalCode'] as String,
+      phoneNumber: map['phoneNumber'] as String,
+      email: map['email'] as String,
+      doctors: map['doctors'] as List<String>,
     );
   }
 }
