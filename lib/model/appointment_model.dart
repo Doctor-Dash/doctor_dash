@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppointmentModel {
   final String appointmentId;
@@ -7,32 +8,33 @@ class AppointmentModel {
   final String clinicId;
   final String doctorFilesPath;  // Path to FireStorage
   final String patientFilesPath; // Path to FireStorage
-  final String doctorNotes;
-  final String patientNotes;
+  final String? doctorNotes;
+  final String? patientNotes;
   
-AppointmentModel({
-  required this.appointmentId,
-  required this.doctorId,
-  required this.patientId,
-  required this.availabilityId,
-  required this.clinicId,
-  required this.doctorFilesPath,
-  required this.patientFilesPath,
-  this.doctorNotes = '',
-  this.patientNotes = '',
-});
+  AppointmentModel({
+    required this.appointmentId,
+    required this.doctorId,
+    required this.patientId,
+    required this.availabilityId,
+    required this.clinicId,
+    required this.doctorFilesPath,
+    required this.patientFilesPath,
+    this.doctorNotes,
+    this.patientNotes,
+  });
 
-  factory AppointmentModel.fromMap(Map<String, dynamic> map) {
+  static AppointmentModel fromMap(DocumentSnapshot doc) {
+    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return AppointmentModel(
-      appointmentId: map['appointmentId'],
-      doctorId: map['doctorId'],
-      patientId: map['patientId'],
-      availabilityId: map['availabilityId'],
-      clinicId: map['clinicId'],
-      doctorFilesPath: map['doctorFilesPath'],
-      patientFilesPath: map['patientFilesPath'],
-      doctorNotes: map['doctorNotes'],
-      patientNotes: map['patientNotes'],
+      appointmentId: map['appointmentId'] as String,
+      doctorId: map['doctorId'] as String,
+      patientId: map['patientId'] as String,
+      availabilityId: map['availabilityId'] as String,
+      clinicId: map['clinicId'] as String,
+      doctorFilesPath: map['doctorFilesPath'] as String,
+      patientFilesPath: map['patientFilesPath'] as String,
+      doctorNotes: map['doctorNotes'] as String?,
+      patientNotes: map['patientNotes'] as String?,
     );
   }
 
@@ -50,8 +52,4 @@ AppointmentModel({
     };
   }
 
-  @override
-  String toString() {
-    return 'AppointmentModel(appointmentId: $appointmentId, doctorId: $doctorId, patientId: $patientId, availabilityId: $availabilityId,clinicId: $clinicId , doctorFilesPath: $doctorFilesPath, patientFilesPath: $patientFilesPath, doctorNotes: $doctorNotes, patientNotes: $patientNotes)';
-  }
 }
