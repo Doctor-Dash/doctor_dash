@@ -29,9 +29,9 @@ class PatientModel {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return PatientModel(
       patientId: data['patientId'],
-      name: data['name'] ?? '',
-      phone: data['phone'] ?? '',
-      email: data['email'] ?? '',
+      name: data['name'],
+      phone: data['phone'],
+      email: data['email'],
       appointments: data['appointments'],
     );
   }
