@@ -43,11 +43,11 @@ class DocterModel {
   static DocterModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return DocterModel(
-      doctorID: map['doctorID'],
-      name: map['name'],
-      phone: map['phone'],
-      email: map['email'],
-      speciality: map['speciality'],
+      doctorID: map['doctorID'] as String,
+      name: map['name'] as String,
+      phone: map['phone'] as String,
+      email: map['email'] as String,
+      speciality: map['speciality'] as String,
       clinicID: List<String>.from(map['clinicID']),
       availability: List<String>.from(map['availability']),
       rating: List<String>.from(map['rating']),
