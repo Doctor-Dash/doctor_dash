@@ -1,31 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedbackModel {
   final String feedbackId;
   final int rating; // Rating ranging from 1 to 5 stars
   final String feedbackNote;
 
-  FeedbackModel({required this.feedbackId, required this.rating, required this.feedbackNote});
+  FeedbackModel({
+    required this.feedbackId, 
+    required this.rating, 
+    required this.feedbackNote
+  });
 
-  // Deserialize the map to a FeedbackModel object
-  factory FeedbackModel.fromMap(Map<String, dynamic> map) {
+  static FeedbackModel fromMap(DocumentSnapshot doc) {
+    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return FeedbackModel(
-      feedbackId: map['feedbackId'],
-      rating: map['rating'],
-      feedbackNote: map['feedbackNote'],
+      feedbackId: map['feedbackId'] as String,
+      rating: map['rating'] as int,
+      feedbackNote: map['feedbackNote'] as String,
     );
   }
 
-  // Serialize the FeedbackModel object to a map
   Map<String, dynamic> toMap() {
     return {
       'feedbackId': feedbackId,
       'rating': rating,
       'feedbackNote': feedbackNote,
     };
-  }
-
-  @override
-  String toString() {
-    return 'FeedbackModel(feedbackId: $feedbackId, rating: $rating, feedbackNote: $feedbackNote)';
   }
 }
