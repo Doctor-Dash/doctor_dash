@@ -6,7 +6,7 @@ class DocterModel {
   final String phone;
   final String email;
   final String speciality;
-  final String clinicID;
+  final List<String> clinicID;
   final List<String> availability;
   final List<String> rating;
   final List<String> appointmentID;
@@ -48,7 +48,7 @@ class DocterModel {
       phone: map['phone'],
       email: map['email'],
       speciality: map['speciality'],
-      clinicID: map['clinicID'],
+      clinicID: List<String>.from(map['clinicID']),
       availability: List<String>.from(map['availability']),
       rating: List<String>.from(map['rating']),
       appointmentID: List<String>.from(map['appointmentID']),
