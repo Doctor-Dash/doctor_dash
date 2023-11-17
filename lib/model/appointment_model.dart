@@ -51,5 +51,4 @@ class AppointmentModel {
       'patientNotes': patientNotes,
     };
   }
-
 }
