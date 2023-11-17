@@ -40,7 +40,7 @@ class AvailabilityModel {
       startTime: data['startTime'].toDate(),
       endTime: data['endTime'].toDate(),
       status: data['status'],
-      appointments: List<String>.from(data['appointments'] ?? []),
+      appointments: data['appointments'] != null ? List<String>.from(data['appointments']) : null,
     );
   }
 }
