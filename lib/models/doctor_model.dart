@@ -8,9 +8,8 @@ class DocterModel {
   final String speciality;
   final List<String> clinicID;
   final List<String> availability;
-  final List<String> rating;
-  final List<String> appointmentID;
-  final List<String> feedbackID;
+  final List<String>? appointmentID;
+  final List<String>? feedbackID;
 
   DocterModel({
     required this.doctorID,
@@ -20,9 +19,8 @@ class DocterModel {
     required this.speciality,
     required this.clinicID,
     required this.availability,
-    required this.rating,
-    required this.appointmentID,
-    required this.feedbackID,
+    this.appointmentID,
+    this.feedbackID,
   });
 
   Map<String, dynamic> toMap() {
@@ -34,7 +32,6 @@ class DocterModel {
       'speciality': speciality,
       'clinicID': clinicID,
       'availability': availability,
-      'rating': rating,
       'appointmentID': appointmentID,
       'feedbackID': feedbackID,
     };
@@ -50,7 +47,6 @@ class DocterModel {
       speciality: map['speciality'] as String,
       clinicID: List<String>.from(map['clinicID']),
       availability: List<String>.from(map['availability']),
-      rating: List<String>.from(map['rating']),
       appointmentID: List<String>.from(map['appointmentID']),
       feedbackID: List<String>.from(map['feedbackID']),
     );
