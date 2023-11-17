@@ -9,19 +9,18 @@ class AppointmentModel {
   final String patientFilesPath; // Path to FireStorage
   final String doctorNotes;
   final String patientNotes;
-
-  AppointmentModel({
-    required this.appointmentId,
-    required this.doctorId,
-    required this.patientId,
-    required this.availabilityId,
-    required this.clinicId,
-    required this.doctorFilesPath,
-    required this.patientFilesPath,
-    required this.doctorNotes,
-    required this.patientNotes,
-
-  });
+  
+AppointmentModel({
+  required this.appointmentId,
+  required this.doctorId,
+  required this.patientId,
+  required this.availabilityId,
+  required this.clinicId,
+  required this.doctorFilesPath,
+  required this.patientFilesPath,
+  this.doctorNotes = '',
+  this.patientNotes = '',
+});
 
   factory AppointmentModel.fromMap(Map<String, dynamic> map) {
     return AppointmentModel(
