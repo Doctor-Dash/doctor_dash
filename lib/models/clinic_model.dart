@@ -48,7 +48,7 @@ class ClinicModel {
       postalCode: map['postalCode'] as String,
       phoneNumber: map['phoneNumber'] as String,
       email: map['email'] as String,
-      doctors: map['doctors'] as List<String>,
+      doctors: List<String>.from(map['doctors']),
     );
   }
 }
