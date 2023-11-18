@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-
 import '../models/patient_model.dart';
 
 class PatientService {
@@ -21,5 +18,11 @@ class PatientService {
 
   Future<QuerySnapshot> getPatient(String patientId) async {
     return patientCollection.where('patientId', isEqualTo: patientId).get();
+  }
+
+  Future<QuerySnapshot> getPatientAppointments(String patientId) async {
+    var appointmentIds =
+        patientCollection.doc(patientId).collection('appointments').get();
+    return appointmentIds;
   }
 }
