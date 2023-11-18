@@ -18,4 +18,8 @@ class PatientService {
   Future<DocumentReference<Object?>> addPatient(PatientModel patient) async {
     return patientCollection.add(patient.toMap());
   }
+
+  Future<QuerySnapshot> getPatient(String patientId) async {
+    return patientCollection.where('patientId', isEqualTo: patientId).get();
+  }
 }
