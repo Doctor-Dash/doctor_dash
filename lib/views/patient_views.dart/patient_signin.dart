@@ -14,12 +14,13 @@ class PatientSignIn extends StatelessWidget {
         if (!snapshot.hasData) {
           return SignInScreen(
             providers: [
-              EmailAuthProvider(), // new
+              EmailAuthProvider(),
             ],
           );
         }
 
-        return const MyHomePage(title: 'Flutter Demo Home Page');
+        return const MyHomePage(
+            title: 'Flutter Demo Home Page'); //TODO: should be patient sign up page
       },
     );
   }
