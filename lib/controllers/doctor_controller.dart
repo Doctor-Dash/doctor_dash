@@ -1,19 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/doctor_model.dart';
-import './clinic_controller.dart';
 
 class DoctorService {
   final User? user = FirebaseAuth.instance.currentUser;
   final CollectionReference doctorsCollection;
-  final ClinicService clinicService;
 
   DoctorService()
       : doctorsCollection = FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser?.uid)
-            .collection('Doctors'),
-        clinicService = ClinicService();
+            .collection('Doctors');
 
   Future<DocumentReference<Object?>> addDoctor(DoctorModel doctor) async {
     if (user == null) {
@@ -60,9 +57,9 @@ class DoctorService {
     }
   }
 
-  // Get list of doctors by search parameters
+  // Get list of doctors by search parameters (input doctor_speciality, List<String> clinic_id's in city of user)
   Future<List<DoctorModel>> getDoctors(
-      String speciality, String searchCity) async {
+      String speciality, List<String> cityClinicId) async {
     if (user == null) {
       throw FirebaseAuthException(
         code: 'unauthenticated',
@@ -71,14 +68,10 @@ class DoctorService {
     }
 
     try {
-      // Step 1: Fetch clinics in the specified city using ClinicService
-      var clinicsSnapshot = await clinicService.getClinicsInCity(searchCity);
-      var clinicIds = clinicsSnapshot.docs.map((doc) => doc.id).toList();
-
-      // Step 2: Fetch doctors with the specified specialty and clinic IDs
+      // Fetch doctors with the specified specialty and clinic IDs
       var doctorsQuery = doctorsCollection
           .where('speciality', isEqualTo: speciality)
-          .where('clinicID', arrayContainsAny: clinicIds);
+          .where('clinicID', arrayContainsAny: cityClinicId);
 
       var doctorsSnapshot = await doctorsQuery.get();
       return doctorsSnapshot.docs
