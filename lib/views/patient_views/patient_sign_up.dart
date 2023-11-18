@@ -8,22 +8,22 @@ class PatientSignUp extends StatefulWidget {
 
 class _SignUpPageState extends State<PatientSignUp> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _ageController = TextEditingController();
-  TextEditingController _weightController = TextEditingController();
-  TextEditingController _heightController = TextEditingController();
-  TextEditingController _streetController = TextEditingController();
-  TextEditingController _cityController = TextEditingController();
-  TextEditingController _provinceController = TextEditingController();
-  TextEditingController _postalCodeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
+  final TextEditingController _postalCodeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: const Text('Patient Sign Up'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -34,7 +34,7 @@ class _SignUpPageState extends State<PatientSignUp> {
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: const InputDecoration(labelText: 'Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your name';
@@ -44,7 +44,7 @@ class _SignUpPageState extends State<PatientSignUp> {
                 ),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: InputDecoration(labelText: 'Phone'),
+                  decoration: const InputDecoration(labelText: 'Phone'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your phone number';
@@ -53,19 +53,8 @@ class _SignUpPageState extends State<PatientSignUp> {
                   },
                 ),
                 TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email address';
-                    }
-                    // You may add more complex email validation here if needed
-                    return null;
-                  },
-                ),
-                TextFormField(
                   controller: _ageController,
-                  decoration: InputDecoration(labelText: 'Age'),
+                  decoration: const InputDecoration(labelText: 'Age'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -74,10 +63,9 @@ class _SignUpPageState extends State<PatientSignUp> {
                     return null;
                   },
                 ),
-                // Repeat similar TextFormField widgets for other fields
                 TextFormField(
                   controller: _weightController,
-                  decoration: InputDecoration(labelText: 'Weight (kg)'),
+                  decoration: const InputDecoration(labelText: 'Weight (kg)'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -115,7 +103,6 @@ class _SignUpPageState extends State<PatientSignUp> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your city';
                     }
-                    // You may add more complex email validation here if needed
                     return null;
                   },
                 ),
@@ -126,7 +113,6 @@ class _SignUpPageState extends State<PatientSignUp> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your province';
                     }
-                    // You may add more complex email validation here if needed
                     return null;
                   },
                 ),
@@ -135,9 +121,8 @@ class _SignUpPageState extends State<PatientSignUp> {
                   decoration: InputDecoration(labelText: 'Postal code'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your postal';
+                      return 'Please enter your Postal code';
                     }
-                    // You may add more complex email validation here if needed
                     return null;
                   },
                 ),
