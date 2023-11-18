@@ -18,10 +18,8 @@ class ClinicService {
     try {
       return await clinicCollection.add(clinic.toMap());
     } on FirebaseAuthException catch (authError) {
-      // Handle Firebase Authentication specific errors
       throw Exception('Authentication Error: ${authError.message}');
     } on FirebaseException catch (firestoreError) {
-      // Handle Firestore specific errors
       throw Exception('Firestore Error: ${firestoreError.message}');
     }
   }
@@ -41,14 +39,19 @@ class ClinicService {
     }
   }
 
-  Future<QuerySnapshot> getClinicsInCity(String city) async {
+  Future<List<String>> getClinicsInCity(String city) async {
     if (user == null) {
       throw FirebaseAuthException(
-          code: 'unauthenticated',
-          message: 'User must be logged in to get clinics information.');
+        code: 'unauthenticated',
+        message: 'User must be logged in to get clinics information.',
+      );
     }
     try {
-      return await clinicCollection.where('city', isEqualTo: city).get();
+      var querySnapshot =
+          await clinicCollection.where('city', isEqualTo: city).get();
+      return querySnapshot.docs
+          .map((doc) => ClinicModel.fromMap(doc).clinicId)
+          .toList();
     } catch (e) {
       throw Exception('Error fetching clinics in city: $e');
     }

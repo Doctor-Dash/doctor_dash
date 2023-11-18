@@ -21,10 +21,8 @@ class DoctorService {
     try {
       return await doctorsCollection.add(doctor.toMap());
     } on FirebaseAuthException catch (authError) {
-      // Handle Firebase Authentication specific errors
       throw Exception('Authentication Error: ${authError.message}');
     } on FirebaseException catch (firestoreError) {
-      // Handle Firestore specific errors
       throw Exception('Firestore Error: ${firestoreError.message}');
     }
   }
@@ -38,7 +36,6 @@ class DoctorService {
     try {
       await doctorsCollection.doc(doctorId).delete();
     } on FirebaseException catch (firestoreError) {
-      // Handle Firestore specific errors
       throw Exception('Firestore Error: ${firestoreError.message}');
     }
   }
@@ -52,7 +49,6 @@ class DoctorService {
     try {
       await doctorsCollection.doc(doctor.doctorId).update(doctor.toMap());
     } on FirebaseException catch (firestoreError) {
-      // Handle Firestore specific errors
       throw Exception('Firestore Error: ${firestoreError.message}');
     }
   }
@@ -68,7 +64,7 @@ class DoctorService {
     }
 
     try {
-      // Fetch doctors with the specified specialty and clinic IDs
+      // Fetch doctors with the specified specialty and city clinic IDs
       var doctorsQuery = doctorsCollection
           .where('speciality', isEqualTo: speciality)
           .where('clinicId', arrayContainsAny: cityClinicId);
