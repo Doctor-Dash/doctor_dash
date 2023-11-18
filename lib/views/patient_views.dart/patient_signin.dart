@@ -16,11 +16,22 @@ class PatientSignIn extends StatelessWidget {
             providers: [
               EmailAuthProvider(),
             ],
+            subtitleBuilder: (context, action) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: action == AuthAction.signIn
+                    ? const Text(
+                        'Welcome to Doctor Dash, please sign in as a Patient!')
+                    : const Text(
+                        'Welcome to Doctor Dash, please sign up as a Patient!'),
+              );
+            },
           );
         }
 
         return const MyHomePage(
-            title: 'Flutter Demo Home Page'); //TODO: should be patient sign up page
+            title:
+                'Flutter Demo Home Page'); //TODO: should be patient sign up page
       },
     );
   }
