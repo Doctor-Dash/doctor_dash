@@ -1,57 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DoctorModel {
-  final String doctorID;
+  final String doctorId;
   final String name;
   final String phone;
   final String email;
   final String speciality;
-  final List<String> clinicID;
+  final List<String> clinicId;
   final List<String> availability;
-  final List<String>? appointmentID;
-  final List<String>? feedbackID;
+  final List<String>? appointmentId;
+  final List<String>? feedbackId;
 
   DoctorModel({
-    required this.doctorID,
+    required this.doctorId,
     required this.name,
     required this.phone,
     required this.email,
     required this.speciality,
-    required this.clinicID,
+    required this.clinicId,
     required this.availability,
-    this.appointmentID,
-    this.feedbackID,
+    this.appointmentId,
+    this.feedbackId,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'doctorID': doctorID,
+      'doctorId': doctorId,
       'name': name,
       'phone': phone,
       'email': email,
       'speciality': speciality,
-      'clinicID': clinicID,
+      'clinicId': clinicId,
       'availability': availability,
-      'appointmentID': appointmentID,
-      'feedbackID': feedbackID,
+      'appointmentId': appointmentId,
+      'feedbackId': feedbackId,
     };
   }
 
   static DoctorModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return DoctorModel(
-      doctorID: map['doctorID'] ?? '',
+      doctorId: map['doctorId'] ?? '',
       name: map['name'] ?? '',
       phone: map['phone'] ?? '',
       email: map['email'] ?? '',
       speciality: map['speciality'] ?? '',
-      clinicID: List<String>.from(map['clinicID'] ?? []),
+      clinicId: List<String>.from(map['clinicId'] ?? []),
       availability: List<String>.from(map['availability'] ?? []),
-      appointmentID: map['appointmentID'] != null
-          ? List<String>.from(map['appointmentID'])
+      appointmentId: map['appointmentId'] != null
+          ? List<String>.from(map['appointmentId'])
           : null,
-      feedbackID: map['feedbackID'] != null
-          ? List<String>.from(map['feedbackID'])
+      feedbackId: map['feedbackId'] != null
+          ? List<String>.from(map['feedbackId'])
           : null,
     );
   }

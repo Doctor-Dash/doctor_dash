@@ -50,7 +50,7 @@ class DoctorService {
           message: 'User must be logged in to update a doctor.');
     }
     try {
-      await doctorsCollection.doc(doctor.doctorID).update(doctor.toMap());
+      await doctorsCollection.doc(doctor.doctorId).update(doctor.toMap());
     } on FirebaseException catch (firestoreError) {
       // Handle Firestore specific errors
       throw Exception('Firestore Error: ${firestoreError.message}');
@@ -71,7 +71,7 @@ class DoctorService {
       // Fetch doctors with the specified specialty and clinic IDs
       var doctorsQuery = doctorsCollection
           .where('speciality', isEqualTo: speciality)
-          .where('clinicID', arrayContainsAny: cityClinicId);
+          .where('clinicId', arrayContainsAny: cityClinicId);
 
       var doctorsSnapshot = await doctorsQuery.get();
       return doctorsSnapshot.docs
@@ -82,7 +82,7 @@ class DoctorService {
     }
   }
 
-  Future<QuerySnapshot<Object?>> getDoctor(String doctorID) async {
+  Future<QuerySnapshot<Object?>> getDoctor(String doctorId) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
@@ -90,7 +90,7 @@ class DoctorService {
     }
     try {
       return await doctorsCollection
-          .where('doctorID', isEqualTo: doctorID)
+          .where('doctorId', isEqualTo: doctorId)
           .get();
     } catch (e) {
       throw Exception('Error fetching doctor: $e');
