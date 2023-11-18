@@ -7,10 +7,7 @@ class ClinicService {
   final CollectionReference clinicCollection;
 
   ClinicService()
-      : clinicCollection = FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .collection('clinincs');
+      : clinicCollection = FirebaseFirestore.instance.collection('clinincs');
 
   Future<DocumentReference<Object?>> addClinic(ClinicModel clinic) async {
     if (user == null) {
