@@ -13,16 +13,44 @@ class PatientService {
             .collection('patients');
 
   Future<DocumentReference<Object?>> addPatient(PatientModel patient) async {
-    return patientCollection.add(patient.toMap());
+    try {
+      return await patientCollection.add(patient.toMap());
+    } catch (e) {
+      print('Failed to add patient: $e');
+      rethrow;
+    }
   }
 
   Future<QuerySnapshot> getPatient(String patientId) async {
-    return patientCollection.where('patientId', isEqualTo: patientId).get();
+    try {
+      return await patientCollection
+          .where('patientId', isEqualTo: patientId)
+          .get();
+    } catch (e) {
+      print('Failed to get patient: $e');
+      rethrow;
+    }
   }
 
   Future<QuerySnapshot> getPatientAppointments(String patientId) async {
-    var appointmentIds =
-        patientCollection.doc(patientId).collection('appointments').get();
-    return appointmentIds;
+    try {
+      var appointmentIds = await patientCollection
+          .doc(patientId)
+          .collection('appointments')
+          .get();
+      return appointmentIds;
+    } catch (e) {
+      print('Failed to get patient appointments: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updatePatient(PatientModel patient) async {
+    try {
+      await patientCollection.doc(patient.patientId).update(patient.toMap());
+    } catch (e) {
+      print('Failed to update patient: $e');
+      rethrow;
+    }
   }
 }
