@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DocterModel {
+class DoctorModel {
   final String doctorID;
   final String name;
   final String phone;
@@ -11,7 +11,7 @@ class DocterModel {
   final List<String>? appointmentID;
   final List<String>? feedbackID;
 
-  DocterModel({
+  DoctorModel({
     required this.doctorID,
     required this.name,
     required this.phone,
@@ -37,18 +37,22 @@ class DocterModel {
     };
   }
 
-  static DocterModel fromMap(DocumentSnapshot doc) {
+  static DoctorModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
-    return DocterModel(
-      doctorID: map['doctorID'] as String,
-      name: map['name'] as String,
-      phone: map['phone'] as String,
-      email: map['email'] as String,
-      speciality: map['speciality'] as String,
-      clinicID: List<String>.from(map['clinicID']),
-      availability: List<String>.from(map['availability']),
-      appointmentID: List<String>.from(map['appointmentID']),
-      feedbackID: List<String>.from(map['feedbackID']),
+    return DoctorModel(
+      doctorID: map['doctorID'] ?? '',
+      name: map['name'] ?? '',
+      phone: map['phone'] ?? '',
+      email: map['email'] ?? '',
+      speciality: map['speciality'] ?? '',
+      clinicID: List<String>.from(map['clinicID'] ?? []),
+      availability: List<String>.from(map['availability'] ?? []),
+      appointmentID: map['appointmentID'] != null
+          ? List<String>.from(map['appointmentID'])
+          : null,
+      feedbackID: map['feedbackID'] != null
+          ? List<String>.from(map['feedbackID'])
+          : null,
     );
   }
 }
