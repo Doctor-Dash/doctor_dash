@@ -3,43 +3,57 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/clinic_model.dart';
 
 class ClinicService {
-  final user = FirebaseAuth.instance.currentUser;
+  final User? user = FirebaseAuth.instance.currentUser;
   final CollectionReference clinicCollection;
 
   ClinicService()
-      : clinicCollection = FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('clinincs');
+      : clinicCollection = FirebaseFirestore.instance.collection('clinincs');
 
   Future<DocumentReference<Object?>> addClinic(ClinicModel clinic) async {
+    if (user == null) {
+      throw FirebaseAuthException(
+          code: 'unauthenticated',
+          message: 'User must be logged in to add a clinic.');
+    }
     try {
       return await clinicCollection.add(clinic.toMap());
-    } catch (e) {
-      print('Failed to add clinic: $e');
-      rethrow;
+    } on FirebaseAuthException catch (authError) {
+      throw Exception('Authentication Error: ${authError.message}');
+    } on FirebaseException catch (firestoreError) {
+      throw Exception('Firestore Error: ${firestoreError.message}');
     }
   }
 
   Future<QuerySnapshot> getClinic(String clinicId) async {
+    if (user == null) {
+      throw FirebaseAuthException(
+          code: 'unauthenticated',
+          message: 'User must be logged in to get clinic information.');
+    }
     try {
       return await clinicCollection
           .where('clinicId', isEqualTo: clinicId)
           .get();
     } catch (e) {
-      print('Failed to get clinic: $e');
-      rethrow;
+      throw Exception('Error fetching clinic: $e');
     }
   }
 
-  Future<QuerySnapshot> getClinicsInCity(String city) async {
-    try{
-      return await clinicCollection
-          .where('city', isEqualTo: city)
-          .get();
+  Future<List<String>> getClinicsInCity(String city) async {
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'unauthenticated',
+        message: 'User must be logged in to get clinics information.',
+      );
+    }
+    try {
+      var querySnapshot =
+          await clinicCollection.where('city', isEqualTo: city).get();
+      return querySnapshot.docs
+          .map((doc) => ClinicModel.fromMap(doc).clinicId)
+          .toList();
     } catch (e) {
-      print('Failed to get clinics in city: $e');
-      rethrow;
+      throw Exception('Error fetching clinics in city: $e');
     }
   }
 }
