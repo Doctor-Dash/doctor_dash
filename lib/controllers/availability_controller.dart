@@ -86,23 +86,26 @@ class AvailabilityService {
   }
 
   Future<DateTime> getLastAvailabilityDateFromDatabase(String doctorId) async {
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('availability')
-        .where('doctorId', isEqualTo: doctorId)
-        .orderBy('date', descending: true)
-        .limit(1)
-        .get();
-
     try {
+      final QuerySnapshot result = await availabilityCollection
+          .where('doctorId', isEqualTo: doctorId)
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+
       if (result.docs.isNotEmpty) {
         Timestamp timestamp = result.docs.first['date'];
         DateTime lastAvailabilityDate = timestamp.toDate();
         return lastAvailabilityDate;
       } else {
-        throw Exception('No availability date found');
+        throw FirebaseException(
+          plugin: 'Firestore',
+          message: 'No availability date found',
+        );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error occurred while fetching last availability date: $e');
+      print(stackTrace);
       rethrow;
     }
   }
