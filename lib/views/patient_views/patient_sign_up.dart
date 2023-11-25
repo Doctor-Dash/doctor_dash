@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor_dash/models/patient_model.dart'; // Update with the correct path
+import 'package:doctor_dash/models/patient_model.dart';
+import 'package:doctor_dash/controllers/patient_controller.dart';
+import 'package:doctor_dash/utils/utils.dart';
 
 class PatientSignUp extends StatefulWidget {
+  const PatientSignUp({super.key});
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -10,7 +15,6 @@ class _SignUpPageState extends State<PatientSignUp> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
@@ -18,6 +22,9 @@ class _SignUpPageState extends State<PatientSignUp> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _provinceController = TextEditingController();
   final TextEditingController _postalCodeController = TextEditingController();
+
+  final PatientService _patientService = PatientService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -126,9 +133,7 @@ class _SignUpPageState extends State<PatientSignUp> {
                     return null;
                   },
                 ),
-
                 SizedBox(height: 16.0),
-
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
@@ -146,26 +151,32 @@ class _SignUpPageState extends State<PatientSignUp> {
   }
 
   void _submitForm() {
-    // Create a PatientModel instance using the entered data
-    PatientModel newPatient = PatientModel(
-      patientId: 'generated_patient_id', // You may generate a unique ID here
-      name: _nameController.text,
-      phone: _phoneController.text,
-      email: _emailController.text,
-      age: int.parse(_ageController.text),
-      weight: int.parse(_weightController.text),
-      height: int.parse(_heightController.text),
-      street: _streetController.text,
-      city: _cityController.text,
-      province: _provinceController.text,
-      postalCode: _postalCodeController.text,
-    );
+    try {
+      String userId = _auth.currentUser!.uid;
 
-    print(newPatient.toMap());
+      String? userEmail = _auth.currentUser!.email;
 
-    // Save the patient data to Firestore or perform other actions as needed
-    // Example: Firestore.instance.collection('patients').add(newPatient.toMap());
+      // Create a PatientModel instance using the entered data
+      PatientModel newPatient = PatientModel(
+        patientId: userId, // Set the patientId to the user ID
+        name: _nameController.text,
+        phone: _phoneController.text,
+        email: userEmail ?? '',
+        age: int.parse(_ageController.text),
+        weight: int.parse(_weightController.text),
+        height: int.parse(_heightController.text),
+        street: _streetController.text,
+        city: _cityController.text,
+        province: _provinceController.text,
+        postalCode: _postalCodeController.text,
+      );
 
+      _patientService.addPatient(newPatient);
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+
+    // TODO: Navigate to Patient Home Screen (Search Page)
     // Navigate to the next screen or perform other navigation actions
     // Example: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NextScreen()));
   }
