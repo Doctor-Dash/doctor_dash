@@ -39,7 +39,19 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const DoctorOrPatientChoice(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasData) {
+            return const MyHomePage(
+                title: "Patient's Search Page:"); // User is signed in
+          } else {
+            return const DoctorOrPatientChoice(); // User is not signed in, show SignInView
+          }
+        },
+      ),
     );
   }
 }
@@ -98,6 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (_) => const DoctorOrPatientChoice(),
+                ),
+              );
             },
           ),
         ],
