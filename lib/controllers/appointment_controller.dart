@@ -77,6 +77,4 @@ class AppointmentService {
       );
     }
   }
-
-  // You can add more methods as needed for updating, deleting, or retrieving appointments.
 }
