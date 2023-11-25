@@ -146,7 +146,7 @@ class AvailabilityService {
     }
   }
 
-  Future<List<AvailabilityModel>> getDoctorAvailability(String doctorId) async {
+  Future<List<AvailabilityModel>> getDoctorAvailabilies(String doctorId) async {
     try {
       DateTime currentDate = DateTime.now();
       QuerySnapshot result = await availabilityCollection
