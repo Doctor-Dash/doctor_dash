@@ -1,3 +1,4 @@
+import 'package:doctor_dash/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor_dash/models/patient_model.dart';
@@ -179,5 +180,11 @@ class _SignUpPageState extends State<PatientSignUp> {
     // TODO: Navigate to Patient Home Screen (Search Page)
     // Navigate to the next screen or perform other navigation actions
     // Example: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NextScreen()));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MyHomePage(
+                  title: 'Search Page',
+                )));
   }
 }
