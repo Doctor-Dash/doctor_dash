@@ -1,4 +1,5 @@
 import 'package:doctor_dash/main.dart';
+import 'package:doctor_dash/views/patient_views/patient_sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +30,7 @@ class PatientSignIn extends StatelessWidget {
           );
         }
 
-        return const MyHomePage(
-            title:
-                'Flutter Demo Home Page'); //TODO: should be patient sign up page
+        return PatientSignUp();
       },
     );
   }

@@ -1,5 +1,5 @@
 import 'package:doctor_dash/views/doctor_views/doctor_signin.dart';
-import 'package:doctor_dash/views/patient_views.dart/patient_signin.dart';
+import 'package:doctor_dash/views/patient_views/patient_signin.dart';
 import 'package:flutter/material.dart';
 
 class DoctorOrPatientChoice extends StatelessWidget {
