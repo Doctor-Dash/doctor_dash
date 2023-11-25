@@ -145,4 +145,36 @@ class AvailabilityService {
       rethrow;
     }
   }
+
+  Future<List<AvailabilityModel>> getDoctorAvailability(String doctorId) async {
+    try {
+      DateTime currentDate = DateTime.now();
+      QuerySnapshot result = await availabilityCollection
+          .where('doctorId', isEqualTo: doctorId)
+          .where('date', isGreaterThan: currentDate)
+          .orderBy('date')
+          .get();
+
+      List<AvailabilityModel> availabilityList = [];
+      for (var doc in result.docs) {
+        Timestamp timestamp = doc['date'];
+        DateTime date = timestamp.toDate();
+        AvailabilityModel availability = AvailabilityModel(
+          availabilityId: doc.id,
+          date: date,
+          doctorId: doc['doctorId'],
+          startTime: doc['startTime'].toDate(),
+          endTime: doc['endTime'].toDate(),
+          status: doc['status'],
+        );
+        availabilityList.add(availability);
+      }
+
+      return availabilityList;
+    } catch (e, stackTrace) {
+      print('Error occurred while fetching doctor availability: $e');
+      print(stackTrace);
+      rethrow;
+    }
+  }
 }
