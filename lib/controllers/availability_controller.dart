@@ -1,0 +1,145 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/availability_model.dart';
+
+class AvailabilityService {
+  final user = FirebaseAuth.instance.currentUser;
+  final CollectionReference availabilityCollection;
+
+  AvailabilityService()
+      : availabilityCollection =
+            FirebaseFirestore.instance.collection('availability');
+
+  Future<void> createAvailabilitySignup(String doctorId) async {
+    DateTime now = DateTime.now();
+    DateTime nextMonth = DateTime(now.year, now.month + 1);
+    DateTime currentDay = DateTime(now.year, now.month, now.day);
+    DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
+
+    DateTime startTime =
+        DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
+    DateTime endTime =
+        DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+
+    while (currentDay.isBefore(endOfMonth)) {
+      if (currentDay.weekday >= DateTime.monday &&
+          currentDay.weekday <= DateTime.friday) {
+        while (startTime.isBefore(endTime)) {
+          DateTime sessionEndTime = startTime.add(Duration(minutes: 20));
+          AvailabilityModel availability = AvailabilityModel(
+            availabilityId: doctorId + startTime.toString(),
+            date: currentDay,
+            doctorId: doctorId,
+            startTime: startTime,
+            endTime: sessionEndTime,
+            status: true,
+          );
+          await availabilityCollection.add(availability.toMap());
+          startTime = startTime.add(Duration(minutes: 20));
+        }
+      }
+      currentDay = currentDay.add(Duration(days: 1));
+      startTime =
+          DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
+      endTime = DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+    }
+  }
+
+  Future<void> createAvailabilityFromLastDate(String doctorId) async {
+    DateTime lastAvailabilityDate =
+        await getLastAvailabilityDateFromDatabase(doctorId);
+
+    lastAvailabilityDate = lastAvailabilityDate.add(Duration(days: 1));
+
+    DateTime nextMonth =
+        DateTime(lastAvailabilityDate.year, lastAvailabilityDate.month + 1);
+    DateTime currentDay = lastAvailabilityDate;
+    DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
+
+    DateTime startTime =
+        DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
+    DateTime endTime =
+        DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+
+    while (currentDay.isBefore(endOfMonth)) {
+      if (currentDay.weekday >= DateTime.monday &&
+          currentDay.weekday <= DateTime.friday) {
+        while (startTime.isBefore(endTime)) {
+          DateTime sessionEndTime = startTime.add(Duration(minutes: 20));
+          AvailabilityModel availability = AvailabilityModel(
+            availabilityId: doctorId + startTime.toString(),
+            date: currentDay,
+            doctorId: doctorId,
+            startTime: startTime,
+            endTime: sessionEndTime,
+            status: true,
+          );
+          await availabilityCollection.add(availability.toMap());
+          startTime = startTime.add(Duration(minutes: 20));
+        }
+      }
+      currentDay = currentDay.add(Duration(days: 1));
+      startTime =
+          DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
+      endTime = DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+    }
+  }
+
+  Future<DateTime> getLastAvailabilityDateFromDatabase(String doctorId) async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('availability')
+        .where('doctorId', isEqualTo: doctorId)
+        .orderBy('date', descending: true)
+        .limit(1)
+        .get();
+
+    try {
+      if (result.docs.isNotEmpty) {
+        Timestamp timestamp = result.docs.first['date'];
+        DateTime lastAvailabilityDate = timestamp.toDate();
+        return lastAvailabilityDate;
+      } else {
+        throw Exception('No availability date found');
+      }
+    } catch (e) {
+      print('Error occurred while fetching last availability date: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> setAvailabilityToAvailable(String availabilityId) async {
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('availability')
+          .doc(availabilityId)
+          .get();
+
+      if (snapshot.exists) {
+        await snapshot.reference.update({'status': true});
+      } else {
+        throw Exception('Availability not found');
+      }
+    } catch (e) {
+      print('Error occurred while setting availability status to true: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> setAvailabilityToUnavailable(String availabilityId) async {
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('availability')
+          .doc(availabilityId)
+          .get();
+
+      if (snapshot.exists) {
+        await snapshot.reference.update({'status': false});
+      } else {
+        throw Exception('Availability not found');
+      }
+    } catch (e) {
+      print('Error occurred while setting availability status to false: $e');
+      rethrow;
+    }
+  }
+}
