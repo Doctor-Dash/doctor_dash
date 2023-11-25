@@ -22,7 +22,7 @@ class DoctorOrPatientChoice extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const DoctorSignIn()),
                 );
@@ -32,10 +32,10 @@ class DoctorOrPatientChoice extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const PatientSignIn()),
+                      builder: (context) => PatientSignIn()),
                 );
               },
               child: const Text('Patient'),
