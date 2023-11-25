@@ -5,14 +5,14 @@ import 'package:doctor_dash/models/patient_model.dart';
 import 'package:doctor_dash/controllers/patient_controller.dart';
 import 'package:doctor_dash/utils/utils.dart';
 
-class PatientSignUp extends StatefulWidget {
-  const PatientSignUp({super.key});
+class CreatePatient extends StatefulWidget {
+  const CreatePatient({super.key});
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _CreatePatientState createState() => _CreatePatientState();
 }
 
-class _SignUpPageState extends State<PatientSignUp> {
+class _CreatePatientState extends State<CreatePatient> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -184,7 +184,7 @@ class _SignUpPageState extends State<PatientSignUp> {
         context,
         MaterialPageRoute(
             builder: (context) => const MyHomePage(
-                  title: 'Search Page',
+                  title: 'Patient Search Page',
                 )));
   }
 }
