@@ -177,4 +177,43 @@ class AvailabilityService {
       rethrow;
     }
   }
+
+  Future<void> addAppointmentIdToAvailability(
+      String availabilityId, String appointmentId) async {
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('availability')
+          .doc(availabilityId)
+          .get();
+
+      if (snapshot.exists) {
+        await snapshot.reference.update({'appointmentId': appointmentId});
+      } else {
+        throw Exception('Availability not found');
+      }
+    } catch (e) {
+      print('Error occurred while adding appointment ID to availability: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> removeAppointmentIdFromAvailability(
+      String availabilityId) async {
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('availability')
+          .doc(availabilityId)
+          .get();
+
+      if (snapshot.exists) {
+        await snapshot.reference.update({'appointmentId': null});
+      } else {
+        throw Exception('Availability not found');
+      }
+    } catch (e) {
+      print(
+          'Error occurred while removing appointment ID from availability: $e');
+      rethrow;
+    }
+  }
 }
