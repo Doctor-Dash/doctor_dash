@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
-import 'package:doctor_dash/utils/specialties.dart'; // Make sure this import is correct
+import 'package:doctor_dash/utils/specialties.dart'; 
 
 class DoctorSignUpPage extends StatefulWidget {
   const DoctorSignUpPage({super.key});
@@ -14,11 +14,9 @@ class DoctorSignUpPage extends StatefulWidget {
 class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Define controllers for text fields
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
-  // This will hold the selected specialty
   String? selectedSpecialty;
 
   void _signUp() async {
@@ -41,7 +39,7 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
           name: nameController.text,
           phone: phoneController.text,
           email: userEmail,
-          speciality: selectedSpecialty ?? '', // Use the selected specialty
+          speciality: selectedSpecialty ?? '', 
           clinicId: [],
           availability: [],
           appointmentId: [],
@@ -64,7 +62,6 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Generate the list of dropdown menu items from the specialties list
     List<DropdownMenuItem<String>> specialtyItems = MedicalSpecialistsUtil.getSpecialists()
         .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
