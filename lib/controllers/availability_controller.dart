@@ -10,10 +10,9 @@ class AvailabilityService {
       : availabilityCollection =
             FirebaseFirestore.instance.collection('availability');
 
-  Future<void> createAvailabilitySignup(String doctorId) async {
-    DateTime now = DateTime.now();
-    DateTime nextMonth = DateTime(now.year, now.month + 1);
-    DateTime currentDay = DateTime(now.year, now.month, now.day);
+  Future<void> createAvailability(String doctorId, DateTime startDate) async {
+    DateTime nextMonth = DateTime(startDate.year, startDate.month + 1);
+    DateTime currentDay = startDate;
     DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
 
     DateTime startTime =
@@ -45,44 +44,16 @@ class AvailabilityService {
     }
   }
 
+  Future<void> createAvailabilitySignup(String doctorId) async {
+    DateTime now = DateTime.now();
+    await createAvailability(doctorId, now);
+  }
+
   Future<void> createAvailabilityFromLastDate(String doctorId) async {
     DateTime lastAvailabilityDate =
         await getLastAvailabilityDateFromDatabase(doctorId);
-
     lastAvailabilityDate = lastAvailabilityDate.add(Duration(days: 1));
-
-    DateTime nextMonth =
-        DateTime(lastAvailabilityDate.year, lastAvailabilityDate.month + 1);
-    DateTime currentDay = lastAvailabilityDate;
-    DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
-
-    DateTime startTime =
-        DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
-    DateTime endTime =
-        DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
-
-    while (currentDay.isBefore(endOfMonth)) {
-      if (currentDay.weekday >= DateTime.monday &&
-          currentDay.weekday <= DateTime.friday) {
-        while (startTime.isBefore(endTime)) {
-          DateTime sessionEndTime = startTime.add(Duration(minutes: 20));
-          AvailabilityModel availability = AvailabilityModel(
-            availabilityId: doctorId + startTime.toString(),
-            date: currentDay,
-            doctorId: doctorId,
-            startTime: startTime,
-            endTime: sessionEndTime,
-            status: true,
-          );
-          await availabilityCollection.add(availability.toMap());
-          startTime = startTime.add(Duration(minutes: 20));
-        }
-      }
-      currentDay = currentDay.add(Duration(days: 1));
-      startTime =
-          DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
-      endTime = DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
-    }
+    await createAvailability(doctorId, lastAvailabilityDate);
   }
 
   Future<DateTime> getLastAvailabilityDateFromDatabase(String doctorId) async {
