@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import './views/doctor_views/doctor_signup.dart'; // Adjust the import path as necessary
 import './views/doctor_views/doctor_signin.dart'; // Adjust the import path as necessary
-
+import'./views/auth_views/doctor_or_patient_choice_view.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
