@@ -1,5 +1,5 @@
 import 'package:doctor_dash/views/doctor_views/doctor_signin.dart';
-import 'package:doctor_dash/views/patient_views.dart/patient_signin.dart';
+import 'package:doctor_dash/views/patient_views/patient_signin.dart';
 import 'package:flutter/material.dart';
 
 class DoctorOrPatientChoice extends StatelessWidget {
@@ -22,7 +22,7 @@ class DoctorOrPatientChoice extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const DoctorSignIn()),
                 );
@@ -32,10 +32,10 @@ class DoctorOrPatientChoice extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const PatientSignIn()),
+                      builder: (context) => PatientSignIn()),
                 );
               },
               child: const Text('Patient'),

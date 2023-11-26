@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_dash/views/auth_views/doctor_or_patient_choice_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,32 +16,49 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const DoctorOrPatientChoice(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasData) {
+            // User is signed in
+            return FutureBuilder<bool>(
+              future: isPatient(),
+              builder: (context, patientSnapshot) {
+                if (patientSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (patientSnapshot.data == true) {
+                  return const MyHomePage(title: "Patient's Search Page:"); //TODO: should be Patient's Search page
+                } else {
+                  return const MyHomePage(title: "Doctor's Profile Page:"); //TODO: should be doctor profile page
+                }
+              },
+            );
+          } else {
+            return const DoctorOrPatientChoice();
+          }
+        },
+      ),
     );
+  }
+
+  Future<bool> isPatient() async {
+    var query = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('patients')
+        .get();
+    return query.docs.isNotEmpty;
   }
 }
 
@@ -98,6 +116,11 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (_) => const DoctorOrPatientChoice(),
+                ),
+              );
             },
           ),
         ],

@@ -29,7 +29,7 @@ class DoctorSignIn extends StatelessWidget {
 
         return const MyHomePage(
             title:
-                'Flutter Demo Home Page'); //TODO: should be doctor sign up page
+                'Doctor Sign Up Page'); //TODO: should be doctor sign up page
       },
     );
   }
