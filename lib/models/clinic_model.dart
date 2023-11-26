@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ClinicModel {
-  final String clinicID;
+  final String clinicId;
   final String name;
   final String street;
   final String city;
@@ -12,7 +12,7 @@ class ClinicModel {
   final List<String> doctors;
 
   ClinicModel({
-    required this.clinicID,
+    required this.clinicId,
     required this.name,
     required this.street,
     required this.city,
@@ -25,7 +25,7 @@ class ClinicModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'clinicID': clinicID,
+      'clinicId': clinicId,
       'name': name,
       'street': street,
       'city': city,
@@ -40,7 +40,7 @@ class ClinicModel {
   static ClinicModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return ClinicModel(
-      clinicID: map['clinicID'] as String,
+      clinicId: map['clinicId'] as String,
       name: map['name'] as String,
       street: map['street'] as String,
       city: map['city'] as String,
