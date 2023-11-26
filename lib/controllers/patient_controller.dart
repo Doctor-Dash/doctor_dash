@@ -12,7 +12,7 @@ class PatientService {
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('patients');
 
-  Future<DocumentReference<Object?>> addPatient(PatientModel patient) async {
+  Future<DocumentReference> addPatient(PatientModel patient) async {
     try {
       return await patientCollection.add(patient.toMap());
     } catch (e) {

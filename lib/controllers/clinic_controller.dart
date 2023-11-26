@@ -9,7 +9,7 @@ class ClinicService {
   ClinicService()
       : clinicCollection = FirebaseFirestore.instance.collection('clinincs');
 
-  Future<DocumentReference<Object?>> addClinic(ClinicModel clinic) async {
+  Future<DocumentReference> addClinic(ClinicModel clinic) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',

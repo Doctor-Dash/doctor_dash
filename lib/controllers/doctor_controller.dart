@@ -12,7 +12,7 @@ class DoctorService {
             .doc(FirebaseAuth.instance.currentUser?.uid)
             .collection('Doctors');
 
-  Future<DocumentReference<Object?>> addDoctor(DoctorModel doctor) async {
+  Future<DocumentReference> addDoctor(DoctorModel doctor) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
