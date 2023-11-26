@@ -10,7 +10,7 @@ class AvailabilityService {
       : availabilityCollection =
             FirebaseFirestore.instance.collection('availability');
 
-  Future<void> createAvailability(String doctorId, DateTime startDate) async {
+  Future<void> createAvailabilityForMonth(String doctorId, DateTime startDate) async {
     DateTime nextMonth = DateTime(startDate.year, startDate.month + 1);
     DateTime currentDay = startDate;
     DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
