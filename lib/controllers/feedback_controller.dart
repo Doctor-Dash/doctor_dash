@@ -4,7 +4,7 @@ import '../models/feedback_model.dart';
 import 'dart:math';
 
 class FeedbackService {
-  final User? user = FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser;
   final CollectionReference feedbackCollection;
 
   FeedbackService()
