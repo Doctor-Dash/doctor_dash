@@ -1,9 +1,7 @@
-// lib/view/signup_view.dart
-
 import 'package:doctor_dash/views/patient_views/create_patient.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'patient_signin.dart'; // Import your sign-in view
+import 'patient_signin.dart';
 
 class PatientSignUp extends StatefulWidget {
   const PatientSignUp({super.key});
@@ -24,7 +22,6 @@ class _PatientSignUpState extends State<PatientSignUp> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navigate to sign-in on successful sign-up
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const CreatePatient()),
       );

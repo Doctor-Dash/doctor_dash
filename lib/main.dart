@@ -16,7 +16,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,14 +38,13 @@ class MyApp extends StatelessWidget {
                     ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (patientSnapshot.data == true) {
-                  return const MyHomePage(title: "Patient's Search Page:");
+                  return const MyHomePage(title: "Patient's Search Page:"); //TODO: should be Patient's Search page
                 } else {
                   return const MyHomePage(title: "Doctor's Profile Page:"); //TODO: should be doctor profile page
                 }
               },
             );
           } else {
-            // User is not signed in, show SignInView
             return const DoctorOrPatientChoice();
           }
         },
@@ -55,7 +53,6 @@ class MyApp extends StatelessWidget {
   }
 
   Future<bool> isPatient() async {
-    // Check if there is at least one document in the "patients" collection
     var query = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)

@@ -3,7 +3,6 @@ import 'package:doctor_dash/views/auth_views/password_reset_view.dart';
 import 'package:doctor_dash/views/patient_views/patient_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'password_reset_view.dart';
 
 class PatientSignIn extends StatefulWidget {
   const PatientSignIn({super.key});
@@ -24,7 +23,6 @@ class _PatientSignInState extends State<PatientSignIn> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navigate to home if successful
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
             builder: (_) => const MyHomePage(
@@ -36,9 +34,6 @@ class _PatientSignInState extends State<PatientSignIn> {
         final regex = RegExp(r'\[([^)]+)\]');
         final match = regex.firstMatch(e.message ?? '');
         String extractedError = match?.group(1) ?? 'Invalid email';
-
-        // Making the first letter uppercase and the rest lowercase,
-        // and replacing underscores with spaces
         _errorMessage = extractedError.toLowerCase().replaceAll('_', ' ');
         _errorMessage =
             _errorMessage[0].toUpperCase() + _errorMessage.substring(1);
@@ -105,5 +100,4 @@ class _PatientSignInState extends State<PatientSignIn> {
       ),
     );
   }
-
 }

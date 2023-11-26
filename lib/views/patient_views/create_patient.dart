@@ -157,9 +157,8 @@ class _CreatePatientState extends State<CreatePatient> {
 
       String? userEmail = _auth.currentUser!.email;
 
-      // Create a PatientModel instance using the entered data
       PatientModel newPatient = PatientModel(
-        patientId: userId, // Set the patientId to the user ID
+        patientId: userId,
         name: _nameController.text,
         phone: _phoneController.text,
         email: userEmail ?? '',
@@ -178,8 +177,6 @@ class _CreatePatientState extends State<CreatePatient> {
     }
 
     // TODO: Navigate to Patient Home Screen (Search Page)
-    // Navigate to the next screen or perform other navigation actions
-    // Example: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NextScreen()));
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
