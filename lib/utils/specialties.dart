@@ -1,5 +1,3 @@
-// medical_specialists.dart
-
 class MedicalSpecialistsUtil {
   static final List<String> _specialists = [
     'Cardiologist',
@@ -7,10 +5,8 @@ class MedicalSpecialistsUtil {
     'Gastroenterologist',
     'Oncologist',
     'Orthodontist',
-    'Otolaryngologist (ENT Specialist)',
-    'Plastic Surgeon',
+    'ENT Specialist',
     'Psychiatrist',
-    'Rheumatologist',
     'Urologist',
     'Optometrist',
     'Podiatrist',
