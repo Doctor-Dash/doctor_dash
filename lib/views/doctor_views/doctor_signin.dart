@@ -31,6 +31,10 @@ class DoctorSignIn extends StatelessWidget {
           // User is signed in, show the main app screen or dashboard
           return DoctorSignUpPage();  // You need to define this widget according to your app's structure
         }
+
+        return const MyHomePage(
+            title:
+                'Doctor Sign Up Page'); //TODO: should be doctor sign up page
       },
     );
   }

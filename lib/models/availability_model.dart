@@ -6,8 +6,8 @@ class AvailabilityModel {
   final DateTime date;
   final DateTime startTime;
   final DateTime endTime;
-  final String status;
-  final List<String>? appointments;
+  final bool status;
+  final String? appointmentId;
 
   AvailabilityModel({
     required this.availabilityId,
@@ -16,7 +16,7 @@ class AvailabilityModel {
     required this.startTime,
     required this.endTime,
     required this.status,
-    this.appointments,
+    this.appointmentId,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,20 +27,19 @@ class AvailabilityModel {
       'startTime': startTime,
       'endTime': endTime,
       'status': status,
-      'appointments': appointments,
+      'appointmentId': appointmentId,
     };
   }
 
   static AvailabilityModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return AvailabilityModel(
-      availabilityId: data['availabilityId'],
-      doctorId: data['doctorId'],
-      date: data['date'].toDate(),
-      startTime: data['startTime'].toDate(),
-      endTime: data['endTime'].toDate(),
-      status: data['status'],
-      appointments: data['appointments'] != null ? List<String>.from(data['appointments']) : null,
-    );
+        availabilityId: data['availabilityId'] as String,
+        doctorId: data['doctorId'] as String,
+        date: data['date'].toDate() as DateTime,
+        startTime: data['startTime'].toDate() as DateTime,
+        endTime: data['endTime'].toDate() as DateTime,
+        status: data['status'] as bool,
+        appointmentId: data['appointmentId'] as String?);
   }
 }
