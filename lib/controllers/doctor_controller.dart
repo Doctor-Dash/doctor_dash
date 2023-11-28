@@ -73,8 +73,11 @@ class DoctorService {
       return doctorsSnapshot.docs
           .map((doc) => DoctorModel.fromMap(doc))
           .toList();
+    } on FirebaseException catch (e) {
+      // Handle Firestore-specific errors
+      throw Exception('Error fetching doctors list: ${e.message}');
     } catch (e) {
-      throw Exception('Error fetching doctors list: $e');
+      return [];
     }
   }
 
