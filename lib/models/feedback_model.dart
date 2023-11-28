@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedbackModel {
   final String feedbackId;
-  final int rating; // Rating ranging from 1 to 5 stars
+  final int rating;
   final String feedbackNote;
 
   FeedbackModel({
