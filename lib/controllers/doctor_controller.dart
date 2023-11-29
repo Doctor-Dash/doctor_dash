@@ -81,7 +81,7 @@ class DoctorService {
     }
   }
 
-  Future<QuerySnapshot<Object?>> getDoctor(String doctorId) async {
+  Future<QuerySnapshot> getDoctor(String doctorId) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
