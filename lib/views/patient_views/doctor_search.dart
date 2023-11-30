@@ -3,6 +3,7 @@ import '../../controllers/doctor_controller.dart';
 import '../../controllers/clinic_controller.dart';
 import '../../models/doctor_model.dart';
 import '../../utils/specialties.dart';
+import './doctor_profile.dart';
 
 class DoctorSearchView extends StatefulWidget {
   @override
@@ -63,7 +64,14 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                 return ListTile(
                   title: Text(doctor.name),
                   subtitle: Text(doctor.speciality),
-                  // Add other doctor details here
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DoctorProfileView(doctor),
+                      ),
+                    );
+                  },
                 );
               },
             ),
