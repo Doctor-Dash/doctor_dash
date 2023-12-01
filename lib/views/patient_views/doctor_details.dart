@@ -24,78 +24,95 @@ class DoctorDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // Doctor Info Section
-            Text(
-              'Doctor Info',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Name: ${doctor.name}',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Speciality: ${doctor.speciality}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Phone: ${doctor.phone}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Email: ${doctor.email}',
-              style: TextStyle(fontSize: 18),
-            ),
-            // Add additional doctor details here
-
+            doctorInfo(doctor),
             // Clinic Info Section
             SizedBox(height: 16),
-            Text(
-              'Clinic Info',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
             FutureBuilder<ClinicModel?>(
               future: clinicService.getClinicOfDoctor(doctor.doctorId),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show loading indicator while fetching data
+                if (snapshot.hasData) {
+                  return clinicInfo(snapshot.data!);
                 } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData && snapshot.data != null) {
-                  ClinicModel clinic = snapshot.data!;
-                  return Column(
-                    children: [
-                      Text(
-                        'Name: ${clinic.name}',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      // Add other clinic details here
-                    ],
-                  );
-                } else {
-                  return Text('No clinic information available');
+                  return Text('Error loading clinic info');
                 }
+                return CircularProgressIndicator();
               },
             ),
-            // Add clinic details here
-
             ElevatedButton(
               onPressed: () async {
                 // Navigate to the create availability screen or show a modal
                 // You can use Navigator to push a new screen or showModalBottomSheet for a modal
                 // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAvailabilityScreen(doctor)));
-                ClinicModel? clinic =
-                    await clinicService.getClinicOfDoctor(doctor.doctorId);
-                print(clinic);
-                print(clinic?.name);
               },
-              child: const Text('getClinicOfDoctor'),
+              child: const Text('Book Appointment'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget doctorInfo(DoctorModel doctor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Doctor Info',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Name: ${doctor.name}',
+          style: TextStyle(fontSize: 20),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Speciality: ${doctor.speciality}',
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Phone: ${doctor.phone}',
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Email: ${doctor.email}',
+          style: TextStyle(fontSize: 18),
+        ),
+        // Add additional doctor details here
+      ],
+    );
+  }
+
+  //create a widget to display clinic info
+  Widget clinicInfo(ClinicModel clinic) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Clinic Info',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Name: ${clinic.name}',
+          style: TextStyle(fontSize: 20),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Address: ${clinic.street}, ${clinic.city}, ${clinic.province}, ${clinic.postalCode}',
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Phone: ${clinic.phoneNumber}',
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Email: ${clinic.email}',
+          style: TextStyle(fontSize: 18),
+        ),
+      ],
     );
   }
 }
