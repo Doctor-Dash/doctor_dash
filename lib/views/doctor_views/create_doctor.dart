@@ -149,15 +149,13 @@ void _loadClinics() async {
                       validator: (value) => value == null ? 'Please select a clinic' : null,
                     ),
                   ),
-                  SizedBox(width: 10),  // Spacing between dropdown and button
+                  SizedBox(width: 10), 
                   ElevatedButton(
                     onPressed: () async {
-                      // Wait for the result from ClinicViewPage
                       final result = await Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => ClinicViewPage()),
                       );
 
-                      // If a clinic was added, refresh the clinic list
                       if (result == true) {
                         _loadClinics();
                       }
