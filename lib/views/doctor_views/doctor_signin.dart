@@ -2,6 +2,7 @@ import 'package:doctor_dash/main.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'doctor_signup.dart'; 
 
 class DoctorSignIn extends StatelessWidget {
   const DoctorSignIn({super.key});
@@ -25,6 +26,8 @@ class DoctorSignIn extends StatelessWidget {
               );
             },
           );
+        } else {
+          return DoctorSignUpPage(); 
         }
 
         return const MyHomePage(
