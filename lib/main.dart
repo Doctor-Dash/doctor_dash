@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
+import 'views/patient_views/patient_profile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +39,13 @@ class MyApp extends StatelessWidget {
                     ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (patientSnapshot.data == true) {
-                  return const MyHomePage(title: "Patient's Search Page:"); //TODO: should be Patient's Search page
+                  return const MyHomePage(
+                      title:
+                          "Patient's Search Page:"); //TODO: should be Patient's Search page
                 } else {
-                  return const MyHomePage(title: "Doctor's Profile Page:"); //TODO: should be doctor profile page
+                  return const MyHomePage(
+                      title:
+                          "Doctor's Profile Page:"); //TODO: should be doctor profile page
                 }
               },
             );
@@ -104,11 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
+// TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
+// Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: [
@@ -124,6 +129,18 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ],
+        leading: IconButton(
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            String userId = FirebaseAuth.instance.currentUser!.uid;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PatientProfilePage(patientId: userId)),
+            );
+            //need to implement going to the profile page depending on if the user is a doctor or patient
+          },
+        ),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
