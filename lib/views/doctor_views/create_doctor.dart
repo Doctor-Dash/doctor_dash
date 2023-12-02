@@ -4,7 +4,8 @@ import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:doctor_dash/utils/specialties.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';
-import 'doctor-clinic.dart'; 
+import 'doctor_clinic.dart'; // Make sure to import ClinicViewPage
+import 'doctor_signup.dart';
 
 class DoctorSignUpPage extends StatefulWidget {
   const DoctorSignUpPage({super.key});
@@ -123,21 +124,43 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
                 items: specialtyItems,
                 validator: (value) => value == null ? 'Please select your specialty' : null,
               ),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Select Clinic'),
-                value: selectedClinicId,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedClinicId = newValue;
-                  });
-                },
-                items: clinics.map((clinic) {
-                  return DropdownMenuItem<String>(
-                    value: clinic['id'],
-                    child: Text(clinic['name'] ?? 'Unknown Clinic'),
-                  );
-                }).toList(),
-                validator: (value) => value == null ? 'Please select a clinic' : null,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(labelText: 'Select Clinic'),
+                      value: selectedClinicId,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedClinicId = newValue;
+                        });
+                      },
+                      items: clinics.map((clinic) {
+                        return DropdownMenuItem<String>(
+                          value: clinic['id'],
+                          child: Text(clinic['name'] ?? 'Unknown Clinic'),
+                        );
+                      }).toList(),
+                      validator: (value) => value == null ? 'Please select a clinic' : null,
+                    ),
+                  ),
+                  SizedBox(width: 10),  // Spacing between dropdown and button
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Wait for the result from ClinicViewPage
+                      final result = await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => ClinicViewPage()),
+                      );
+
+                      // If a clinic was added, refresh the clinic list
+                      if (result == true) {
+                        _loadClinics();
+                      }
+                    },
+                    child: const Text('Add Clinic'),
+                  ),
+                ],
               ),
               ElevatedButton(
                 onPressed: _signUp,

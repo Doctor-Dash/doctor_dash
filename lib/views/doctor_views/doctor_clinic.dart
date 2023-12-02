@@ -20,30 +20,34 @@ class _ClinicViewPageState extends State<ClinicViewPage> {
 
   final ClinicService _clinicService = ClinicService();
 
-  void _submitClinic() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await _clinicService.addClinic(
-          name: _nameController.text,
-          street: _streetController.text,
-          city: _cityController.text,
-          province: _provinceController.text,
-          postalCode: _postalCodeController.text,
-          phoneNumber: _phoneNumberController.text,
-          email: _emailController.text,
-          doctors: [] // Assuming an empty list of doctors for now
-        );
+ void _submitClinic() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      await _clinicService.addClinic(
+        name: _nameController.text,
+        street: _streetController.text,
+        city: _cityController.text,
+        province: _provinceController.text,
+        postalCode: _postalCodeController.text,
+        phoneNumber: _phoneNumberController.text,
+        email: _emailController.text,
+        doctors: [] // Assuming an empty list of doctors for now
+      );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Clinic details submitted successfully')),
-        );
-      } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to submit clinic details: $error')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Clinic details submitted successfully')),
+      );
+
+      // Pop with true to indicate a successful clinic addition
+      Navigator.of(context).pop(true);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to submit clinic details: $error')),
+      );
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

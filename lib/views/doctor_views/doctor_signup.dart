@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'doctor_signin.dart'; 
+import 'create_doctor.dart';
 class DoctorSignUp extends StatefulWidget {
   const DoctorSignUp({super.key});
 
@@ -14,18 +15,24 @@ class _DoctorSignUpState extends State<DoctorSignUp> {
   final _auth = FirebaseAuth.instance;
   String _errorMessage = '';
 
-  Future<void> _signUp() async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _errorMessage = e.message ?? 'An unknown error occurred';
-      });
-    }
+Future<void> _signUp() async {
+  try {
+    await _auth.createUserWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+
+    // Navigate to the DoctorSignUpPage after successful sign-up
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => DoctorSignUpPage()), // Make sure DoctorSignUpPage is imported
+    );
+  } on FirebaseAuthException catch (e) {
+    setState(() {
+      _errorMessage = e.message ?? 'An unknown error occurred';
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
