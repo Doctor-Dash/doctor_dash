@@ -41,8 +41,10 @@ class ClinicService {
 
     try {
       return await clinicCollection.add(clinic.toMap());
-    } catch (e) {
-      throw Exception('Error adding clinic: $e');
+    } on FirebaseAuthException catch (authError) {
+      throw Exception('Authentication Error: ${authError.message}');
+    } on FirebaseException catch (firestoreError) {
+      throw Exception('Firestore Error: ${firestoreError.message}');
     }
   }
 
