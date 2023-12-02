@@ -17,10 +17,8 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  TextEditingController clinicNameController = TextEditingController(); 
   String? selectedSpecialty;
   String? selectedClinicId;
-  String? selectedClinicName; 
   List<Map<String, String>> clinics = [];
   final ClinicService clinicService = ClinicService(); 
 
@@ -57,7 +55,6 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
           email: userEmail,
           speciality: selectedSpecialty ?? '',
           clinicId: selectedClinicId != null ? [selectedClinicId!] : [],
-          clinicNames: selectedClinicName != null ? [selectedClinicName!] : [], 
           availability: [],
           appointmentId: [],
           feedbackId: [],
@@ -75,89 +72,81 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
       }
     }
   }
-@override
-Widget build(BuildContext context) {
-  List<DropdownMenuItem<String>> specialtyItems = MedicalSpecialistsUtil.getSpecialists()
-      .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList();
 
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Doctor Signup'),
-    ),
-    body: Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: phoneController,
-              decoration: const InputDecoration(labelText: 'Phone'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your phone number';
-                }
-                return null;
-              },
-            ),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Speciality'),
-              onChanged: (newValue) {
-                setState(() {
-                  selectedSpecialty = newValue;
-                });
-              },
-              items: specialtyItems,
-              validator: (value) => value == null ? 'Please select your specialty' : null,
-            ),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Select Clinic'),
-              value: selectedClinicId, 
-              onChanged: (newValue) {
-                setState(() {
-                  selectedClinicId = newValue;
-                  selectedClinicName = clinics.firstWhere((clinic) => clinic['id'] == newValue)['name'];
-                });
-              },
-              items: clinics.map((clinic) {
-                return DropdownMenuItem<String>(
-                  value: clinic['id'],
-                  child: Text(clinic['name'] ?? 'Unknown Clinic'),
-                );
-              }).toList(),
-              validator: (value) => value == null ? 'Please select a clinic' : null,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => ClinicViewPage()),
-                );
-              },
-              child: const Text('Create Clinic'),
-            ),
-            ElevatedButton(
-              onPressed: _signUp,
-              child: const Text('Sign Up'),
-            ),
-          ],
+  @override
+  Widget build(BuildContext context) {
+    List<DropdownMenuItem<String>> specialtyItems = MedicalSpecialistsUtil.getSpecialists()
+        .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Doctor Signup'),
+      ),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: phoneController,
+                decoration: const InputDecoration(labelText: 'Phone'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  return null;
+                },
+              ),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Speciality'),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedSpecialty = newValue;
+                  });
+                },
+                items: specialtyItems,
+                validator: (value) => value == null ? 'Please select your specialty' : null,
+              ),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Select Clinic'),
+                value: selectedClinicId,
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedClinicId = newValue;
+                  });
+                },
+                items: clinics.map((clinic) {
+                  return DropdownMenuItem<String>(
+                    value: clinic['id'],
+                    child: Text(clinic['name'] ?? 'Unknown Clinic'),
+                  );
+                }).toList(),
+                validator: (value) => value == null ? 'Please select a clinic' : null,
+              ),
+              ElevatedButton(
+                onPressed: _signUp,
+                child: const Text('Sign Up'),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

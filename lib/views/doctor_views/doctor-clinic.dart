@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:doctor_dash/models/clinic_model.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';
 
 class ClinicViewPage extends StatefulWidget {
@@ -19,30 +18,30 @@ class _ClinicViewPageState extends State<ClinicViewPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
-  final ClinicService _clinicService = ClinicService(); // Clinic service instance
+  final ClinicService _clinicService = ClinicService();
 
   void _submitClinic() async {
     if (_formKey.currentState!.validate()) {
-      ClinicModel clinic = ClinicModel(
-        name: _nameController.text,
-        street: _streetController.text,
-        city: _cityController.text,
-        province: _provinceController.text,
-        postalCode: _postalCodeController.text,
-        phoneNumber: _phoneNumberController.text,
-        email: _emailController.text,
-        doctors: [] 
-      );
+      try {
+        await _clinicService.addClinic(
+          name: _nameController.text,
+          street: _streetController.text,
+          city: _cityController.text,
+          province: _provinceController.text,
+          postalCode: _postalCodeController.text,
+          phoneNumber: _phoneNumberController.text,
+          email: _emailController.text,
+          doctors: [] // Assuming an empty list of doctors for now
+        );
 
-      _clinicService.addClinic(clinic).then((docRef) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Clinic details submitted successfully')),
         );
-      }).catchError((error) {
+      } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to submit clinic details: $error')),
         );
-      });
+      }
     }
   }
 

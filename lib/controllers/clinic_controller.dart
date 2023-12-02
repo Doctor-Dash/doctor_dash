@@ -1,46 +1,76 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 import '../models/clinic_model.dart';
 
 class ClinicService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final User? user = FirebaseAuth.instance.currentUser;
+  final CollectionReference clinicCollection;
 
-  ClinicService();
+  ClinicService() : clinicCollection = FirebaseFirestore.instance.collection('clinics');
 
-  Future<DocumentReference> addClinic(ClinicModel clinic) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('User must be logged in to add a clinic.');
+  Future<DocumentReference> addClinic({
+    required String name,
+    required String street,
+    required String city,
+    required String province,
+    required String postalCode,
+    required String phoneNumber,
+    required String email,
+    required List<String> doctors,
+  }) async {
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'unauthenticated',
+        message: 'User must be logged in to add a clinic.'
+      );
     }
 
+    String clinicId = Uuid().v4();
+    ClinicModel clinic = ClinicModel(
+      clinicId: clinicId,
+      name: name,
+      street: street,
+      city: city,
+      province: province,
+      postalCode: postalCode,
+      phoneNumber: phoneNumber,
+      email: email,
+      doctors: doctors,
+    );
+
     try {
-      return await _firestore.collection('clinics').add(clinic.toMap());
+      return await clinicCollection.add(clinic.toMap());
     } catch (e) {
       throw Exception('Error adding clinic: $e');
     }
   }
 
   Future<QuerySnapshot> getClinic(String clinicId) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('User must be logged in to get clinic information.');
+    if (user == null) {
+      throw FirebaseAuthException(
+          code: 'unauthenticated',
+          message: 'User must be logged in to get clinic information.');
     }
-
     try {
-      return await _firestore.collection('clinics').where('clinicId', isEqualTo: clinicId).get();
+      return await clinicCollection
+          .where('clinicId', isEqualTo: clinicId)
+          .get();
     } catch (e) {
       throw Exception('Error fetching clinic: $e');
     }
   }
 
   Future<List<String>> getClinicsInCity(String city) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      throw Exception('User must be logged in to get clinics information.');
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'unauthenticated',
+        message: 'User must be logged in to get clinics information.',
+      );
     }
-
     try {
-      var querySnapshot = await _firestore.collection('clinics').where('city', isEqualTo: city).get();
+      var querySnapshot =
+          await clinicCollection.where('city', isEqualTo: city).get();
       return querySnapshot.docs
           .map((doc) => ClinicModel.fromMap(doc).clinicId)
           .toList();
@@ -49,15 +79,25 @@ class ClinicService {
     }
   }
 
-Future<List<Map<String, String>>> streamClinicNamesAndIds() async {
-  var querySnapshot = await _firestore.collection('clinics').get();
+ Future<List<Map<String, String>>> streamClinicNamesAndIds() async {
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'unauthenticated',
+        message: 'User must be logged in to access clinics.'
+      );
+    }
 
-  return querySnapshot.docs.map((doc) {
-    var clinic = ClinicModel.fromMap(doc);
-    return {
-      'id': clinic.clinicId, 
-      'name': clinic.name,
-    };
-  }).toList();
-}
+    try {
+      var querySnapshot = await clinicCollection.get();
+      return querySnapshot.docs.map((doc) {
+        var clinic = ClinicModel.fromMap(doc);
+        return {
+          'id': clinic.clinicId, 
+          'name': clinic.name,
+        };
+      }).toList();
+    } catch (e) {
+      throw Exception('Error fetching clinic names and IDs: $e');
+    }
+  }
 }

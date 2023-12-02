@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'doctor_signin.dart'; // Ensure this import points to the correct file
-
+import 'doctor_signin.dart'; 
 class DoctorSignUp extends StatefulWidget {
   const DoctorSignUp({super.key});
 
