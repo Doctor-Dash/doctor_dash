@@ -9,14 +9,14 @@ class DoctorService {
   DoctorService()
       : doctorsCollection = FirebaseFirestore.instance.collection('doctors');
 
-  Future<DocumentReference> addDoctor(DoctorModel doctor) async {
+  Future<void> addDoctor(DoctorModel doctor) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
           message: 'User must be logged in to add a doctor.');
     }
     try {
-      return await doctorsCollection.add(doctor.toMap());
+      await doctorsCollection.doc(doctor.doctorId).set(doctor.toMap());
     } on FirebaseAuthException catch (authError) {
       throw Exception('Authentication Error: ${authError.message}');
     } on FirebaseException catch (firestoreError) {
