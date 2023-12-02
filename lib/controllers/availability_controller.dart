@@ -143,12 +143,13 @@ class AvailabilityService {
 
   Future<void> setAvailabilityToUnavailable(String availabilityId) async {
     try {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('availability')
-          .doc(availabilityId)
+          .where('availabilityId', isEqualTo: availabilityId)
           .get();
 
-      if (snapshot.exists) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot snapshot = querySnapshot.docs.first;
         await snapshot.reference.update({'status': false});
       } else {
         throw Exception('Availability not found');
@@ -194,12 +195,13 @@ class AvailabilityService {
   Future<void> addAppointmentIdToAvailability(
       String availabilityId, String appointmentId) async {
     try {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('availability')
-          .doc(availabilityId)
+          .where('availabilityId', isEqualTo: availabilityId)
           .get();
 
-      if (snapshot.exists) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot snapshot = querySnapshot.docs.first;
         await snapshot.reference.update({'appointmentId': appointmentId});
       } else {
         throw Exception('Availability not found');
@@ -239,7 +241,8 @@ class AvailabilityService {
       availabilities = availabilities.where((availability) {
         return availability.date.year == selectedDay.year &&
             availability.date.month == selectedDay.month &&
-            availability.date.day == selectedDay.day;
+            availability.date.day == selectedDay.day &&
+            availability.status == true;
       }).toList();
 
       List<DateTimeRange> timeSlots = availabilities
