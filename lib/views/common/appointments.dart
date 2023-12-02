@@ -80,53 +80,58 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   Future<void> fetchData() async {
-    isPatient = await patientService.isPatient();
-    QuerySnapshot appointmentSnapshot;
+    try {
+      isPatient = await patientService.isPatient();
+      QuerySnapshot appointmentSnapshot;
 
-    if (isPatient) {
-      appointmentSnapshot =
-          await appointmentService.getAppointmentsForPatient(widget.userId);
-    } else {
-      appointmentSnapshot =
-          await appointmentService.getAppointmentsForDoctor(widget.userId);
+      if (isPatient) {
+        appointmentSnapshot =
+            await appointmentService.getAppointmentsForPatient(widget.userId);
+      } else {
+        appointmentSnapshot =
+            await appointmentService.getAppointmentsForDoctor(widget.userId);
+      }
+
+      appointments = appointmentSnapshot.docs
+          .map((doc) => AppointmentModel.fromMap(doc))
+          .toList();
+
+      for (var appointment in appointments) {
+        QuerySnapshot doctorSnapshot =
+            await doctorService.getDoctor(appointment.doctorId);
+        DoctorModel doctor = DoctorModel.fromMap(doctorSnapshot.docs.first);
+
+        QuerySnapshot patientSnapshot =
+            await patientService.getPatient(appointment.patientId);
+        PatientModel patient = PatientModel.fromMap(patientSnapshot.docs.first);
+
+        QuerySnapshot clinicSnapshot =
+            await clinicService.getClinic(appointment.clinicId);
+        ClinicModel clinic = ClinicModel.fromMap(clinicSnapshot.docs.first);
+
+        QuerySnapshot availabilitySnapshot = await availabilityService
+            .getAvailability(appointment.availabilityId);
+        AvailabilityModel availability =
+            AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
+
+        appointmentDetailsList.add(AppointmentDetails(
+          doctor: doctor,
+          patient: patient,
+          clinic: clinic,
+          availability: availability,
+          doctorFilesPath: appointment.doctorFilesPath,
+          patientFilesPath: appointment.patientFilesPath,
+          doctorNotes: appointment.doctorNotes,
+          patientNotes: appointment.patientNotes,
+        ));
+      }
+      appointmentDetailsList.sort((a, b) =>
+          b.availability.startTime.compareTo(a.availability.startTime));
+      setState(() {});
+    } catch (e) {
+      print('Error fetching data: $e');
+      rethrow;
     }
-
-    appointments = appointmentSnapshot.docs
-        .map((doc) => AppointmentModel.fromMap(doc))
-        .toList();
-
-    for (var appointment in appointments) {
-      QuerySnapshot doctorSnapshot =
-          await doctorService.getDoctor(appointment.doctorId);
-      DoctorModel doctor = DoctorModel.fromMap(doctorSnapshot.docs.first);
-
-      QuerySnapshot patientSnapshot =
-          await patientService.getPatient(appointment.patientId);
-      PatientModel patient = PatientModel.fromMap(patientSnapshot.docs.first);
-
-      QuerySnapshot clinicSnapshot =
-          await clinicService.getClinic(appointment.clinicId);
-      ClinicModel clinic = ClinicModel.fromMap(clinicSnapshot.docs.first);
-
-      QuerySnapshot availabilitySnapshot =
-          await availabilityService.getAvailability(appointment.availabilityId);
-      AvailabilityModel availability =
-          AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
-
-      appointmentDetailsList.add(AppointmentDetails(
-        doctor: doctor,
-        patient: patient,
-        clinic: clinic,
-        availability: availability,
-        doctorFilesPath: appointment.doctorFilesPath,
-        patientFilesPath: appointment.patientFilesPath,
-        doctorNotes: appointment.doctorNotes,
-        patientNotes: appointment.patientNotes,
-      ));
-    }
-    appointmentDetailsList.sort(
-        (a, b) => b.availability.startTime.compareTo(a.availability.startTime));
-    setState(() {});
   }
 
   @override
