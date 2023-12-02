@@ -124,6 +124,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
         patientNotes: appointment.patientNotes,
       ));
     }
+    appointmentDetailsList.sort(
+        (a, b) => b.availability.startTime.compareTo(a.availability.startTime));
     setState(() {});
   }
 
