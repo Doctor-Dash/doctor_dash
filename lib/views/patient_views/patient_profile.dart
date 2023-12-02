@@ -175,63 +175,67 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                     },
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top: 300),
-                      child: const Text(
-                        'Appointments',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                //give me two buttons to naviage to appoints page
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 30.0, right: 30.0),
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 220),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // upcoming appointments
-                                },
-                                child: const Text('Upcoming Appointsments'),
-                              ),
-                            ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 300),
+                          child: const Text(
+                            'Appointments',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
                     ),
-                    Row(
+                    SizedBox(height: 20), // Add some space between the buttons
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 30.0, right: 30.0),
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // previous appointments
-                                },
-                                child: const Text('Previous Appointments'),
-                              ),
-                            ),
-                          ),
+                        LayoutBuilder(
+                          builder: (BuildContext context,
+                              BoxConstraints constraints) {
+                            return Column(
+                              children: <Widget>[
+                                Container(
+                                  width: constraints.maxWidth,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 30.0, right: 30.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // upcoming appointments
+                                      },
+                                      child:
+                                          const Text('Upcoming Appointments'),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                    height:
+                                        20), // Add some space between the buttons
+                                Container(
+                                  width: constraints.maxWidth,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 30.0, right: 30.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // previous appointments
+                                      },
+                                      child:
+                                          const Text('Previous Appointments'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],
