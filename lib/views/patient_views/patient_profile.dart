@@ -18,11 +18,9 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
   final _formKey = GlobalKey<FormState>();
   Future<PatientModel> getPatientData() async {
     try {
-      print(widget.patientId);
       QuerySnapshot patientSnapshot =
           await patientService.getPatient(widget.patientId);
       if (patientSnapshot.docs.isNotEmpty) {
-        print(patientSnapshot.docs.first);
         return PatientModel.fromMap(patientSnapshot.docs.first);
       } else {
         throw Exception('Patient not found');
