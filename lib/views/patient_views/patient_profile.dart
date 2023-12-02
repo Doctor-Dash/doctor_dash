@@ -190,7 +190,7 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20), // Add some space between the buttons
+                    SizedBox(height: 20),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -213,9 +213,7 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                    height:
-                                        20), // Add some space between the buttons
+                                SizedBox(height: 20),
                                 Container(
                                   width: constraints.maxWidth,
                                   child: Padding(

@@ -79,9 +79,6 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            // Add TextFormFields and RaisedButton here.
-            // Use patient data to set the initial value of TextFormFields.
-            // Use _updatePatientData method to update patient data when the RaisedButton is pressed.
             TextFormField(
               initialValue: patient.name,
               decoration: InputDecoration(labelText: 'Name'),
@@ -111,7 +108,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
             TextFormField(
               initialValue: patient.email,
               decoration: InputDecoration(labelText: 'Email'),
-              enabled: false, // Disable editing of email field
+              enabled: false, 
             ),
             TextFormField(
               initialValue: patient.age.toString(),
@@ -206,7 +203,7 @@ class _EditPatientProfileState extends State<EditPatientProfile> {
             ),
             Padding(
               padding: const EdgeInsets.only(
-                  top: 20.0), // Add space above the button
+                  top: 20.0),
               child: ElevatedButton(
                 onPressed: _updatePatientData,
                 child: Text('Update'),
