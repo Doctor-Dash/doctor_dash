@@ -38,14 +38,6 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Patient Profile'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Navigate to the edit page
-            },
-          ),
-        ],
       ),
       body: FutureBuilder<PatientModel>(
         future: getPatientData(),
