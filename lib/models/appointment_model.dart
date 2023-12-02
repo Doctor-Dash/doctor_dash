@@ -6,8 +6,8 @@ class AppointmentModel {
   final String patientId;
   final String availabilityId;
   final String clinicId;
-  final String doctorFilesPath;  // Path to FireStorage
-  final String patientFilesPath; // Path to FireStorage
+  final String? doctorFilesPath;  // Path to FireStorage
+  final String? patientFilesPath; // Path to FireStorage
   final String? doctorNotes;
   final String? patientNotes;
   
@@ -17,8 +17,8 @@ class AppointmentModel {
     required this.patientId,
     required this.availabilityId,
     required this.clinicId,
-    required this.doctorFilesPath,
-    required this.patientFilesPath,
+    this.doctorFilesPath,
+    this.patientFilesPath,
     this.doctorNotes,
     this.patientNotes,
   });
