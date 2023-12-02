@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../controllers/doctor_controller.dart';
 import '../../controllers/clinic_controller.dart';
+import '../../controllers/feedback_controller.dart';
+import '../../models/feedback_model.dart';
 import '../../models/doctor_model.dart';
 import '../../utils/specialties.dart';
 import './doctor_profile.dart';
@@ -61,9 +63,13 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
               itemCount: doctors.length,
               itemBuilder: (context, index) {
                 final doctor = doctors[index];
+                final avgRating = doctorRatings[doctor.doctorId] ?? 0.0;
                 return ListTile(
                   title: Text(doctor.name),
                   subtitle: Text(doctor.speciality),
+                  trailing: avgRating > 0
+                      ? Text("Rating: ${avgRating.toStringAsFixed(1)}")
+                      : Text("No Ratings"),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -81,6 +87,26 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
     );
   }
 
+  Future<double> _calculateAverageRating(List<String>? feedbackIds) async {
+    if (feedbackIds == null || feedbackIds.isEmpty) {
+      return 0.0;
+    }
+
+    FeedbackService feedbackService = FeedbackService();
+    List<FeedbackModel> feedbacks =
+        await feedbackService.getFeedbacksByIds(feedbackIds);
+
+    if (feedbacks.isEmpty) {
+      return 0.0;
+    }
+
+    print(feedbacks);
+    double totalRating = feedbacks.fold(0, (sum, item) => sum + item.rating);
+    return totalRating / feedbacks.length;
+  }
+
+  Map<String, double> doctorRatings = {};
+
   void _searchDoctors() async {
     if (selectedCity.isEmpty || selectedSpecialty.isEmpty) return;
 
@@ -89,7 +115,17 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
           await clinicService.getClinicsInCity(selectedCity);
       List<DoctorModel> filteredDoctors =
           await doctorService.getDoctors(selectedSpecialty, clinicIds);
-      setState(() => doctors = filteredDoctors);
+
+      Map<String, double> tempRatings = {};
+      for (var doctor in filteredDoctors) {
+        double avgRating = await _calculateAverageRating(doctor.feedbackId);
+        tempRatings[doctor.doctorId] = avgRating;
+      }
+
+      setState(() {
+        doctors = filteredDoctors;
+        doctorRatings = tempRatings;
+      });
     } catch (e) {
       print('Error: $e');
     }

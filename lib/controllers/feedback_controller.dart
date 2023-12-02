@@ -82,13 +82,16 @@ class FeedbackService {
       List<String> feedbackIds) async {
     List<FeedbackModel> feedbacks = [];
 
-    for (String feedbackId in feedbackIds) {
-      try {
-        DocumentSnapshot doc = await feedbackCollection.doc(feedbackId).get();
+    try {
+      QuerySnapshot querySnapshot = await feedbackCollection
+          .where('feedbackId', whereIn: feedbackIds)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
         feedbacks.add(FeedbackModel.fromMap(doc));
-      } catch (e) {
-        print('Failed to get feedback: $e');
       }
+    } catch (e) {
+      print('Failed to get feedbacks by IDs: $e');
     }
 
     return feedbacks;
