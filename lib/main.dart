@@ -42,8 +42,10 @@ class MyApp extends StatelessWidget {
                   return const CircularProgressIndicator();
                 } else if (patientSnapshot.data == true) {
                   return const MyHomePage(title: "Patient's Search Page:");
+                  //TODO: should be Patient's Search page
                 } else {
                   return const MyHomePage(title: "Doctor's Profile Page:");
+                  //TODO: should be doctor profile page
                 }
               },
             );
