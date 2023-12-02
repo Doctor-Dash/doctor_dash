@@ -1,5 +1,6 @@
 import 'package:doctor_dash/controllers/availability_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:doctor_dash/utils/utils.dart';
 
@@ -154,6 +155,7 @@ class _BookingPageState extends State<BookingPage> {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           DateTime startTime = _availableTimeSlots[index].start;
+          String formattedStartTime = DateFormat('hh:mm a').format(startTime);
           return InkWell(
             splashColor: Colors.transparent,
             onTap: () {
@@ -173,7 +175,7 @@ class _BookingPageState extends State<BookingPage> {
               ),
               alignment: Alignment.center,
               child: Text(
-                '${startTime.hour}:${startTime.minute} ${startTime.hour > 11 ? "PM" : "AM"}',
+                formattedStartTime,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: _currentIndex == index ? Colors.white : null,
