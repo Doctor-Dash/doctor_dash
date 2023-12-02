@@ -44,6 +44,8 @@ dependencies:
   intl: ^0.18.1
   json_annotation: ^4.8.1
   table_calendar: ^3.0.9
+  uuid: ^4.2.1
+
 
 dev_dependencies:
   flutter_test:
