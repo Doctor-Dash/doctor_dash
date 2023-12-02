@@ -1,4 +1,6 @@
+import 'package:doctor_dash/views/auth_views/doctor_or_patient_choice_view.dart';
 import 'package:doctor_dash/views/patient_views/doctor_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/doctor_controller.dart';
 import '../../controllers/clinic_controller.dart';
@@ -34,6 +36,17 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
             icon: const Icon(Icons.account_circle),
             onPressed: () {
               // TODO: Implement navigation to doctor profile view
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (_) => const DoctorOrPatientChoice(),
+                ),
+              );
             },
           ),
         ],
@@ -78,8 +91,7 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => DoctorDetails(doctor)
-                      ),
+                          builder: (context) => DoctorDetails(doctor)),
                     );
                   },
                 );
