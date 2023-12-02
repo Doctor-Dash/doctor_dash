@@ -93,16 +93,21 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
     }
 
     FeedbackService feedbackService = FeedbackService();
-    List<FeedbackModel> feedbacks =
-        await feedbackService.getFeedbacksByIds(feedbackIds);
 
-    if (feedbacks.isEmpty) {
-      return 0.0;
+    List<FeedbackModel> feedbacks;
+
+    try {
+      feedbacks = await feedbackService.getFeedbacksByIds(feedbackIds);
+
+      if (feedbacks.isEmpty) {
+        return 0.0;
+      }
+
+      double totalRating = feedbacks.fold(0, (sum, item) => sum + item.rating);
+      return totalRating / feedbacks.length;
+    } catch (e) {
+      throw Exception('Failed to calculate average: $e');
     }
-
-    print(feedbacks);
-    double totalRating = feedbacks.fold(0, (sum, item) => sum + item.rating);
-    return totalRating / feedbacks.length;
   }
 
   Map<String, double> doctorRatings = {};
@@ -127,7 +132,7 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
         doctorRatings = tempRatings;
       });
     } catch (e) {
-      print('Error: $e');
+      throw Exception('Failed to search for doctors: $e');
     }
   }
 }
