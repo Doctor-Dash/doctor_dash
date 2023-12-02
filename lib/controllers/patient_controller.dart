@@ -9,9 +9,9 @@ class PatientService {
   PatientService()
       : patientCollection = FirebaseFirestore.instance.collection('patients');
 
-  Future<DocumentReference> addPatient(PatientModel patient) async {
+  Future<void> addPatient(PatientModel patient) async {
     try {
-      return await patientCollection.add(patient.toMap());
+      await patientCollection.doc(patient.patientId).set(patient.toMap());
     } catch (e) {
       print('Failed to add patient: $e');
       rethrow;

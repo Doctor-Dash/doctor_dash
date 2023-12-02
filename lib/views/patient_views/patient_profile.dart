@@ -22,7 +22,6 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
       QuerySnapshot patientSnapshot =
           await patientService.getPatient(widget.patientId);
       if (patientSnapshot.docs.isNotEmpty) {
-        print(patientSnapshot.docs.first);
         return PatientModel.fromMap(patientSnapshot.docs.first);
       } else {
         throw Exception('Patient not found');

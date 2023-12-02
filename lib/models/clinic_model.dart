@@ -9,7 +9,7 @@ class ClinicModel {
   final String postalCode;
   final String phoneNumber;
   final String email;
-  final List<String> doctors;
+  List<String> doctors; 
 
   ClinicModel({
     required this.clinicId,
@@ -20,7 +20,7 @@ class ClinicModel {
     required this.postalCode,
     required this.phoneNumber,
     required this.email,
-    required this.doctors,
+    this.doctors = const [], 
   });
 
   Map<String, dynamic> toMap() {
@@ -48,7 +48,7 @@ class ClinicModel {
       postalCode: map['postalCode'] as String,
       phoneNumber: map['phoneNumber'] as String,
       email: map['email'] as String,
-      doctors: List<String>.from(map['doctors']),
+      doctors: map['doctors'] != null ? List<String>.from(map['doctors']) : [],
     );
   }
 
