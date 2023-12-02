@@ -211,9 +211,9 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                               margin: const EdgeInsets.only(top: 220),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // Navigate to the edit page
+                                  // upcoming appointments
                                 },
-                                child: const Text('Upcoming'),
+                                child: const Text('Upcoming Appointsments'),
                               ),
                             ),
                           ),
@@ -231,9 +231,9 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                               margin: const EdgeInsets.only(top: 20),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // Navigate to the edit page
+                                  // previous appointments
                                 },
-                                child: const Text('Previous'),
+                                child: const Text('Previous Appointments'),
                               ),
                             ),
                           ),
