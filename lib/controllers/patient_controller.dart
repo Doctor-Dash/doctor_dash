@@ -32,22 +32,27 @@ class PatientService {
     }
   }
 
-  Future<QuerySnapshot> getPatientAppointments(String patientId) async {
-    try {
-      var appointmentIds = await patientCollection
-          .doc(patientId)
-          .collection('appointments')
-          .get();
-      return appointmentIds;
-    } catch (e) {
-      print('Failed to get patient appointments: $e');
-      rethrow;
-    }
+  Future<List<String>> getPatientAppointments(String patientId) async {
+    QuerySnapshot querySnapshot =
+        await patientCollection.where('patientId', isEqualTo: patientId).get();
+    PatientModel patient = PatientModel.fromMap(querySnapshot.docs[0]);
+    return patient.appointments ?? [];
   }
 
   Future<void> updatePatient(PatientModel patient) async {
+    print(patient.patientId);
     try {
-      await patientCollection.doc(patient.patientId).update(patient.toMap());
+      QuerySnapshot querySnapshot = await patientCollection
+          .where('patientId', isEqualTo: patient.patientId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
+          await patientCollection.doc(doc.id).update(patient.toMap());
+        }
+      } else {
+        print('No document found with the patientId: ${patient.patientId}');
+      }
     } catch (e) {
       print('Failed to update patient: $e');
       rethrow;
