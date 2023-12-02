@@ -42,12 +42,10 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<void> _fetchAvailableTimeSlots() async {
     try {
-      print(_focusedDay);
       List<DateTimeRange> timeSlots = await _availabilityService
           .getAvailableTimeSlotsForDay('D1234', _focusedDay);
       setState(() {
         _availableTimeSlots = timeSlots;
-        print(_availableTimeSlots);
       });
     } catch (e) {
       // Handle error
@@ -186,11 +184,8 @@ class _BookingPageState extends State<BookingPage> {
             onTap: () {
               setState(() {
                 _startTime = startTime;
-                print("Start Time $_startTime");
                 _currentIndex = index;
-                print("Current Index $_currentIndex");
                 _timeSelected = true;
-                print("Time selected $_timeSelected");
               });
             },
             child: Container(
