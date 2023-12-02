@@ -34,8 +34,7 @@ class FeedbackService {
           isUnique = true;
         }
       } catch (e) {
-        print('Failed to check uniqueness of feedbackId: $e');
-        return '';
+        throw Exception('Failed to check uniqueness of feedbackId: $e');
       }
     }
 
@@ -48,8 +47,7 @@ class FeedbackService {
     try {
       await feedbackCollection.add(feedback.toMap());
     } catch (e) {
-      print('Failed to add feedback: $e');
-      return '';
+      throw Exception('Failed to add feedback: $e');
     }
 
     return feedbackId;
@@ -66,7 +64,7 @@ class FeedbackService {
     try {
       await feedbackCollection.doc(feedbackId).update(feedback.toMap());
     } catch (e) {
-      print('Failed to update feedback: $e');
+      throw Exception('Failed to update feedback: $e');
     }
   }
 
@@ -74,7 +72,7 @@ class FeedbackService {
     try {
       await feedbackCollection.doc(feedbackId).delete();
     } catch (e) {
-      print('Failed to delete feedback: $e');
+      throw Exception('Failed to delete feedback: $e');
     }
   }
 
@@ -91,7 +89,7 @@ class FeedbackService {
         feedbacks.add(FeedbackModel.fromMap(doc));
       }
     } catch (e) {
-      print('Failed to get feedbacks by IDs: $e');
+      throw Exception('Failed to get feedbacks by IDs: $e');
     }
 
     return feedbacks;
