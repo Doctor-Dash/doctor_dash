@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-import './views/doctor_views/doctor_signup.dart';
+import './views/doctor_views/create_doctor.dart';
 import './views/doctor_views/doctor_signin.dart';
 import './views/auth_views/doctor_or_patient_choice_view.dart';
 import 'views/patient_views/patient_profile.dart';
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -126,6 +126,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => DoctorSignUpPage()),
+                );
+              },
+              child: const Text('Go to Doctor SignUp Page'),
             ),
           ],
         ),
