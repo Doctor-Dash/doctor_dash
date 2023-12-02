@@ -11,6 +11,45 @@ class AvailabilityService {
       : availabilityCollection =
             FirebaseFirestore.instance.collection('availability');
 
+  Future<void> createAvailabilityForWeek(
+      String doctorId, DateTime startDate) async {
+    DateTime endOfWeek = startDate.add(Duration(days: 7));
+    DateTime currentDay = startDate;
+
+    while (currentDay.isBefore(endOfWeek)) {
+      if (currentDay.weekday >= DateTime.monday &&
+          currentDay.weekday <= DateTime.friday) {
+        DateTime startTime = DateTime(
+          currentDay.year,
+          currentDay.month,
+          currentDay.day,
+          9,
+        );
+        DateTime endTime = DateTime(
+          currentDay.year,
+          currentDay.month,
+          currentDay.day,
+          17,
+        );
+
+        while (startTime.isBefore(endTime)) {
+          DateTime sessionEndTime = startTime.add(Duration(minutes: 40));
+          AvailabilityModel availability = AvailabilityModel(
+            availabilityId: doctorId + startTime.toString(),
+            date: currentDay,
+            doctorId: doctorId,
+            startTime: startTime,
+            endTime: sessionEndTime,
+            status: true,
+          );
+          await availabilityCollection.add(availability.toMap());
+          startTime = startTime.add(Duration(minutes: 40));
+        }
+      }
+      currentDay = currentDay.add(Duration(days: 1));
+    }
+  }
+
   Future<void> createAvailabilityForMonth(
       String doctorId, DateTime startDate) async {
     DateTime nextMonth = DateTime(startDate.year, startDate.month + 1);
@@ -22,11 +61,12 @@ class AvailabilityService {
     DateTime endTime =
         DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
 
-    while (currentDay.isBefore(endOfMonth)) {
+    while (currentDay.isBefore(endOfMonth) &&
+        currentDay.month == startDate.month) {
       if (currentDay.weekday >= DateTime.monday &&
           currentDay.weekday <= DateTime.friday) {
         while (startTime.isBefore(endTime)) {
-          DateTime sessionEndTime = startTime.add(Duration(minutes: 20));
+          DateTime sessionEndTime = startTime.add(Duration(minutes: 40));
           AvailabilityModel availability = AvailabilityModel(
             availabilityId: doctorId + startTime.toString(),
             date: currentDay,
@@ -36,7 +76,7 @@ class AvailabilityService {
             status: true,
           );
           await availabilityCollection.add(availability.toMap());
-          startTime = startTime.add(Duration(minutes: 20));
+          startTime = startTime.add(Duration(minutes: 40));
         }
       }
       currentDay = currentDay.add(Duration(days: 1));
@@ -48,7 +88,7 @@ class AvailabilityService {
 
   Future<void> createAvailabilitySignup(String doctorId) async {
     DateTime now = DateTime.now();
-    await createAvailabilityForMonth(doctorId, now);
+    await createAvailabilityForWeek(doctorId, now);
   }
 
   Future<void> createAvailabilityFromLastDate(String doctorId) async {
@@ -193,24 +233,23 @@ class AvailabilityService {
   Future<List<DateTimeRange>> getAvailableTimeSlotsForDay(
       String doctorId, DateTime selectedDay) async {
     try {
-      // Fetch available time slots from Firestore for the selected day
       List<AvailabilityModel> availabilities =
           await getDoctorAvailabilies(doctorId);
 
-      // Filter availabilities for the selected day
       availabilities = availabilities.where((availability) {
         return availability.date.year == selectedDay.year &&
             availability.date.month == selectedDay.month &&
             availability.date.day == selectedDay.day;
       }).toList();
 
-      // Convert AvailabilityModel to DateTimeRange
       List<DateTimeRange> timeSlots = availabilities
           .map((availability) => DateTimeRange(
                 start: availability.startTime,
                 end: availability.endTime,
               ))
           .toList();
+
+      timeSlots.sort((a, b) => a.start.compareTo(b.start));
 
       return timeSlots;
     } catch (e) {
