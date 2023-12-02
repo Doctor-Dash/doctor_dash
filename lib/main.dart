@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:doctor_dash/views/auth_views/doctor_or_patient_choice_view.dart';
+import 'package:doctor_dash/views/patient_views/doctor_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -41,16 +43,53 @@ class MyApp extends StatelessWidget {
                     ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (patientSnapshot.data == true) {
-                  return const MyHomePage(title: "Patient's Search Page:");
-                  //TODO: should be Patient's Search page
+                  // return const MyHomePage(title: "Patient's Search Page:"); //TODO: should be Patient's Search page
+                  // Creating a DoctorModel object from the data
+                  DoctorModel doctor = DoctorModel(
+                    doctorId: 'D1234',
+                    name: 'Dr. John Doe',
+                    phone: '123-456-7890',
+                    email: 'john.doe@example.com',
+                    speciality: 'Cardiologist',
+                    clinicId: ['clinic1', 'clinic2'],
+                    availability: ['Monday', 'Wednesday', 'Friday'],
+                    appointmentId: ['app1', 'app2'],
+                    feedbackId: ['feedback1', 'feedback2'],
+                  );
+
+                  return DoctorDetails(doctor);
                 } else {
-                  return const MyHomePage(title: "Doctor's Profile Page:");
-                  //TODO: should be doctor profile page
+                  // return const MyHomePage(title: "Doctor's Profile Page:"); //TODO: should be doctor profile page
+                  DoctorModel doctor = DoctorModel(
+                    doctorId: 'D1234',
+                    name: 'Dr. John Doe',
+                    phone: '123-456-7890',
+                    email: 'john.doe@example.com',
+                    speciality: 'Cardiologist',
+                    clinicId: ['clinic1'],
+                    availability: ['Monday', 'Wednesday', 'Friday'],
+                    appointmentId: ['app1', 'app2'],
+                    feedbackId: ['feedback1', 'feedback2'],
+                  );
+
+                  return DoctorDetails(doctor);
                 }
               },
             );
           } else {
-            return const DoctorOrPatientChoice();
+            DoctorModel doctor = DoctorModel(
+              doctorId: 'D1234',
+              name: 'Dr. John Doe',
+              phone: '123-456-7890',
+              email: 'john.doe@example.com',
+              speciality: 'Cardiologist',
+              clinicId: ['clinic1'],
+              availability: ['Monday', 'Wednesday', 'Friday'],
+              appointmentId: ['app1', 'app2'],
+              feedbackId: ['feedback1', 'feedback2'],
+            );
+
+            return DoctorDetails(doctor);
           }
         },
       ),
