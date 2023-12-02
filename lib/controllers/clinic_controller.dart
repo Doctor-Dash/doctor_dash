@@ -22,8 +22,7 @@ class ClinicService {
     if (user == null) {
       throw FirebaseAuthException(
         code: 'unauthenticated',
-        message: 'User must be logged in to add a clinic.'
-      );
+        message: 'User must be logged in to add a clinic.');
     }
 
     String clinicId = Uuid().v4();
