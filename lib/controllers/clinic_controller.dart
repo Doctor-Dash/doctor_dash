@@ -46,17 +46,14 @@ class ClinicService {
         message: 'User must be logged in to get clinic information.',
       );
     }
-
     try {
       var querySnapshot = await clinicCollection
           .where('doctors', arrayContains: doctorId)
           .get();
-
       if (querySnapshot.docs.isNotEmpty) {
-        // Assuming a doctor is associated with only one clinic
         return ClinicModel.fromMap(querySnapshot.docs.first);
       } else {
-        return null; // No clinic found for the specified doctor
+        return null;
       }
     } catch (e) {
       throw Exception('Error fetching clinic of doctor: $e');
