@@ -70,12 +70,14 @@ class DoctorService {
       return doctorsSnapshot.docs
           .map((doc) => DoctorModel.fromMap(doc))
           .toList();
+    } on FirebaseException catch (e) {
+      throw Exception('Error fetching doctors list: ${e.message}');
     } catch (e) {
-      throw Exception('Error fetching doctors list: $e');
+      return [];
     }
   }
 
-  Future<QuerySnapshot<Object?>> getDoctor(String doctorId) async {
+  Future<QuerySnapshot> getDoctor(String doctorId) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
