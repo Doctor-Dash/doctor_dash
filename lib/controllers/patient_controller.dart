@@ -32,24 +32,43 @@ class PatientService {
     }
   }
 
-  Future<QuerySnapshot> getPatientAppointments(String patientId) async {
+  Future<List<String>> getPatientAppointments(String patientId) async {
+    QuerySnapshot querySnapshot =
+        await patientCollection.where('patientId', isEqualTo: patientId).get();
+    PatientModel patient = PatientModel.fromMap(querySnapshot.docs[0]);
+    return patient.appointments ?? [];
+  }
+
+  Future<void> updatePatient(PatientModel patient) async {
+    print(patient.patientId);
     try {
-      var appointmentIds = await patientCollection
-          .doc(patientId)
-          .collection('appointments')
+      QuerySnapshot querySnapshot = await patientCollection
+          .where('patientId', isEqualTo: patient.patientId)
           .get();
-      return appointmentIds;
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
+          await patientCollection.doc(doc.id).update(patient.toMap());
+        }
+      } else {
+        print('No document found with the patientId: ${patient.patientId}');
+      }
     } catch (e) {
-      print('Failed to get patient appointments: $e');
+      print('Failed to update patient: $e');
       rethrow;
     }
   }
 
-  Future<void> updatePatient(PatientModel patient) async {
+  Future<bool> isPatient() async {
     try {
-      await patientCollection.doc(patient.patientId).update(patient.toMap());
+      var query = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('patients')
+          .get();
+      return query.docs.isNotEmpty;
     } catch (e) {
-      print('Failed to update patient: $e');
+      print('Failed to check if user is a patient: $e');
       rethrow;
     }
   }
