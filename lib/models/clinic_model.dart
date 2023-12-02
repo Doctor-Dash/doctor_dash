@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class ClinicModel {
-  final String clinicId;
+  String clinicId;
   final String name;
   final String street;
   final String city;
@@ -12,7 +13,7 @@ class ClinicModel {
   final List<String> doctors;
 
   ClinicModel({
-    required this.clinicId,
+    String? clinicId, 
     required this.name,
     required this.street,
     required this.city,
@@ -21,7 +22,7 @@ class ClinicModel {
     required this.phoneNumber,
     required this.email,
     required this.doctors,
-  });
+  }) : clinicId = clinicId ?? Uuid().v4(); 
 
   Map<String, dynamic> toMap() {
     return {

@@ -3,52 +3,44 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/clinic_model.dart';
 
 class ClinicService {
-  final User? user = FirebaseAuth.instance.currentUser;
-  final CollectionReference clinicCollection;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  ClinicService()
-      : clinicCollection = FirebaseFirestore.instance.collection('clinincs');
+  ClinicService();
 
   Future<DocumentReference> addClinic(ClinicModel clinic) async {
-    if (user == null) {
-      throw FirebaseAuthException(
-          code: 'unauthenticated',
-          message: 'User must be logged in to add a clinic.');
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception('User must be logged in to add a clinic.');
     }
+
     try {
-      return await clinicCollection.add(clinic.toMap());
-    } on FirebaseAuthException catch (authError) {
-      throw Exception('Authentication Error: ${authError.message}');
-    } on FirebaseException catch (firestoreError) {
-      throw Exception('Firestore Error: ${firestoreError.message}');
+      return await _firestore.collection('clinics').add(clinic.toMap());
+    } catch (e) {
+      throw Exception('Error adding clinic: $e');
     }
   }
 
   Future<QuerySnapshot> getClinic(String clinicId) async {
-    if (user == null) {
-      throw FirebaseAuthException(
-          code: 'unauthenticated',
-          message: 'User must be logged in to get clinic information.');
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception('User must be logged in to get clinic information.');
     }
+
     try {
-      return await clinicCollection
-          .where('clinicId', isEqualTo: clinicId)
-          .get();
+      return await _firestore.collection('clinics').where('clinicId', isEqualTo: clinicId).get();
     } catch (e) {
       throw Exception('Error fetching clinic: $e');
     }
   }
 
   Future<List<String>> getClinicsInCity(String city) async {
-    if (user == null) {
-      throw FirebaseAuthException(
-        code: 'unauthenticated',
-        message: 'User must be logged in to get clinics information.',
-      );
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception('User must be logged in to get clinics information.');
     }
+
     try {
-      var querySnapshot =
-          await clinicCollection.where('city', isEqualTo: city).get();
+      var querySnapshot = await _firestore.collection('clinics').where('city', isEqualTo: city).get();
       return querySnapshot.docs
           .map((doc) => ClinicModel.fromMap(doc).clinicId)
           .toList();
@@ -56,4 +48,16 @@ class ClinicService {
       throw Exception('Error fetching clinics in city: $e');
     }
   }
+
+Future<List<Map<String, String>>> streamClinicNamesAndIds() async {
+  var querySnapshot = await _firestore.collection('clinics').get();
+
+  return querySnapshot.docs.map((doc) {
+    var clinic = ClinicModel.fromMap(doc);
+    return {
+      'id': clinic.clinicId, 
+      'name': clinic.name,
+    };
+  }).toList();
+}
 }
