@@ -29,12 +29,16 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
     _loadClinics();
   }
 
-  void _loadClinics() async {
+void _loadClinics() async {
+  try {
     var fetchedClinics = await clinicService.streamClinicNamesAndIds();
     setState(() {
       clinics = fetchedClinics;
     });
+  } catch (error) {
+    print('Error loading clinics: $error');
   }
+}
 
   void _signUp() async {
     if (_formKey.currentState!.validate()) {
