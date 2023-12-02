@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/patient_model.dart';
 import '../../controllers/patient_controller.dart';
 import '../patient_views/edit_patient_profile.dart';
+import '../common/appointments.dart';
 
 class PatientProfilePage extends StatefulWidget {
   final String patientId;
@@ -18,7 +19,6 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
   final _formKey = GlobalKey<FormState>();
   Future<PatientModel> getPatientData() async {
     try {
-      print(widget.patientId);
       QuerySnapshot patientSnapshot =
           await patientService.getPatient(widget.patientId);
       if (patientSnapshot.docs.isNotEmpty) {
@@ -193,7 +193,14 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                                         left: 30.0, right: 30.0),
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        // Todo: appointments page
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AppointmentPage(
+                                                    userId: widget.patientId),
+                                          ),
+                                        );
                                       },
                                       child: const Text('Appointments'),
                                     ),
