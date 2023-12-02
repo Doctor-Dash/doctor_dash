@@ -7,10 +7,7 @@ class PatientService {
   final CollectionReference patientCollection;
 
   PatientService()
-      : patientCollection = FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('patients');
+      : patientCollection = FirebaseFirestore.instance.collection('patients');
 
   Future<DocumentReference> addPatient(PatientModel patient) async {
     try {
