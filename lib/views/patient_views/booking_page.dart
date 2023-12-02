@@ -28,7 +28,6 @@ class _BookingPageState extends State<BookingPage> {
   bool _dateSelected = false;
   bool _timeSelected = false;
   late List<DateTimeRange> _availableTimeSlots = [];
-  DateTime Monday = DateTime(2023, 12, 4, 14, 15, 9, 227, 550);
 
   final AvailabilityService _availabilityService = AvailabilityService();
   final AppointmentService _appointmentService = AppointmentService();
@@ -43,7 +42,7 @@ class _BookingPageState extends State<BookingPage> {
   Future<void> _fetchAvailableTimeSlots() async {
     try {
       List<DateTimeRange> timeSlots = await _availabilityService
-          .getAvailableTimeSlotsForDay('D1234', _focusedDay);
+          .getAvailableTimeSlotsForDay(widget.doctorId, _focusedDay);
       setState(() {
         _availableTimeSlots = timeSlots;
       });
