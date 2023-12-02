@@ -98,17 +98,25 @@ class _BookingPageState extends State<BookingPage> {
                   onPressed: () async {
                     var currPatient = FirebaseAuth.instance.currentUser?.uid;
 
+                    String currAppointmentId =
+                        '${widget.doctorId}$_startTime$currPatient';
+                    String currAvailabilityId = '${widget.doctorId}$_startTime';
+
                     AppointmentModel appointment = AppointmentModel(
-                      appointmentId:
-                          '${widget.doctorId}$_startTime$currPatient',
+                      appointmentId: currAppointmentId,
                       doctorId: widget.doctorId,
                       patientId: '$currPatient',
-                      availabilityId: '${widget.doctorId}$_startTime',
+                      availabilityId: currAvailabilityId,
                       clinicId: widget.clinicId,
                     );
 
                     try {
                       await _appointmentService.addAppointment(appointment);
+                      await _availabilityService.addAppointmentIdToAvailability(
+                          currAvailabilityId, currAppointmentId);
+                      await _availabilityService
+                          .setAvailabilityToUnavailable(currAvailabilityId);
+                          
                       showSnackBar(context, 'Appointment booked!');
                     } catch (e) {
                       showErrorSnackBar(
