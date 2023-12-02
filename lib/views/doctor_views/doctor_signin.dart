@@ -23,7 +23,6 @@ class _DoctorSignInState extends State<DoctorSignIn> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navigate to the home page after successful sign-in
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => MyHomePage(title: "Doctor's Profile Page:")),
       );
