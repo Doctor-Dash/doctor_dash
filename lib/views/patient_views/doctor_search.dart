@@ -97,10 +97,9 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
 
     FeedbackService feedbackService = FeedbackService();
 
-    List<FeedbackModel> feedbacks;
-
     try {
-      feedbacks = await feedbackService.getFeedbacksByIds(feedbackIds);
+      List<FeedbackModel> feedbacks =
+          await feedbackService.getFeedbacksByIds(feedbackIds);
 
       if (feedbacks.isEmpty) {
         return 0.0;
