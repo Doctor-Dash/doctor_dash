@@ -27,4 +27,9 @@ class FeedbackModel {
       'feedbackNote': feedbackNote,
     };
   }
+
+  @override
+  String toString() {
+    return 'FeedbackModel {feedbackId: $feedbackId, rating: $rating, feedbackNote: $feedbackNote}';
+  }
 }

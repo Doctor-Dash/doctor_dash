@@ -55,4 +55,9 @@ class DoctorModel {
           : null,
     );
   }
+
+  @override
+  String toString() {
+    return 'DoctorModel {doctorId: $doctorId, name: $name, phone: $phone, email: $email, speciality: $speciality, clinicId: $clinicId, availability: $availability, appointmentId: $appointmentId, feedbackId: $feedbackId}';
+  }
 }
