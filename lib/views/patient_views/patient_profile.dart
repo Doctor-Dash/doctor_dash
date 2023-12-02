@@ -177,20 +177,6 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                 ),
                 Column(
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(top: 300),
-                          child: const Text(
-                            'Appointments',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -200,31 +186,16 @@ class _PatientProfilePageState extends State<PatientProfilePage> {
                             return Column(
                               children: <Widget>[
                                 Container(
+                                  margin: const EdgeInsets.only(top: 300),
                                   width: constraints.maxWidth,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         left: 30.0, right: 30.0),
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        // upcoming appointments
+                                        // Todo: appointments page
                                       },
-                                      child:
-                                          const Text('Upcoming Appointments'),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                Container(
-                                  width: constraints.maxWidth,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 30.0, right: 30.0),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // previous appointments
-                                      },
-                                      child:
-                                          const Text('Previous Appointments'),
+                                      child: const Text('Appointments'),
                                     ),
                                   ),
                                 ),

@@ -58,4 +58,18 @@ class PatientService {
       rethrow;
     }
   }
+
+  Future<bool> isPatient() async {
+    try {
+      var query = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('patients')
+          .get();
+      return query.docs.isNotEmpty;
+    } catch (e) {
+      print('Failed to check if user is a patient: $e');
+      rethrow;
+    }
+  }
 }
