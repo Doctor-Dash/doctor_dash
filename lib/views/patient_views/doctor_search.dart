@@ -5,7 +5,9 @@ import '../../controllers/feedback_controller.dart';
 import '../../models/feedback_model.dart';
 import '../../models/doctor_model.dart';
 import '../../utils/specialties.dart';
-import './doctor_profile.dart';
+
+// TODO import doctor_detail_view
+//import './doctor_profile.dart';
 
 class DoctorSearchView extends StatefulWidget {
   @override
@@ -71,12 +73,13 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                       ? Text("Rating: ${avgRating.toStringAsFixed(1)}")
                       : Text("No Ratings"),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DoctorProfileView(doctor),
-                      ),
-                    );
+                    // TODO: Implement navigation to patient profile view
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => DoctorProfileView(doctor),
+                    //   ),
+                    // );
                   },
                 );
               },
