@@ -44,37 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBN3REOXtLe9lydAuQNTHwbIhp_-KB2mBI',
-    appId: '1:859425649792:web:87115f3bceee1f2e6be265',
-    messagingSenderId: '859425649792',
-    projectId: 'doctor-dash-app',
-    authDomain: 'doctor-dash-app.firebaseapp.com',
-    storageBucket: 'doctor-dash-app.appspot.com',
+    apiKey: 'AIzaSyDfU0WpE_SzNHlZawyWBa1iMqzdCfiDDt0',
+    appId: '1:124485714686:web:194fba216f1ac3e7251baf',
+    messagingSenderId: '124485714686',
+    projectId: 'doctor-dash-app-e97f8',
+    authDomain: 'doctor-dash-app-e97f8.firebaseapp.com',
+    storageBucket: 'doctor-dash-app-e97f8.appspot.com',
+    measurementId: 'G-JXYT5V9VS7',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAj0bWc8n-qICt1T1PNqctomBgoGcG2nzM',
-    appId: '1:859425649792:android:eeb44b7fcdca5d226be265',
-    messagingSenderId: '859425649792',
-    projectId: 'doctor-dash-app',
-    storageBucket: 'doctor-dash-app.appspot.com',
+    apiKey: 'AIzaSyC1IU5VAzDpeK-doa-YWX4adkrcQoAQzOc',
+    appId: '1:124485714686:android:8aa4924bfb80aad9251baf',
+    messagingSenderId: '124485714686',
+    projectId: 'doctor-dash-app-e97f8',
+    storageBucket: 'doctor-dash-app-e97f8.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA3IeyvvmTusOpskWXpyvlHvYMYb91y5rI',
-    appId: '1:859425649792:ios:6e9740b8c6f97d466be265',
-    messagingSenderId: '859425649792',
-    projectId: 'doctor-dash-app',
-    storageBucket: 'doctor-dash-app.appspot.com',
+    apiKey: 'AIzaSyDgpgXhc0ZU8JnTVJ-jFQnVEZYOoAjmYcE',
+    appId: '1:124485714686:ios:0d8121e0c9f959f2251baf',
+    messagingSenderId: '124485714686',
+    projectId: 'doctor-dash-app-e97f8',
+    storageBucket: 'doctor-dash-app-e97f8.appspot.com',
     iosBundleId: 'com.example.doctorDash',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA3IeyvvmTusOpskWXpyvlHvYMYb91y5rI',
-    appId: '1:859425649792:ios:d610377336d345e86be265',
-    messagingSenderId: '859425649792',
-    projectId: 'doctor-dash-app',
-    storageBucket: 'doctor-dash-app.appspot.com',
+    apiKey: 'AIzaSyDgpgXhc0ZU8JnTVJ-jFQnVEZYOoAjmYcE',
+    appId: '1:124485714686:ios:dfbc7edc690169a6251baf',
+    messagingSenderId: '124485714686',
+    projectId: 'doctor-dash-app-e97f8',
+    storageBucket: 'doctor-dash-app-e97f8.appspot.com',
     iosBundleId: 'com.example.doctorDash.RunnerTests',
   );
 }

@@ -7,10 +7,7 @@ class DoctorService {
   final CollectionReference doctorsCollection;
 
   DoctorService()
-      : doctorsCollection = FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .collection('Doctors');
+      : doctorsCollection = FirebaseFirestore.instance.collection('doctors');
 
   Future<DocumentReference> addDoctor(DoctorModel doctor) async {
     if (user == null) {
