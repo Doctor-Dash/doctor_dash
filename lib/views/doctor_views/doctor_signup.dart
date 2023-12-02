@@ -22,9 +22,8 @@ Future<void> _signUp() async {
       password: _passwordController.text.trim(),
     );
 
-    // Navigate to the DoctorSignUpPage after successful sign-up
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => DoctorSignUpPage()), // Make sure DoctorSignUpPage is imported
+      MaterialPageRoute(builder: (_) => DoctorSignUpPage()), 
     );
   } on FirebaseAuthException catch (e) {
     setState(() {
