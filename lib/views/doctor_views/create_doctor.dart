@@ -1,10 +1,12 @@
+import 'package:doctor_dash/controllers/availability_controller.dart';
+import 'package:doctor_dash/models/availability_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:doctor_dash/utils/specialties.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';
-import 'doctor_clinic.dart'; 
+import 'doctor_clinic.dart';
 import 'doctor_signup.dart';
 
 class DoctorSignUpPage extends StatefulWidget {
@@ -21,7 +23,8 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
   String? selectedSpecialty;
   String? selectedClinicId;
   List<Map<String, String>> clinics = [];
-  final ClinicService clinicService = ClinicService(); 
+  final ClinicService clinicService = ClinicService();
+  final AvailabilityService _availabilityService = AvailabilityService();
 
   @override
   void initState() {
@@ -29,23 +32,24 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
     _loadClinics();
   }
 
-void _loadClinics() async {
-  try {
-    var fetchedClinics = await clinicService.streamClinicNamesAndIds();
-    setState(() {
-      clinics = fetchedClinics;
-    });
-  } catch (error) {
-    print('Error loading clinics: $error');
+  void _loadClinics() async {
+    try {
+      var fetchedClinics = await clinicService.streamClinicNamesAndIds();
+      setState(() {
+        clinics = fetchedClinics;
+      });
+    } catch (error) {
+      print('Error loading clinics: $error');
+    }
   }
-}
 
   void _signUp() async {
     if (_formKey.currentState!.validate()) {
       User? currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No authenticated user found. Please log in.')),
+          SnackBar(
+              content: Text('No authenticated user found. Please log in.')),
         );
         return;
       }
@@ -67,12 +71,14 @@ void _loadClinics() async {
 
         DoctorService doctorService = DoctorService();
         await doctorService.addDoctor(doctor);
+        await _availabilityService.createAvailabilitySignup(userId);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Doctor details successfully added')),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add doctor details: ${e.toString()}')),
+          SnackBar(
+              content: Text('Failed to add doctor details: ${e.toString()}')),
         );
       }
     }
@@ -80,13 +86,14 @@ void _loadClinics() async {
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<String>> specialtyItems = MedicalSpecialistsUtil.getSpecialists()
-        .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList();
+    List<DropdownMenuItem<String>> specialtyItems =
+        MedicalSpecialistsUtil.getSpecialists()
+            .map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -126,14 +133,16 @@ void _loadClinics() async {
                   });
                 },
                 items: specialtyItems,
-                validator: (value) => value == null ? 'Please select your specialty' : null,
+                validator: (value) =>
+                    value == null ? 'Please select your specialty' : null,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(labelText: 'Select Clinic'),
+                      decoration:
+                          const InputDecoration(labelText: 'Select Clinic'),
                       value: selectedClinicId,
                       onChanged: (newValue) {
                         setState(() {
@@ -146,10 +155,11 @@ void _loadClinics() async {
                           child: Text(clinic['name'] ?? 'Unknown Clinic'),
                         );
                       }).toList(),
-                      validator: (value) => value == null ? 'Please select a clinic' : null,
+                      validator: (value) =>
+                          value == null ? 'Please select a clinic' : null,
                     ),
                   ),
-                  SizedBox(width: 10), 
+                  SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () async {
                       final result = await Navigator.of(context).push(
