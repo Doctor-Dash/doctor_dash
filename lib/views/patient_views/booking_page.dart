@@ -20,16 +20,26 @@ class _BookingPageState extends State<BookingPage> {
   bool _isWeekend = false;
   bool _dateSelected = false;
   bool _timeSelected = false;
-  late List<DateTimeRange> _availableTimeSlots;
+  late List<DateTimeRange> _availableTimeSlots = [];
+  DateTime Monday = DateTime(2023, 12, 4, 14, 15, 9, 227, 550);
 
   final AvailabilityService _availabilityService = AvailabilityService();
 
+  @override
+  void initState() {
+    super.initState();
+    _focusedDay = Monday;
+    _fetchAvailableTimeSlots();
+  }
+
   Future<void> _fetchAvailableTimeSlots() async {
     try {
+      print(_focusedDay);
       List<DateTimeRange> timeSlots = await _availabilityService
           .getAvailableTimeSlotsForDay('D1234', _focusedDay);
       setState(() {
         _availableTimeSlots = timeSlots;
+        print(_availableTimeSlots);
       });
     } catch (e) {
       // Handle error
@@ -75,46 +85,7 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                   ),
                 )
-              : SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return InkWell(
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          setState(() {
-                            _currentIndex = index;
-                            _timeSelected = true;
-                          });
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: _currentIndex == index
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                            color:
-                                _currentIndex == index ? Colors.purple : null,
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${index + 9}:00 ${index + 9 > 11 ? "PM" : "AM"}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  _currentIndex == index ? Colors.white : null,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    childCount: 8,
-                  ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, childAspectRatio: 1.5),
-                ),
+              : _buildTimeSlots(),
           SliverToBoxAdapter(
             child: Container(
                 padding:
@@ -175,9 +146,9 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildTimeSlots() {
-    if (_availableTimeSlots.isEmpty) {
-      return const Text('No available time slots.');
-    }
+    // if (_availableTimeSlots.isEmpty) {
+    //   return const Text('No available time slots.');
+    // }
 
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
