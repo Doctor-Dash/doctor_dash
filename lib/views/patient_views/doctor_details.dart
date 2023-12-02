@@ -25,13 +25,10 @@ class DoctorDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Doctor Info Section
             doctorInfo(doctor),
-            // Clinic Info Section
             SizedBox(height: 16),
-
             FutureBuilder<ClinicModel?>(
-              future: clinicService.getClinicOfDoctor(doctor.doctorId),
+              future: clinicService.getClinic(doctor.clinicId[0]),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -40,7 +37,7 @@ class DoctorDetails extends StatelessWidget {
                 } else if (snapshot.hasData && snapshot.data != null) {
                   return clinicInfo(snapshot.data!);
                 } else {
-                  return Text('No clinic info available');
+                  return const Text('No clinic info available');
                 }
               },
             ),

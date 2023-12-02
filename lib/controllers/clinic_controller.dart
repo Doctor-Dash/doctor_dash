@@ -24,16 +24,20 @@ class ClinicService {
     }
   }
 
-  Future<QuerySnapshot> getClinic(String clinicId) async {
+  Future<ClinicModel?> getClinic(String clinicId) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
           message: 'User must be logged in to get clinic information.');
     }
     try {
-      return await clinicCollection
-          .where('clinicId', isEqualTo: clinicId)
-          .get();
+      var querySnapshot =
+          await clinicCollection.where('clinicId', isEqualTo: clinicId).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return ClinicModel.fromMap(querySnapshot.docs.first);
+      } else {
+        return null;
+      }
     } catch (e) {
       throw Exception('Error fetching clinic: $e');
     }

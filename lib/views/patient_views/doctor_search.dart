@@ -1,3 +1,4 @@
+import 'package:doctor_dash/views/patient_views/doctor_details.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/doctor_controller.dart';
 import '../../controllers/clinic_controller.dart';
@@ -32,7 +33,7 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
           IconButton(
             icon: const Icon(Icons.account_circle),
             onPressed: () {
-              // TODO: Implement navigation to patient profile view
+              // TODO: Implement navigation to doctor profile view
             },
           ),
         ],
@@ -74,12 +75,12 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                       : Text("No Ratings"),
                   onTap: () {
                     // TODO: Implement navigation to patient profile view
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => DoctorProfileView(doctor),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DoctorDetails(doctor)
+                      ),
+                    );
                   },
                 );
               },
