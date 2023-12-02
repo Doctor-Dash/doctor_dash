@@ -10,27 +10,47 @@ import '../../controllers/appointment_controller.dart';
 import '../../controllers/doctor_controller.dart';
 import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentDetails {
   final DoctorModel doctor;
   final PatientModel patient;
   final ClinicModel clinic;
   final AvailabilityModel availability;
-  final String doctorFilesPath; // Path to FireStorage
-  final String patientFilesPath; // Path to FireStorage
-  final String? doctorNotes;
-  final String? patientNotes;
+  final List<String>? doctorFilesPath;
+  final List<String>? patientFilesPath;
+  final List<String>? doctorNotes;
+  final List<String>? patientNotes;
 
   AppointmentDetails({
     required this.doctor,
     required this.patient,
     required this.clinic,
     required this.availability,
-    required this.doctorFilesPath,
-    required this.patientFilesPath,
+    this.doctorFilesPath,
+    this.patientFilesPath,
     this.doctorNotes,
     this.patientNotes,
   });
+
+  static AppointmentDetails fromMap(DocumentSnapshot doc) {
+    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+    return AppointmentDetails(
+      doctor: DoctorModel.fromMap(map['doctor']),
+      patient: PatientModel.fromMap(map['patient']),
+      clinic: ClinicModel.fromMap(map['clinic']),
+      availability: AvailabilityModel.fromMap(map['availability']),
+      doctorFilesPath: map['doctorFilesPath'] as List<String>?,
+      patientFilesPath: map['patientFilesPath'] as List<String>?,
+      doctorNotes: map['doctorNotes'] as List<String>?,
+      patientNotes: map['patientNotes'] as List<String>?,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'AppointmentDetails {doctor: $doctor, patient: $patient, clinic: $clinic, availability: $availability, doctorFilesPath: $doctorFilesPath, patientFilesPath: $patientFilesPath, doctorNotes: $doctorNotes, patientNotes: $patientNotes}';
+  }
 }
 
 class AppointmentPage extends StatefulWidget {
@@ -104,6 +124,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         patientNotes: appointment.patientNotes,
       ));
     }
+    setState(() {});
   }
 
   @override
@@ -113,23 +134,35 @@ class _AppointmentPageState extends State<AppointmentPage> {
         title: const Text('Appointments'),
       ),
       body: appointmentDetailsList.isEmpty
-          ? Center(
-              child: Text('You have no appointments'),
-            )
+          ? const Center(child: Text('You have no appointments'))
           : ListView.builder(
               itemCount: appointmentDetailsList.length,
               itemBuilder: (context, index) {
                 final appointmentDetails = appointmentDetailsList[index];
-                return Card(
-                  child: ListTile(
-                    onTap: () {
-                      // Handle your card tap here
-                    },
-                    title: Text(isPatient
-                        ? 'Dr. ${appointmentDetails.doctor.name}'
-                        : 'Patient: ${appointmentDetails.patient.name}'),
-                    subtitle: Text(
-                        '${appointmentDetails.availability.date} ${appointmentDetails.availability.startTime} - ${appointmentDetails.availability.endTime}'),
+                final appointmentTime = appointmentDetails.availability;
+                final dateFormatDate = DateFormat('d MMM yyyy');
+                final dateFormatTime = DateFormat('h:mm a');
+                final date = dateFormatDate.format(appointmentTime.startTime);
+                final startTime =
+                    dateFormatTime.format(appointmentTime.startTime);
+                final endTime = dateFormatTime.format(appointmentTime.endTime);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Card(
+                    child: ListTile(
+                      onTap: () {
+                        // Handle card tap
+                      },
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(isPatient
+                              ? appointmentDetails.doctor.name
+                              : appointmentDetails.patient.name),
+                          Text('$date : $startTime - $endTime'),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
