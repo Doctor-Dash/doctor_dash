@@ -1,20 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/clinic_model.dart';
 
 class ClinicService {
   final User? user = FirebaseAuth.instance.currentUser;
   final CollectionReference clinicCollection;
 
-  ClinicService()
-      : clinicCollection = FirebaseFirestore.instance.collection('clinics');
-
-  Future<DocumentReference> addClinic(ClinicModel clinic) async {
+  ClinicService() : clinicCollection = FirebaseFirestore.instance.collection('clinics');
+ Future<DocumentReference> addClinic(ClinicModel clinic) async {
     if (user == null) {
       throw FirebaseAuthException(
-          code: 'unauthenticated',
-          message: 'User must be logged in to add a clinic.');
+        code: 'unauthenticated',
+        message: 'User must be logged in to add a clinic.');
     }
+
     try {
       return await clinicCollection.add(clinic.toMap());
     } on FirebaseAuthException catch (authError) {
@@ -54,6 +53,28 @@ class ClinicService {
           .toList();
     } catch (e) {
       throw Exception('Error fetching clinics in city: $e');
+    }
+  }
+
+ Future<List<Map<String, String>>> streamClinicNamesAndIds() async {
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'unauthenticated',
+        message: 'User must be logged in to access clinics.'
+      );
+    }
+
+    try {
+      var querySnapshot = await clinicCollection.get();
+      return querySnapshot.docs.map((doc) {
+        var clinic = ClinicModel.fromMap(doc);
+        return {
+          'id': clinic.clinicId, 
+          'name': clinic.name,
+        };
+      }).toList();
+    } catch (e) {
+      throw Exception('Error fetching clinic names and IDs: $e');
     }
   }
 }
