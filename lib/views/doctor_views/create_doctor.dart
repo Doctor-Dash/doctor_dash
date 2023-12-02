@@ -4,7 +4,7 @@ import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:doctor_dash/utils/specialties.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';
-import 'doctor_clinic.dart'; // Make sure to import ClinicViewPage
+import 'doctor_clinic.dart'; 
 import 'doctor_signup.dart';
 
 class DoctorSignUpPage extends StatefulWidget {
