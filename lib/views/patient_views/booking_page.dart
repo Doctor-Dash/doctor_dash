@@ -1,4 +1,7 @@
+import 'package:doctor_dash/controllers/appointment_controller.dart';
 import 'package:doctor_dash/controllers/availability_controller.dart';
+import 'package:doctor_dash/models/appointment_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -6,8 +9,10 @@ import 'package:doctor_dash/utils/utils.dart';
 
 class BookingPage extends StatefulWidget {
   final String doctorId;
+  final String clinicId;
 
-  const BookingPage({super.key, required this.doctorId});
+  const BookingPage(
+      {super.key, required this.doctorId, required this.clinicId});
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -17,6 +22,7 @@ class _BookingPageState extends State<BookingPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
+  DateTime _startTime = DateTime.now();
   int? _currentIndex;
   bool _isWeekend = false;
   bool _dateSelected = false;
@@ -25,11 +31,12 @@ class _BookingPageState extends State<BookingPage> {
   DateTime Monday = DateTime(2023, 12, 4, 14, 15, 9, 227, 550);
 
   final AvailabilityService _availabilityService = AvailabilityService();
+  final AppointmentService _appointmentService = AppointmentService();
 
   @override
   void initState() {
     super.initState();
-    _focusedDay = Monday;
+    _focusedDay = DateTime.now();
     _fetchAvailableTimeSlots();
   }
 
@@ -50,7 +57,6 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Config().init(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book Appointment'),
@@ -93,11 +99,24 @@ class _BookingPageState extends State<BookingPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                 child: ElevatedButton(
                   onPressed: () async {
-                    //use the info from this page to create a booking using availability_service.dart
-                    //then go to booking_confirmation.dart
-                    var timeSlots = await AvailabilityService()
-                        .getAvailableTimeSlotsForDay('D1234', _focusedDay);
-                    print(timeSlots);
+                    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+
+                    AppointmentModel appointment = AppointmentModel(
+                      appointmentId:
+                          '${widget.doctorId}$_startTime$currPatient',
+                      doctorId: widget.doctorId,
+                      patientId: '$currPatient',
+                      availabilityId: '${widget.doctorId}$_startTime',
+                      clinicId: widget.clinicId,
+                    );
+
+                    try {
+                      await _appointmentService.addAppointment(appointment);
+                      showSnackBar(context, 'Appointment booked!');
+                    } catch (e) {
+                      showErrorSnackBar(
+                          context, 'Error booking appointment: $e');
+                    }
                   },
                   child: const Text('Book Appointment'),
                 )),
@@ -133,6 +152,7 @@ class _BookingPageState extends State<BookingPage> {
           _currentDay = selectedDay;
           _focusedDay = focusedDay;
           _dateSelected = true;
+          _fetchAvailableTimeSlots();
 
           if (selectedDay.weekday == 6 || selectedDay.weekday == 7) {
             _isWeekend = true;
@@ -147,21 +167,30 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildTimeSlots() {
-    // if (_availableTimeSlots.isEmpty) {
-    //   return const Text('No available time slots.');
-    // }
-
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
+          if (_availableTimeSlots.isEmpty) {
+            return Container(
+              margin: const EdgeInsets.all(5),
+              alignment: Alignment.center,
+              child: const Text('No available time slots.'),
+            );
+          }
+
           DateTime startTime = _availableTimeSlots[index].start;
           String formattedStartTime = DateFormat('hh:mm a').format(startTime);
+
           return InkWell(
             splashColor: Colors.transparent,
             onTap: () {
               setState(() {
+                _startTime = startTime;
+                print("Start Time $_startTime");
                 _currentIndex = index;
+                print("Current Index $_currentIndex");
                 _timeSelected = true;
+                print("Time selected $_timeSelected");
               });
             },
             child: Container(
@@ -184,7 +213,8 @@ class _BookingPageState extends State<BookingPage> {
             ),
           );
         },
-        childCount: _availableTimeSlots.length,
+        childCount:
+            _availableTimeSlots.isEmpty ? 1 : _availableTimeSlots.length,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
