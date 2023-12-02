@@ -58,12 +58,15 @@ class MyApp extends StatelessWidget {
   }
 
   Future<bool> isPatient() async {
-    var query = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('patients')
-        .get();
-    return query.docs.isNotEmpty;
+    try {
+      var patientCollection = FirebaseFirestore.instance.collection('patients');
+      var currentUser = FirebaseAuth.instance.currentUser;
+      var patientDocument = await patientCollection.doc(currentUser!.uid).get();
+
+      return patientDocument.exists;
+    } catch (e) {
+      throw ('Failed to check if user is a patient: $e');
+    }
   }
 }
 
