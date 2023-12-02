@@ -1,5 +1,7 @@
 import 'package:doctor_dash/controllers/clinic_controller.dart';
 import 'package:doctor_dash/models/clinic_model.dart';
+import 'package:doctor_dash/views/patient_views/appointment_booking_page.dart';
+import 'package:doctor_dash/views/patient_views/booking_page.dart';
 
 import '../../controllers/doctor_controller.dart';
 import '../../models/doctor_model.dart';
@@ -27,22 +29,29 @@ class DoctorDetails extends StatelessWidget {
             doctorInfo(doctor),
             // Clinic Info Section
             SizedBox(height: 16),
+
             FutureBuilder<ClinicModel?>(
               future: clinicService.getClinicOfDoctor(doctor.doctorId),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return clinicInfo(snapshot.data!);
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  return Text('Error loading clinic info');
+                  return Text('Error loading clinic info: ${snapshot.error}');
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  return clinicInfo(snapshot.data!);
+                } else {
+                  return Text('No clinic info available');
                 }
-                return CircularProgressIndicator();
               },
             ),
             ElevatedButton(
               onPressed: () async {
-                // Navigate to the create availability screen or show a modal
-                // You can use Navigator to push a new screen or showModalBottomSheet for a modal
-                // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAvailabilityScreen(doctor)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BookingPage(
+                            doctorId: doctor.doctorId,
+                            clinicId: doctor.clinicId[0])));
               },
               child: const Text('Book Appointment'),
             ),
@@ -79,12 +88,11 @@ class DoctorDetails extends StatelessWidget {
           'Email: ${doctor.email}',
           style: TextStyle(fontSize: 18),
         ),
-        // Add additional doctor details here
+        //TODO: Add additional doctor details here
       ],
     );
   }
 
-  //create a widget to display clinic info
   Widget clinicInfo(ClinicModel clinic) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
