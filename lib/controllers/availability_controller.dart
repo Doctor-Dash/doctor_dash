@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import '../models/availability_model.dart';
 
 class AvailabilityService {
@@ -186,6 +187,34 @@ class AvailabilityService {
       print(
           'Error occurred while removing appointment ID from availability: $e');
       rethrow;
+    }
+  }
+
+  Future<List<DateTimeRange>> getAvailableTimeSlotsForDay(
+      String doctorId, DateTime selectedDay) async {
+    try {
+      // Fetch available time slots from Firestore for the selected day
+      List<AvailabilityModel> availabilities =
+          await getDoctorAvailabilies(doctorId);
+
+      // Filter availabilities for the selected day
+      availabilities = availabilities.where((availability) {
+        return availability.date.year == selectedDay.year &&
+            availability.date.month == selectedDay.month &&
+            availability.date.day == selectedDay.day;
+      }).toList();
+
+      // Convert AvailabilityModel to DateTimeRange
+      List<DateTimeRange> timeSlots = availabilities
+          .map((availability) => DateTimeRange(
+                start: availability.startTime,
+                end: availability.endTime,
+              ))
+          .toList();
+
+      return timeSlots;
+    } catch (e) {
+      throw Exception('Error occurred while getting available time slots: $e');
     }
   }
 }
