@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';
+import 'package:uuid/uuid.dart';
+import 'package:doctor_dash/models/clinic_model.dart'; 
 
 class ClinicViewPage extends StatefulWidget {
   const ClinicViewPage({Key? key}) : super(key: key);
@@ -20,33 +22,39 @@ class _ClinicViewPageState extends State<ClinicViewPage> {
 
   final ClinicService _clinicService = ClinicService();
 
- void _submitClinic() async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      await _clinicService.addClinic(
-        name: _nameController.text,
-        street: _streetController.text,
-        city: _cityController.text,
-        province: _provinceController.text,
-        postalCode: _postalCodeController.text,
-        phoneNumber: _phoneNumberController.text,
-        email: _emailController.text,
-        doctors: [] // Assuming an empty list of doctors for now
-      );
+void _submitClinic() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        String clinicId = Uuid().v4(); // Generate a unique clinicId here
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Clinic details submitted successfully')),
-      );
+        // Create a ClinicModel instance with the generated clinicId
+        ClinicModel newClinic = ClinicModel(
+          clinicId: clinicId,
+          name: _nameController.text,
+          street: _streetController.text,
+          city: _cityController.text,
+          province: _provinceController.text,
+          postalCode: _postalCodeController.text,
+          phoneNumber: _phoneNumberController.text,
+          email: _emailController.text,
+          doctors: [],
+        );
 
-      // Pop with true to indicate a successful clinic addition
-      Navigator.of(context).pop(true);
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to submit clinic details: $error')),
-      );
+        // Pass the clinic model to the service for adding to Firestore
+        await _clinicService.addClinic(newClinic);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Clinic details submitted successfully')),
+        );
+
+        Navigator.of(context).pop(true); // Pop with true indicating success
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit clinic details: $error')),
+        );
+      }
     }
   }
-}
 
 
   @override

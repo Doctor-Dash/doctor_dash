@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 import '../models/clinic_model.dart';
 
 class ClinicService {
@@ -8,36 +7,13 @@ class ClinicService {
   final CollectionReference clinicCollection;
 
   ClinicService() : clinicCollection = FirebaseFirestore.instance.collection('clinics');
-
-  Future<DocumentReference> addClinic({
-    required String name,
-    required String street,
-    required String city,
-    required String province,
-    required String postalCode,
-    required String phoneNumber,
-    required String email,
-    required List<String> doctors,
-  }) async {
+ Future<DocumentReference> addClinic(ClinicModel clinic) async {
     if (user == null) {
       throw FirebaseAuthException(
         code: 'unauthenticated',
         message: 'User must be logged in to add a clinic.'
       );
     }
-
-    String clinicId = Uuid().v4();
-    ClinicModel clinic = ClinicModel(
-      clinicId: clinicId,
-      name: name,
-      street: street,
-      city: city,
-      province: province,
-      postalCode: postalCode,
-      phoneNumber: phoneNumber,
-      email: email,
-      doctors: doctors,
-    );
 
     try {
       return await clinicCollection.add(clinic.toMap());
