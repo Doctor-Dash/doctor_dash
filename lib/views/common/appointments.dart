@@ -1,7 +1,6 @@
 import 'package:doctor_dash/models/availability_model.dart';
 import 'package:doctor_dash/models/clinic_model.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
-import 'package:doctor_dash/views/patient_views/booking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/patient_model.dart';
@@ -143,17 +142,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BookingPage(
-                                    doctorId:
-                                        appointmentDetails.doctor!.doctorId,
-                                    clinicId:
-                                        appointmentDetails.clinic!.clinicId,
-                                    existingAppointmentId:
-                                        appointmentDetails.appointmentId,
-                                    existingAvailabilityId: appointmentDetails
-                                        .availability!.availabilityId,
-                                    isEdit: true,
-                                  ),
+                                  builder: (context) => AppointmentDetailsPage(
+                                      appointmentId:
+                                          appointmentDetails.appointmentId,
+                                      userId: widget.userId),
                                 ),
                               );
                             },
