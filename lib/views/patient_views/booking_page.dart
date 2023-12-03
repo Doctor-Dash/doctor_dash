@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_dash/controllers/appointment_controller.dart';
 import 'package:doctor_dash/controllers/availability_controller.dart';
 import 'package:doctor_dash/controllers/patient_controller.dart';
@@ -11,14 +12,16 @@ import 'package:doctor_dash/utils/utils.dart';
 class BookingPage extends StatefulWidget {
   final String doctorId;
   final String clinicId;
-  final AppointmentModel? existingAppointment;
+  final String? existingAppointmentId;
+  final String? existingAvailabilityId;
   final bool isEdit;
 
   const BookingPage(
       {super.key,
       required this.doctorId,
       required this.clinicId,
-      this.existingAppointment,
+      this.existingAppointmentId,
+      this.existingAvailabilityId,
       this.isEdit = false});
 
   @override
@@ -44,8 +47,9 @@ class _BookingPageState extends State<BookingPage> {
   void initState() {
     super.initState();
 
+    print(widget.existingAppointmentId);
+    print(widget.existingAvailabilityId);
     _focusedDay = DateTime.now();
-
     _fetchAvailableTimeSlots();
   }
 
@@ -107,6 +111,22 @@ class _BookingPageState extends State<BookingPage> {
                   onPressed: () async {
                     var currPatient = FirebaseAuth.instance.currentUser?.uid;
 
+                    // Check if we are editing an existing appointment
+                    if (widget.isEdit && widget.existingAppointmentId != null) {
+                      try {
+                        await _patientService.deleteAppointmentIdToPatient(
+                            currPatient!, widget.existingAppointmentId!);
+                        await _availabilityService.setAvailabilityToAvailable(
+                            widget.existingAvailabilityId!);
+                        await _availabilityService
+                            .removeAppointmentIdFromAvailability(
+                                widget.existingAvailabilityId!);
+                        await _appointmentService
+                            .deleteAppointment(widget.existingAppointmentId!);
+                      } catch (e) {
+                        throw Exception('Failed to reset appointment: $e');
+                      }
+                    }
                     String currAppointmentId =
                         '${widget.doctorId}$_startTime$currPatient';
                     String currAvailabilityId = '${widget.doctorId}$_startTime';

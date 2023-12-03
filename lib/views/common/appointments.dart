@@ -143,10 +143,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AppointmentDetailsPage(
-                                      appointmentId:
-                                          appointmentDetails.appointmentId,
-                                      userId: widget.userId),
+                                  builder: (context) => BookingPage(
+                                    doctorId:
+                                        appointmentDetails.doctor!.doctorId,
+                                    clinicId:
+                                        appointmentDetails.clinic!.clinicId,
+                                    existingAppointmentId:
+                                        appointmentDetails.appointmentId,
+                                    existingAvailabilityId: appointmentDetails
+                                        .availability!.availabilityId,
+                                    isEdit: true,
+                                  ),
                                 ),
                               );
                             },
