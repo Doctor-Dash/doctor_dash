@@ -1,6 +1,7 @@
 import 'package:doctor_dash/models/availability_model.dart';
 import 'package:doctor_dash/models/clinic_model.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
+import 'package:doctor_dash/views/patient_views/booking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/patient_model.dart';
@@ -118,7 +119,18 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   child: Card(
                     child: ListTile(
                       onTap: () {
-                        // Handle card tap
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingPage(
+                              doctorId: appointmentDetails.doctor.doctorId,
+                              clinicId: appointmentDetails.clinic.clinicId,
+                              existingAppointment: appointments[
+                                  index], // Assuming this is the correct mapping
+                              isEdit: true,
+                            ),
+                          ),
+                        );
                       },
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

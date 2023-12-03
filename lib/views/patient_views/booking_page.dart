@@ -10,9 +10,15 @@ import 'package:doctor_dash/utils/utils.dart';
 class BookingPage extends StatefulWidget {
   final String doctorId;
   final String clinicId;
+  final AppointmentModel? existingAppointment;
+  final bool isEdit;
 
   const BookingPage(
-      {super.key, required this.doctorId, required this.clinicId});
+      {super.key,
+      required this.doctorId,
+      required this.clinicId,
+      this.existingAppointment,
+      this.isEdit = false});
 
   @override
   State<BookingPage> createState() => _BookingPageState();
