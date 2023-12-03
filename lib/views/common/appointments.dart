@@ -12,6 +12,7 @@ import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
+import '../patient_views/doctor_feedback.dart';
 import 'appointmentDetails.dart';
 
 class AppointmentPage extends StatefulWidget {
@@ -138,8 +139,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
           return Column(
             children: [
-              _buildSection('Upcoming Appointments', upcomingAppointments),
-              _buildSection('Past Appointments', pastAppointments),
+              _buildSection(
+                  'Upcoming Appointments', upcomingAppointments, false),
+              _buildSection('Past Appointments', pastAppointments, true),
             ],
           );
         },
@@ -147,7 +149,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
   }
 
-  Widget _buildSection(String title, List<AppointmentDetails> appointments) {
+  Widget _buildSection(String title, List<AppointmentDetails> appointments,
+      bool isPastAppointment) {
     if (appointments.isEmpty) {
       return Padding(
         padding: EdgeInsets.all(8.0),
@@ -166,7 +169,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             child: ListView.builder(
               itemCount: appointments.length,
               itemBuilder: (context, index) =>
-                  _buildAppointmentTile(appointments[index]),
+                  _buildAppointmentTile(appointments[index], isPastAppointment),
             ),
           ),
         ],
@@ -174,16 +177,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
   }
 
-  Widget _buildAppointmentList(
-      List<AppointmentDetails> appointmentDetailsList) {
-    return ListView.builder(
-      itemCount: appointmentDetailsList.length,
-      itemBuilder: (context, index) =>
-          _buildAppointmentTile(appointmentDetailsList[index]),
-    );
-  }
-
-  Widget _buildAppointmentTile(AppointmentDetails appointmentDetails) {
+  Widget _buildAppointmentTile(
+      AppointmentDetails appointmentDetails, bool isPastAppointment) {
     final dateFormat = DateFormat('d MMM yyyy, h:mm a');
     final startTime =
         dateFormat.format(appointmentDetails.availability!.startTime);
@@ -199,8 +194,22 @@ class _AppointmentPageState extends State<AppointmentPage> {
               ? appointmentDetails.doctor!.name
               : appointmentDetails.patient!.name),
           subtitle: Text('$startTime - $endTime'),
+          trailing: isPastAppointment
+              ? ElevatedButton(
+                  onPressed: () =>
+                      _navigateToFeedbackPage(appointmentDetails.doctor!),
+                  child: const Text('Feedback'),
+                )
+              : null,
         ),
       ),
+    );
+  }
+
+  void _navigateToFeedbackPage(DoctorModel doctor) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DoctorFeedback(doctor)),
     );
   }
 
