@@ -28,13 +28,13 @@ class DoctorDetails extends StatelessWidget {
           children: <Widget>[
             const Text(
               'Doctor Info',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             doctorInfo(doctor),
             const SizedBox(height: 16),
             const Text(
               'Clinic Info',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             FutureBuilder<ClinicModel?>(
               future: clinicService.getClinicModel(doctor.clinicId[0]),
@@ -50,10 +50,10 @@ class DoctorDetails extends StatelessWidget {
                 }
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             const Text(
               'Feedback',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -73,12 +73,15 @@ class DoctorDetails extends StatelessWidget {
                       return feedbackInfo(snapshot.data!);
                     } else {
                       return const Text(
-                          'No feedbacks for this doctor available');
+                        'No feedback available for this doctor',
+                        style: TextStyle(fontSize: 18),
+                      );
                     }
                   },
                 ),
               ),
             ),
+            const SizedBox(height: 8),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
@@ -89,7 +92,10 @@ class DoctorDetails extends StatelessWidget {
                               doctorId: doctor.doctorId,
                               clinicId: doctor.clinicId[0])));
                 },
-                child: const Text('Book Appointment with this Doctor!'),
+                child: const Text(
+                  'Book Appointment with this Doctor!',
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
             ),
             const SizedBox(height: 16)
