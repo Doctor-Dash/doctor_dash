@@ -12,6 +12,7 @@ import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
+import '../patient_views/booking_page.dart';
 import '../patient_views/doctor_feedback.dart';
 import 'appointmentDetails.dart';
 
@@ -194,13 +195,38 @@ class _AppointmentPageState extends State<AppointmentPage> {
               ? appointmentDetails.doctor!.name
               : appointmentDetails.patient!.name),
           subtitle: Text('$startTime - $endTime'),
-          trailing: isPastAppointment
-              ? ElevatedButton(
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!isPastAppointment) // For upcoming appointments
+                ElevatedButton(
+                  onPressed: () => _navigateToBookingPage(appointmentDetails),
+                  child: const Text('Reschedule'),
+                ),
+              if (isPastAppointment) // For past appointments
+                ElevatedButton(
                   onPressed: () =>
                       _navigateToFeedbackPage(appointmentDetails.doctor!),
                   child: const Text('Feedback'),
-                )
-              : null,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _navigateToBookingPage(AppointmentDetails appointmentDetails) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingPage(
+          doctorId: appointmentDetails.doctor!.doctorId,
+          clinicId: appointmentDetails.clinic!.clinicId,
+          existingAppointmentId: appointmentDetails.appointmentId,
+          existingAvailabilityId:
+              appointmentDetails.availability!.availabilityId,
+          isEdit: true,
         ),
       ),
     );
