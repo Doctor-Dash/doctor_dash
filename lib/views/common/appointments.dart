@@ -11,47 +11,7 @@ import '../../controllers/doctor_controller.dart';
 import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
-
-class AppointmentDetails {
-  final DoctorModel doctor;
-  final PatientModel patient;
-  final ClinicModel clinic;
-  final AvailabilityModel availability;
-  final List<String>? doctorFilesPath;
-  final List<String>? patientFilesPath;
-  final List<String>? doctorNotes;
-  final List<String>? patientNotes;
-
-  AppointmentDetails({
-    required this.doctor,
-    required this.patient,
-    required this.clinic,
-    required this.availability,
-    this.doctorFilesPath,
-    this.patientFilesPath,
-    this.doctorNotes,
-    this.patientNotes,
-  });
-
-  static AppointmentDetails fromMap(DocumentSnapshot doc) {
-    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
-    return AppointmentDetails(
-      doctor: DoctorModel.fromMap(map['doctor']),
-      patient: PatientModel.fromMap(map['patient']),
-      clinic: ClinicModel.fromMap(map['clinic']),
-      availability: AvailabilityModel.fromMap(map['availability']),
-      doctorFilesPath: map['doctorFilesPath'] as List<String>?,
-      patientFilesPath: map['patientFilesPath'] as List<String>?,
-      doctorNotes: map['doctorNotes'] as List<String>?,
-      patientNotes: map['patientNotes'] as List<String>?,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'AppointmentDetails {doctor: $doctor, patient: $patient, clinic: $clinic, availability: $availability, doctorFilesPath: $doctorFilesPath, patientFilesPath: $patientFilesPath, doctorNotes: $doctorNotes, patientNotes: $patientNotes}';
-  }
-}
+import '../../models/appointment_detail.dart';
 
 class AppointmentPage extends StatefulWidget {
   final String userId;
