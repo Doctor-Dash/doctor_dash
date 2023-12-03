@@ -46,7 +46,6 @@ class DoctorDetails extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<List<FeedbackModel>>(
-                  // Check if doctor.feedbackId is not empty before making the API call.
                   future: doctor.feedbackId!.isNotEmpty
                       ? feedbackService.getFeedbacksByIds(doctor.feedbackId)
                       : Future.value([]),
