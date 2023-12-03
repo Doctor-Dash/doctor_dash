@@ -69,6 +69,18 @@ class AppointmentService {
     }
   }
 
+  Future<QuerySnapshot> getAppointment(String appointmentId) async {
+    _ensureAuthenticated();
+
+    try {
+      return await appointmentCollection
+          .where('appointmentId', isEqualTo: appointmentId)
+          .get();
+    } catch (e) {
+      throw Exception('Error fetching appointment: $e');
+    }
+  }
+
   void _ensureAuthenticated() {
     if (user == null) {
       throw FirebaseAuthException(
