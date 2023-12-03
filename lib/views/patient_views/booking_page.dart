@@ -1,5 +1,6 @@
 import 'package:doctor_dash/controllers/appointment_controller.dart';
 import 'package:doctor_dash/controllers/availability_controller.dart';
+import 'package:doctor_dash/controllers/patient_controller.dart';
 import 'package:doctor_dash/models/appointment_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class _BookingPageState extends State<BookingPage> {
 
   final AvailabilityService _availabilityService = AvailabilityService();
   final AppointmentService _appointmentService = AppointmentService();
+  final PatientService _patientService = PatientService();
 
   @override
   void initState() {
@@ -105,75 +107,34 @@ class _BookingPageState extends State<BookingPage> {
                   onPressed: () async {
                     var currPatient = FirebaseAuth.instance.currentUser?.uid;
 
-                    // Check if we are editing an existing appointment
-                    if (widget.isEdit && widget.existingAppointment != null) {
-                      try {
-                        await _availabilityService.setAvailabilityToAvailable(
-                            widget.existingAppointment!.availabilityId);
-                        await _availabilityService
-                            .removeAppointmentIdFromAvailability(
-                                widget.existingAppointment!.availabilityId);
-                      } catch (e) {
-                        throw Exception('Failed to reset availability: $e');
-                      }
-                      String newAvailabilityId =
-                          '${widget.doctorId}$_startTime';
+                    String currAppointmentId =
+                        '${widget.doctorId}$_startTime$currPatient';
+                    String currAvailabilityId = '${widget.doctorId}$_startTime';
 
-                      // Update the existing appointment
-                      AppointmentModel updatedAppointment = AppointmentModel(
-                        appointmentId: widget.existingAppointment!
-                            .appointmentId, // keep the same appointment ID
-                        doctorId: widget.doctorId,
-                        patientId: widget.existingAppointment!.patientId,
-                        availabilityId: newAvailabilityId,
-                        clinicId: widget.clinicId,
-                        // include other fields as necessary...
-                      );
+                    AppointmentModel appointment = AppointmentModel(
+                      appointmentId: currAppointmentId,
+                      doctorId: widget.doctorId,
+                      patientId: '$currPatient',
+                      availabilityId: currAvailabilityId,
+                      clinicId: widget.clinicId,
+                    );
 
-                      try {
-                        await _appointmentService
-                            .updateAppointment(updatedAppointment);
-                        await _availabilityService
-                            .addAppointmentIdToAvailability(newAvailabilityId,
-                                updatedAppointment.appointmentId);
-                        await _availabilityService
-                            .setAvailabilityToUnavailable(newAvailabilityId);
+                    try {
+                      await _appointmentService.addAppointment(appointment);
 
-                        showSnackBar(context, 'Appointment updated!');
-                      } catch (e) {
-                        showErrorSnackBar(
-                            context, 'Error updating appointment: $e');
-                      }
-                    } else {
-                      // Logic for creating a new appointment
-                      String newAppointmentId =
-                          '${widget.doctorId}$_startTime$currPatient';
-                      String newAvailabilityId =
-                          '${widget.doctorId}$_startTime';
+                      await _availabilityService.addAppointmentIdToAvailability(
+                          currAvailabilityId, currAppointmentId);
 
-                      AppointmentModel newAppointment = AppointmentModel(
-                        appointmentId: newAppointmentId,
-                        doctorId: widget.doctorId,
-                        patientId: '$currPatient',
-                        availabilityId: newAvailabilityId,
-                        clinicId: widget.clinicId,
-                        // include other fields as necessary...
-                      );
+                      await _availabilityService
+                          .setAvailabilityToUnavailable(currAvailabilityId);
 
-                      try {
-                        await _appointmentService
-                            .addAppointment(newAppointment);
-                        await _availabilityService
-                            .addAppointmentIdToAvailability(
-                                newAvailabilityId, newAppointmentId);
-                        await _availabilityService
-                            .setAvailabilityToUnavailable(newAvailabilityId);
+                      await _patientService.addAppointmentIdToPatient(
+                          currPatient!, currAppointmentId);
 
-                        showSnackBar(context, 'Appointment booked!');
-                      } catch (e) {
-                        showErrorSnackBar(
-                            context, 'Error booking appointment: $e');
-                      }
+                      showSnackBar(context, 'Appointment booked!');
+                    } catch (e) {
+                      showErrorSnackBar(
+                          context, 'Error booking appointment: $e');
                     }
                   },
                   child: Text(widget.isEdit
