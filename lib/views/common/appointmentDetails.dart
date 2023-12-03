@@ -233,6 +233,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Height:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
+
                                       Text('${appointment.patient!.height}'),
                                     ],
                                   ),
