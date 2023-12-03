@@ -96,8 +96,8 @@ class _UploadFilePageState extends State<UploadFilePage> {
                 if (_image != null)
                   Image.file(
                     File(_image!.path),
-                    height: 100, // You can adjust the size as needed
-                    width: 100, // You can adjust the size as needed
+                    height: 100,
+                    width: 100, 
                   ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -277,7 +277,7 @@ class _UploadFilePageState extends State<UploadFilePage> {
                             child: IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                // Implement your delete function here
+                                _deleteImage(index, isPatient);
                               },
                             ),
                           ),
