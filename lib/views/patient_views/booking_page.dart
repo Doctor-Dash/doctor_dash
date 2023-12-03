@@ -116,7 +116,7 @@ class _BookingPageState extends State<BookingPage> {
                           currAvailabilityId, currAppointmentId);
                       await _availabilityService
                           .setAvailabilityToUnavailable(currAvailabilityId);
-                          
+
                       showSnackBar(context, 'Appointment booked!');
                     } catch (e) {
                       showErrorSnackBar(
@@ -131,7 +131,6 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  //table calendar
   Widget _tableCalendar() {
     return TableCalendar(
       focusedDay: _focusedDay,
