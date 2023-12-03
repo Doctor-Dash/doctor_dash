@@ -12,7 +12,7 @@ class PatientModel {
   final String city;
   final String province;
   final String postalCode;
-  final List<String>? appointments;
+  late List<String>? appointments;
 
   PatientModel({
     required this.patientId,
@@ -60,7 +60,9 @@ class PatientModel {
       city: data['city'],
       province: data['province'],
       postalCode: data['postalCode'],
-      appointments: data['appointments'] != null ? List<String>.from(data['appointments']) : null,
+      appointments: data['appointments'] != null
+          ? List<String>.from(data['appointments'])
+          : [],
     );
   }
 
