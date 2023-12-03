@@ -22,7 +22,7 @@ class DoctorDetails extends StatelessWidget {
         title: Text(doctor.name),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -32,7 +32,7 @@ class DoctorDetails extends StatelessWidget {
               future: clinicService.getClinicModel(doctor.clinicId[0]),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error loading clinic info: ${snapshot.error}');
                 } else if (snapshot.hasData && snapshot.data != null) {
@@ -46,33 +46,42 @@ class DoctorDetails extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<List<FeedbackModel>>(
-                  future: feedbackService.getFeedbacksByIds(doctor.feedbackId),
+                  // Check if doctor.feedbackId is not empty before making the API call.
+                  future: doctor.feedbackId!.isNotEmpty
+                      ? feedbackService.getFeedbacksByIds(doctor.feedbackId)
+                      : Future.value([]),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     } else if (snapshot.hasError) {
                       return Text(
                           'Error loading feedback info: ${snapshot.error}');
-                    } else if (snapshot.hasData && snapshot.data != null) {
+                    } else if (snapshot.hasData &&
+                        snapshot.data!.isNotEmpty &&
+                        snapshot.data != null) {
                       return feedbackInfo(snapshot.data!);
                     } else {
-                      return const Text('No feedback info available');
+                      return const Text(
+                          'No feedbacks for this doctor available');
                     }
                   },
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BookingPage(
-                            doctorId: doctor.doctorId,
-                            clinicId: doctor.clinicId[0])));
-              },
-              child: const Text('Book Appointment'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BookingPage(
+                              doctorId: doctor.doctorId,
+                              clinicId: doctor.clinicId[0])));
+                },
+                child: const Text('Book Appointment with this Doctor!'),
+              ),
             ),
+            const SizedBox(height: 16)
           ],
         ),
       ),
@@ -146,7 +155,7 @@ class DoctorDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const Text(
-          'Feedback Info',
+          'Feedbacks',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         for (var feedback in feedbacks)
