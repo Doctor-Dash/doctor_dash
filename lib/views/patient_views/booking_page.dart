@@ -134,7 +134,7 @@ class _BookingPageState extends State<BookingPage> {
     return TableCalendar(
       focusedDay: _focusedDay,
       firstDay: DateTime.now(),
-      lastDay: DateTime(2023, 12, 31),
+      lastDay: DateTime.now().add(const Duration(days: 30)),
       calendarFormat: _calendarFormat,
       currentDay: _currentDay,
       rowHeight: 48,
@@ -142,9 +142,6 @@ class _BookingPageState extends State<BookingPage> {
         todayDecoration:
             BoxDecoration(color: Colors.purple, shape: BoxShape.circle),
       ),
-      availableCalendarFormats: const {
-        CalendarFormat.month: 'Month',
-      },
       onFormatChanged: (format) {
         setState(() {
           _calendarFormat = format;
