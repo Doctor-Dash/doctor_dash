@@ -47,7 +47,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     }
   }
 
-  Future<List<AppointmentDetails>> fetchData() async {
+  Future<Map<String, List<AppointmentDetails>>> fetchData() async {
     try {
       QuerySnapshot appointmentSnapshot;
       List<AppointmentDetails> appointmentDetailsList = [];
@@ -97,7 +97,19 @@ class _AppointmentPageState extends State<AppointmentPage> {
       appointmentDetailsList.sort((a, b) =>
           b.availability!.startTime.compareTo(a.availability!.startTime));
 
-      return appointmentDetailsList;
+      DateTime now = DateTime.now().add(Duration(days: 3));
+      List<AppointmentDetails> upcomingAppointments = [];
+      List<AppointmentDetails> pastAppointments = [];
+
+      for (var detail in appointmentDetailsList) {
+        if (detail.availability!.startTime.isAfter(now)) {
+          upcomingAppointments.add(detail);
+        } else {
+          pastAppointments.add(detail);
+        }
+      }
+
+      return {'upcoming': upcomingAppointments, 'past': pastAppointments};
     } catch (e) {
       print('Error fetching data: $e');
       rethrow;
@@ -110,23 +122,56 @@ class _AppointmentPageState extends State<AppointmentPage> {
       appBar: AppBar(
         title: const Text('Appointments'),
       ),
-      body: FutureBuilder<List<AppointmentDetails>>(
+      body: FutureBuilder<Map<String, List<AppointmentDetails>>>(
         future: fetchData(),
-        builder: (context, snapshot) => _buildBodyBasedOnSnapshot(snapshot),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text('You have no appointments'));
+          }
+
+          var upcomingAppointments = snapshot.data?['upcoming'] ?? [];
+          var pastAppointments = snapshot.data?['past'] ?? [];
+
+          return Column(
+            children: [
+              _buildSection('Upcoming Appointments', upcomingAppointments),
+              _buildSection('Past Appointments', pastAppointments),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildBodyBasedOnSnapshot(
-      AsyncSnapshot<List<AppointmentDetails>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
-    } else if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-      return const Center(child: Text('You have no appointments'));
+  Widget _buildSection(String title, List<AppointmentDetails> appointments) {
+    if (appointments.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text('No $title'),
+      );
     }
-    return _buildAppointmentList(snapshot.data!);
+
+    return Expanded(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: appointments.length,
+              itemBuilder: (context, index) =>
+                  _buildAppointmentTile(appointments[index]),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildAppointmentList(
