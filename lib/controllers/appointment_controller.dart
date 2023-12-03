@@ -70,8 +70,15 @@ class AppointmentService {
     _ensureAuthenticated();
 
     try {
-      final appointmentDoc = appointmentCollection.doc(appointmentId);
-      await appointmentDoc.delete();
+      // Query for appointments with the matching appointmentId
+      final QuerySnapshot querySnapshot = await appointmentCollection
+          .where('appointmentId', isEqualTo: appointmentId)
+          .get();
+
+      // Iterate through the documents and delete each one
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
     } catch (e) {
       throw Exception('Error deleting appointment: $e');
     }
