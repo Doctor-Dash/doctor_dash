@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/appointment_model.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentService {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -50,9 +53,12 @@ class AppointmentService {
     _ensureAuthenticated();
 
     try {
-      final appointmentDoc =
-          appointmentCollection.doc(updatedAppointment.appointmentId);
-      await appointmentDoc.update(updatedAppointment.toMap());
+      final appointmentDoc = appointmentCollection
+          .where('appointmentId', isEqualTo: updatedAppointment.appointmentId)
+          .get();
+      await appointmentDoc.then((appointmentDoc) {
+        appointmentDoc.docs.first.reference.update(updatedAppointment.toMap());
+      });
     } catch (e) {
       throw Exception('Error updating appointment: $e');
     }
@@ -78,6 +84,25 @@ class AppointmentService {
           .get();
     } catch (e) {
       throw Exception('Error fetching appointment: $e');
+    }
+  }
+
+  Future<String?> uploadImage(image, String appointmentId) async {
+    String? downloadURL;
+    if (image == null) return null;
+
+    final firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('images/$appointmentId/${image!.name}');
+    try {
+      final uploadTask = await firebaseStorageRef.putFile(File(image!.path));
+
+      if (uploadTask.state == TaskState.success) {
+        downloadURL = await firebaseStorageRef.getDownloadURL();
+      }
+      return downloadURL;
+    } catch (e) {
+      throw ("Server Error: $e");
     }
   }
 
