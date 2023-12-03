@@ -63,4 +63,9 @@ class PatientModel {
       appointments: data['appointments'] != null ? List<String>.from(data['appointments']) : null,
     );
   }
+
+  @override
+  String toString() {
+    return 'PatientModel {patientId: $patientId, name: $name, phone: $phone, email: $email, age: $age, weight: $weight, height: $height, street: $street, city: $city, province: $province, postalCode: $postalCode, appointments: $appointments}';
+  }
 }
