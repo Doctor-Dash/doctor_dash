@@ -46,8 +46,7 @@ class DoctorDetails extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<List<FeedbackModel>>(
-                  future: feedbackService.getFeedbacksByIds(doctor
-                      .feedbackId), // assuming doctor has feedbackIds property
+                  future: feedbackService.getFeedbacksByIds(doctor.feedbackId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return CircularProgressIndicator();
@@ -107,7 +106,6 @@ class DoctorDetails extends StatelessWidget {
           'Email: ${doctor.email}',
           style: TextStyle(fontSize: 18),
         ),
-        //TODO: Add additional doctor details here
       ],
     );
   }
