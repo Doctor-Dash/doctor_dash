@@ -26,8 +26,16 @@ class DoctorDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            const Text(
+              'Doctor Info',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             doctorInfo(doctor),
             const SizedBox(height: 16),
+            const Text(
+              'Clinic Info',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             FutureBuilder<ClinicModel?>(
               future: clinicService.getClinicModel(doctor.clinicId[0]),
               builder: (context, snapshot) {
@@ -42,7 +50,11 @@ class DoctorDetails extends StatelessWidget {
                 }
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            const Text(
+              'Feedback',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<List<FeedbackModel>>(
@@ -61,12 +73,15 @@ class DoctorDetails extends StatelessWidget {
                       return feedbackInfo(snapshot.data!);
                     } else {
                       return const Text(
-                          'No feedbacks for this doctor available');
+                        'No feedback available for this doctor',
+                        style: TextStyle(fontSize: 18),
+                      );
                     }
                   },
                 ),
               ),
             ),
+            const SizedBox(height: 8),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
@@ -77,7 +92,10 @@ class DoctorDetails extends StatelessWidget {
                               doctorId: doctor.doctorId,
                               clinicId: doctor.clinicId[0])));
                 },
-                child: const Text('Book Appointment with this Doctor!'),
+                child: const Text(
+                  'Book Appointment with this Doctor!',
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
             ),
             const SizedBox(height: 16)
@@ -88,64 +106,147 @@ class DoctorDetails extends StatelessWidget {
   }
 
   Widget doctorInfo(DoctorModel doctor) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Doctor Info',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Name: ',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: doctor.name,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Speciality: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: doctor.speciality,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.phone, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  doctor.phone,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.email, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  doctor.email,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
         ),
-        Text(
-          'Name: ${doctor.name}',
-          style: TextStyle(fontSize: 20),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Speciality: ${doctor.speciality}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Phone: ${doctor.phone}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Email: ${doctor.email}',
-          style: TextStyle(fontSize: 18),
-        ),
-      ],
+      ),
     );
   }
 
   Widget clinicInfo(ClinicModel clinic) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Clinic Info',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Name: ',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: clinic.name,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Address: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text:
+                        '${clinic.street}, ${clinic.city}, ${clinic.province}, ${clinic.postalCode}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.phone, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  clinic.phoneNumber,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.email, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  clinic.email,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
         ),
-        Text(
-          'Name: ${clinic.name}',
-          style: TextStyle(fontSize: 20),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Address: ${clinic.street}, ${clinic.city}, ${clinic.province}, ${clinic.postalCode}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Phone: ${clinic.phoneNumber}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Email: ${clinic.email}',
-          style: TextStyle(fontSize: 18),
-        ),
-      ],
+      ),
     );
   }
 
@@ -153,10 +254,6 @@ class DoctorDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Text(
-          'Feedbacks',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
         for (var feedback in feedbacks)
           Card(
             elevation: 4,
