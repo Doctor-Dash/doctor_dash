@@ -54,4 +54,26 @@ class FeedbackService {
 
     return feedbacks;
   }
+
+  Future<String> generateUniqueFeedbackId() async {
+    String feedbackId = '';
+    bool isUnique = false;
+    final random = Random();
+
+    while (!isUnique) {
+      feedbackId = String.fromCharCodes(
+        List.generate(10, (_) => random.nextInt(33) + 89),
+      );
+
+      var existingFeedback = await feedbackCollection
+          .where('feedbackId', isEqualTo: feedbackId)
+          .get();
+
+      if (existingFeedback.docs.isEmpty) {
+        isUnique = true;
+      }
+    }
+
+    return feedbackId;
+  }
 }

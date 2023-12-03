@@ -23,7 +23,7 @@ class _DoctorFeedbackState extends State<DoctorFeedback> {
   }
 
   void _submitFeedback() async {
-    String feedbackId = '${widget.doctor.name}_${_feedbackController.text}';
+    String feedbackId = await FeedbackService().generateUniqueFeedbackId();
 
     FeedbackModel feedback = FeedbackModel(
       feedbackId: feedbackId,
