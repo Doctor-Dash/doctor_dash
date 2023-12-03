@@ -77,7 +77,7 @@ class FeedbackService {
   }
 
   Future<List<FeedbackModel>> getFeedbacksByIds(
-      List<String> feedbackIds) async {
+      List<String>? feedbackIds) async {
     List<FeedbackModel> feedbacks = [];
 
     try {
