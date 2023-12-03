@@ -33,6 +33,7 @@ class AvailabilityService {
         );
 
         while (startTime.isBefore(endTime)) {
+          //TODO: Duration minutes subject to change
           DateTime sessionEndTime = startTime.add(Duration(minutes: 40));
           AvailabilityModel availability = AvailabilityModel(
             availabilityId: doctorId + startTime.toString(),
@@ -43,6 +44,7 @@ class AvailabilityService {
             status: true,
           );
           await availabilityCollection.add(availability.toMap());
+          //TODO: Durations minutes subject to change
           startTime = startTime.add(Duration(minutes: 40));
         }
       }
@@ -66,6 +68,7 @@ class AvailabilityService {
       if (currentDay.weekday >= DateTime.monday &&
           currentDay.weekday <= DateTime.friday) {
         while (startTime.isBefore(endTime)) {
+          //TODO: Duration minutes subject to change
           DateTime sessionEndTime = startTime.add(Duration(minutes: 40));
           AvailabilityModel availability = AvailabilityModel(
             availabilityId: doctorId + startTime.toString(),
@@ -76,6 +79,7 @@ class AvailabilityService {
             status: true,
           );
           await availabilityCollection.add(availability.toMap());
+          //TODO: Duration minutes subject to change
           startTime = startTime.add(Duration(minutes: 40));
         }
       }
