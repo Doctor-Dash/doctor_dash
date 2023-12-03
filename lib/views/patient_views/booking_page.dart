@@ -47,7 +47,6 @@ class _BookingPageState extends State<BookingPage> {
         _availableTimeSlots = timeSlots;
       });
     } catch (e) {
-      // Handle error
       showErrorSnackBar(context, 'Error fetching available time slots: $e');
     }
   }
