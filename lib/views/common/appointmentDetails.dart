@@ -12,6 +12,7 @@ import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
+import 'uploadFilePage.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   final String userId;
@@ -30,11 +31,35 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   final ClinicService clinicService = ClinicService();
   final AvailabilityService availabilityService = AvailabilityService();
   bool isPatient = false;
+  bool isPast = false;
 
   @override
   void initState() {
     super.initState();
+    isPastAppointment();
     checkPatient();
+  }
+
+  Future<void> isPastAppointment() async {
+    try {
+      QuerySnapshot appointmentSnapshot =
+          await appointmentService.getAppointment(widget.appointmentId);
+
+      AppointmentModel appointment =
+          AppointmentModel.fromMap(appointmentSnapshot.docs.first);
+
+      QuerySnapshot availabilitySnapshot =
+          await availabilityService.getAvailability(appointment.availabilityId);
+      AvailabilityModel availability =
+          AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
+
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+      isPast = availability.startTime.isBefore(today);
+    } catch (e) {
+      print('Error checking past appointment: $e');
+      rethrow;
+    }
   }
 
   Future<void> checkPatient() async {
@@ -233,7 +258,6 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Height:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-
                                       Text('${appointment.patient!.height}'),
                                     ],
                                   ),
@@ -243,6 +267,23 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                           ),
                         ),
                       ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UploadFilePage(
+                                appointmentId: appointment.appointmentId),
+                          ),
+                        );
+                      },
+                      child: Text('Upload File/Notes'),
+                    ),
+                  ),
+                ),
               ],
             );
           }

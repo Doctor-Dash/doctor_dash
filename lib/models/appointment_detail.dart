@@ -36,10 +36,10 @@ class AppointmentDetails {
       patient: PatientModel.fromMap(map['patient']),
       clinic: ClinicModel.fromMap(map['clinic']),
       availability: AvailabilityModel.fromMap(map['availability']),
-      doctorFilesPath: map['doctorFilesPath'] as List<String>?,
-      patientFilesPath: map['patientFilesPath'] as List<String>?,
-      doctorNotes: map['doctorNotes'] as List<String>?,
-      patientNotes: map['patientNotes'] as List<String>?,
+      doctorFilesPath: map['doctorFilesPath'] ,
+      patientFilesPath: map['patientFilesPath'],
+      doctorNotes: map['doctorNotes'] ,
+      patientNotes: map['patientNotes'] ,
     );
   }
 
