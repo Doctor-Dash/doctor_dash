@@ -20,7 +20,7 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
   DateTime _startTime = DateTime.now();
@@ -97,36 +97,11 @@ class _BookingPageState extends State<BookingPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                 child: ElevatedButton(
                   onPressed: () async {
-                    var currPatient = FirebaseAuth.instance.currentUser?.uid;
-
-                    String currAppointmentId =
-                        '${widget.doctorId}$_startTime$currPatient';
-                    String currAvailabilityId = '${widget.doctorId}$_startTime';
-
-                    AppointmentModel appointment = AppointmentModel(
-                      appointmentId: currAppointmentId,
-                      doctorId: widget.doctorId,
-                      patientId: '$currPatient',
-                      availabilityId: currAvailabilityId,
-                      clinicId: widget.clinicId,
-                    );
-
-                    try {
-                      await _appointmentService.addAppointment(appointment);
-
-                      await _availabilityService.addAppointmentIdToAvailability(
-                          currAvailabilityId, currAppointmentId);
-
-                      await _availabilityService
-                          .setAvailabilityToUnavailable(currAvailabilityId);
-
-                      await _patientService.addAppointmentIdToPatient(
-                          currPatient!, currAppointmentId);
-
-                      showSnackBar(context, 'Appointment booked!');
-                    } catch (e) {
+                    if (_dateSelected && _timeSelected) {
+                      await bookAppointment();
+                    } else {
                       showErrorSnackBar(
-                          context, 'Error booking appointment: $e');
+                          context, 'Please select a date and time');
                     }
                   },
                   child: const Text('Book Appointment'),
@@ -137,11 +112,43 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  Future<void> bookAppointment() async {
+    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+
+    String currAppointmentId = '${widget.doctorId}$_startTime$currPatient';
+    String currAvailabilityId = '${widget.doctorId}$_startTime';
+
+    AppointmentModel appointment = AppointmentModel(
+      appointmentId: currAppointmentId,
+      doctorId: widget.doctorId,
+      patientId: '$currPatient',
+      availabilityId: currAvailabilityId,
+      clinicId: widget.clinicId,
+    );
+
+    try {
+      await _appointmentService.addAppointment(appointment);
+
+      await _availabilityService.addAppointmentIdToAvailability(
+          currAvailabilityId, currAppointmentId);
+
+      await _availabilityService
+          .setAvailabilityToUnavailable(currAvailabilityId);
+
+      await _patientService.addAppointmentIdToPatient(
+          currPatient!, currAppointmentId);
+
+      showSnackBar(context, 'Appointment booked!');
+    } catch (e) {
+      showErrorSnackBar(context, 'Error booking appointment: $e');
+    }
+  }
+
   Widget _tableCalendar() {
     return TableCalendar(
       focusedDay: _focusedDay,
       firstDay: DateTime.now(),
-      lastDay: DateTime(2023, 12, 31),
+      lastDay: DateTime.now().add(const Duration(days: 30)),
       calendarFormat: _calendarFormat,
       currentDay: _currentDay,
       rowHeight: 48,
@@ -149,9 +156,6 @@ class _BookingPageState extends State<BookingPage> {
         todayDecoration:
             BoxDecoration(color: Colors.purple, shape: BoxShape.circle),
       ),
-      availableCalendarFormats: const {
-        CalendarFormat.month: 'Month',
-      },
       onFormatChanged: (format) {
         setState(() {
           _calendarFormat = format;
