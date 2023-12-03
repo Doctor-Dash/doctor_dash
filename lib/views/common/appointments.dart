@@ -12,6 +12,7 @@ import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
+import 'appointmentDetails.dart';
 
 class AppointmentPage extends StatefulWidget {
   final String userId;
@@ -75,6 +76,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
 
         appointmentDetailsList.add(AppointmentDetails(
+          appointmentId: appointment.appointmentId,
           doctor: doctor,
           patient: patient,
           clinic: clinic,
@@ -118,7 +120,15 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   child: Card(
                     child: ListTile(
                       onTap: () {
-                        // Handle card tap
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AppointmentDetailsPage(
+                              appointmentId: appointmentDetails.appointmentId,
+                              userId: widget.userId
+                            ),
+                          ),
+                        );
                       },
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
