@@ -83,8 +83,6 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         doctorNotes: appointment.doctorNotes,
         patientNotes: appointment.patientNotes,
       );
-
-      print(appointmentDetails);
       return appointmentDetails;
     } catch (e) {
       print('Error fetching data: $e');
@@ -110,7 +108,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             final appointmentTime = appointment.availability;
             final dateFormatDate = DateFormat('d MMM yyyy');
             final dateFormatTime = DateFormat('h:mm a');
-            final date = dateFormatDate.format(appointmentTime.startTime);
+            final date = dateFormatDate.format(appointmentTime!.startTime);
             final startTime = dateFormatTime.format(appointmentTime.startTime);
             final endTime = dateFormatTime.format(appointmentTime.endTime);
             return ListView(
@@ -140,8 +138,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold)),
                                 Text(isPatient
-                                    ? appointment.doctor.name
-                                    : appointment.patient.name),
+                                    ? appointment.doctor!.name
+                                    : appointment.patient!.name),
                               ],
                             ),
                             Row(
@@ -163,8 +161,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold)),
                                 Text(isPatient
-                                    ? appointment.clinic.phoneNumber
-                                    : appointment.patient.phone),
+                                    ? appointment.clinic!.phoneNumber
+                                    : appointment.patient!.phone),
                               ],
                             ),
                             Row(
@@ -177,8 +175,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold)),
                                 Text(isPatient
-                                    ? '${appointment.clinic.street} ${appointment.clinic.city} ${appointment.clinic.province} ${appointment.clinic.postalCode}'
-                                    : '${appointment.patient.street} ${appointment.patient.city} ${appointment.patient.province} ${appointment.patient.postalCode}'),
+                                    ? '${appointment.clinic!.street} ${appointment.clinic!.city} ${appointment.clinic!.province} ${appointment.clinic!.postalCode}'
+                                    : '${appointment.patient!.street} ${appointment.patient!.city} ${appointment.patient!.province} ${appointment.patient!.postalCode}'),
                               ],
                             ),
                           ],
@@ -215,7 +213,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Age:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('${appointment.patient.age}'),
+                                      Text('${appointment.patient!.age}'),
                                     ],
                                   ),
                                   Row(
@@ -225,7 +223,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Weight:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('${appointment.patient.weight}'),
+                                      Text('${appointment.patient!.weight}'),
                                     ],
                                   ),
                                   Row(
@@ -235,7 +233,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Height:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('${appointment.patient.height}'),
+
+                                      Text('${appointment.patient!.height}'),
                                     ],
                                   ),
                                 ],

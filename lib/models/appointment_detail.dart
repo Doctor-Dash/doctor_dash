@@ -7,10 +7,10 @@ import 'patient_model.dart';
 
 class AppointmentDetails {
   final String appointmentId;
-  final DoctorModel doctor;
-  final PatientModel patient;
-  final ClinicModel clinic;
-  final AvailabilityModel availability;
+  final DoctorModel? doctor;
+  final PatientModel? patient;
+  final ClinicModel? clinic;
+  final AvailabilityModel? availability;
   final List<String>? doctorFilesPath;
   final List<String>? patientFilesPath;
   final List<String>? doctorNotes;
@@ -18,10 +18,10 @@ class AppointmentDetails {
 
   AppointmentDetails({
     required this.appointmentId,
-    required this.doctor,
-    required this.patient,
-    required this.clinic,
-    required this.availability,
+    this.doctor,
+    this.patient,
+    this.clinic,
+    this.availability,
     this.doctorFilesPath,
     this.patientFilesPath,
     this.doctorNotes,
@@ -31,7 +31,7 @@ class AppointmentDetails {
   static AppointmentDetails fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return AppointmentDetails(
-      appointmentId: doc.id,
+      appointmentId: map['appointmentId'] as String,
       doctor: DoctorModel.fromMap(map['doctor']),
       patient: PatientModel.fromMap(map['patient']),
       clinic: ClinicModel.fromMap(map['clinic']),
