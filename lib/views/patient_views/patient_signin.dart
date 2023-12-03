@@ -41,7 +41,7 @@ class _PatientSignInState extends State<PatientSignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
+      appBar: AppBar(title: const Text('Patient Sign In')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -146,12 +146,13 @@ class AvailabilityService {
 
   Future<void> setAvailabilityToAvailable(String availabilityId) async {
     try {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('availability')
-          .doc(availabilityId)
+          .where('availabilityId', isEqualTo: availabilityId)
           .get();
 
-      if (snapshot.exists) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot snapshot = querySnapshot.docs.first;
         await snapshot.reference.update({'status': true});
       } else {
         throw Exception('Availability not found');
@@ -236,12 +237,13 @@ class AvailabilityService {
   Future<void> removeAppointmentIdFromAvailability(
       String availabilityId) async {
     try {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('availability')
-          .doc(availabilityId)
+          .where('availabilityId', isEqualTo: availabilityId)
           .get();
 
-      if (snapshot.exists) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot snapshot = querySnapshot.docs.first;
         await snapshot.reference.update({'appointmentId': null});
       } else {
         throw Exception('Availability not found');

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_dash/controllers/appointment_controller.dart';
 import 'package:doctor_dash/controllers/availability_controller.dart';
 import 'package:doctor_dash/controllers/patient_controller.dart';
@@ -11,16 +12,24 @@ import 'package:doctor_dash/utils/utils.dart';
 class BookingPage extends StatefulWidget {
   final String doctorId;
   final String clinicId;
+  final String? existingAppointmentId;
+  final String? existingAvailabilityId;
+  final bool isEdit;
 
   const BookingPage(
-      {super.key, required this.doctorId, required this.clinicId});
+      {super.key,
+      required this.doctorId,
+      required this.clinicId,
+      this.existingAppointmentId,
+      this.existingAvailabilityId,
+      this.isEdit = false});
 
   @override
   State<BookingPage> createState() => _BookingPageState();
 }
 
 class _BookingPageState extends State<BookingPage> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
   DateTime _startTime = DateTime.now();
@@ -57,7 +66,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Appointment'),
+        title: Text(widget.isEdit ? 'Edit Appointment' : 'Book Appointment'),
       ),
       body: CustomScrollView(
         slivers: <Widget>[
@@ -97,39 +106,19 @@ class _BookingPageState extends State<BookingPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                 child: ElevatedButton(
                   onPressed: () async {
-                    var currPatient = FirebaseAuth.instance.currentUser?.uid;
-
-                    String currAppointmentId =
-                        '${widget.doctorId}$_startTime$currPatient';
-                    String currAvailabilityId = '${widget.doctorId}$_startTime';
-
-                    AppointmentModel appointment = AppointmentModel(
-                      appointmentId: currAppointmentId,
-                      doctorId: widget.doctorId,
-                      patientId: '$currPatient',
-                      availabilityId: currAvailabilityId,
-                      clinicId: widget.clinicId,
-                    );
-
-                    try {
-                      await _appointmentService.addAppointment(appointment);
-
-                      await _availabilityService.addAppointmentIdToAvailability(
-                          currAvailabilityId, currAppointmentId);
-
-                      await _availabilityService
-                          .setAvailabilityToUnavailable(currAvailabilityId);
-
-                      await _patientService.addAppointmentIdToPatient(
-                          currPatient!, currAppointmentId);
-
-                      showSnackBar(context, 'Appointment booked!');
-                    } catch (e) {
+                    if (widget.isEdit && widget.existingAppointmentId != null) {
+                      await _rescheduleAppointment();
+                    }
+                    if (_dateSelected && _timeSelected) {
+                      await _bookAppointment();
+                    } else {
                       showErrorSnackBar(
-                          context, 'Error booking appointment: $e');
+                          context, 'Please select a date and time');
                     }
                   },
-                  child: const Text('Book Appointment'),
+                  child: Text(widget.isEdit
+                      ? 'Update Appointment'
+                      : 'Book Appointment'),
                 )),
           ),
         ],
@@ -137,11 +126,59 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  Future<void> _rescheduleAppointment() async {
+    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+    try {
+      await _patientService.deleteAppointmentIdToPatient(
+          currPatient!, widget.existingAppointmentId!);
+      await _availabilityService
+          .setAvailabilityToAvailable(widget.existingAvailabilityId!);
+      await _availabilityService
+          .removeAppointmentIdFromAvailability(widget.existingAvailabilityId!);
+      await _appointmentService
+          .deleteAppointment(widget.existingAppointmentId!);
+    } catch (e) {
+      throw Exception('Failed to reset appointment: $e');
+    }
+  }
+
+  Future<void> _bookAppointment() async {
+    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+
+    String currAppointmentId = '${widget.doctorId}$_startTime$currPatient';
+    String currAvailabilityId = '${widget.doctorId}$_startTime';
+
+    AppointmentModel appointment = AppointmentModel(
+      appointmentId: currAppointmentId,
+      doctorId: widget.doctorId,
+      patientId: '$currPatient',
+      availabilityId: currAvailabilityId,
+      clinicId: widget.clinicId,
+    );
+
+    try {
+      await _appointmentService.addAppointment(appointment);
+
+      await _availabilityService.addAppointmentIdToAvailability(
+          currAvailabilityId, currAppointmentId);
+
+      await _availabilityService
+          .setAvailabilityToUnavailable(currAvailabilityId);
+
+      await _patientService.addAppointmentIdToPatient(
+          currPatient!, currAppointmentId);
+
+      showSnackBar(context, 'Appointment booked!');
+    } catch (e) {
+      showErrorSnackBar(context, 'Error booking appointment: $e');
+    }
+  }
+
   Widget _tableCalendar() {
     return TableCalendar(
       focusedDay: _focusedDay,
       firstDay: DateTime.now(),
-      lastDay: DateTime(2023, 12, 31),
+      lastDay: DateTime.now().add(const Duration(days: 30)),
       calendarFormat: _calendarFormat,
       currentDay: _currentDay,
       rowHeight: 48,
@@ -149,9 +186,6 @@ class _BookingPageState extends State<BookingPage> {
         todayDecoration:
             BoxDecoration(color: Colors.purple, shape: BoxShape.circle),
       ),
-      availableCalendarFormats: const {
-        CalendarFormat.month: 'Month',
-      },
       onFormatChanged: (format) {
         setState(() {
           _calendarFormat = format;
