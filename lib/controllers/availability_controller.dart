@@ -188,4 +188,15 @@ class AvailabilityService {
       rethrow;
     }
   }
+
+  Future<QuerySnapshot> getAvailability(String availabilityId) async {
+    try {
+      return await availabilityCollection
+          .where('availabilityId', isEqualTo: availabilityId)
+          .get();
+    } catch (e) {
+      print('Error occurred while fetching availability: $e');
+      rethrow;
+    }
+  }
 }

@@ -59,9 +59,8 @@ class PatientService {
   Future<bool> isPatient() async {
     try {
       var query = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('patients')
+          .where('patientId', isEqualTo: user!.uid)
           .get();
       return query.docs.isNotEmpty;
     } catch (e) {
