@@ -109,7 +109,6 @@ class _BookingPageState extends State<BookingPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Check if we are editing an existing appointment
                     if (widget.isEdit && widget.existingAppointmentId != null) {
                       await _rescheduleAppointment();
                     }

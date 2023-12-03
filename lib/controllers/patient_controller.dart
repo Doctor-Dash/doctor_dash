@@ -69,11 +69,9 @@ class PatientService {
       if (patientDoc.exists) {
         PatientModel patient = PatientModel.fromMap(patientDoc);
 
-        // Check if the appointments list is not null and contains the appointmentId
         if (patient.appointments != null &&
             patient.appointments!.contains(appointmentId)) {
-          patient.appointments!
-              .remove(appointmentId); // Remove the appointmentId
+          patient.appointments!.remove(appointmentId);
         } else {
           print('Appointment ID not found or no appointments for patient');
         }

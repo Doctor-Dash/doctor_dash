@@ -55,7 +55,6 @@ class AppointmentService {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Assuming appointmentId is unique, we can safely take the first match.
         final DocumentSnapshot appointmentDoc = querySnapshot.docs.first;
         await appointmentDoc.reference.update(updatedAppointment.toMap());
       } else {
@@ -70,12 +69,10 @@ class AppointmentService {
     _ensureAuthenticated();
 
     try {
-      // Query for appointments with the matching appointmentId
       final QuerySnapshot querySnapshot = await appointmentCollection
           .where('appointmentId', isEqualTo: appointmentId)
           .get();
 
-      // Iterate through the documents and delete each one
       for (var doc in querySnapshot.docs) {
         await doc.reference.delete();
       }
