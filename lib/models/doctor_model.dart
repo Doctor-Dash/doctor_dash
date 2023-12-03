@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DoctorModel {
   final String doctorId;
   final String name;
@@ -7,7 +8,7 @@ class DoctorModel {
   final String speciality;
   final List<String> clinicId;
   final List<String> availability;
-  final List<String>? appointmentId;
+  late List<String>? appointmentId;
   final List<String>? feedbackId;
   DoctorModel({
     required this.doctorId,
@@ -33,6 +34,7 @@ class DoctorModel {
       'feedbackId': feedbackId,
     };
   }
+
   static DoctorModel fromMap(DocumentSnapshot doc) {
     Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     return DoctorModel(
