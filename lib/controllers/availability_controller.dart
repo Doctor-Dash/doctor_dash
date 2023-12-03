@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import '../models/availability_model.dart';
 
 class AvailabilityService {
@@ -10,51 +11,112 @@ class AvailabilityService {
       : availabilityCollection =
             FirebaseFirestore.instance.collection('availability');
 
+  Future<void> createAvailabilityForWeek(
+      String doctorId, DateTime startDate) async {
+    try {
+      DateTime endOfWeek = startDate.add(Duration(days: 7));
+      DateTime currentDay = startDate;
+
+      while (currentDay.isBefore(endOfWeek)) {
+        if (currentDay.weekday >= DateTime.monday &&
+            currentDay.weekday <= DateTime.friday) {
+          DateTime startTime = DateTime(
+            currentDay.year,
+            currentDay.month,
+            currentDay.day,
+            9,
+          );
+          DateTime endTime = DateTime(
+            currentDay.year,
+            currentDay.month,
+            currentDay.day,
+            17,
+          );
+
+          while (startTime.isBefore(endTime)) {
+            //TODO: Duration minutes subject to change
+            DateTime sessionEndTime = startTime.add(Duration(minutes: 40));
+            AvailabilityModel availability = AvailabilityModel(
+              availabilityId: doctorId + startTime.toString(),
+              date: currentDay,
+              doctorId: doctorId,
+              startTime: startTime,
+              endTime: sessionEndTime,
+              status: true,
+            );
+            await availabilityCollection.add(availability.toMap());
+            //TODO: Durations minutes subject to change
+            startTime = startTime.add(Duration(minutes: 40));
+          }
+        }
+        currentDay = currentDay.add(Duration(days: 1));
+      }
+    } catch (e) {
+      throw Exception('Error creating availability: $e');
+    }
+  }
+
   Future<void> createAvailabilityForMonth(
       String doctorId, DateTime startDate) async {
-    DateTime nextMonth = DateTime(startDate.year, startDate.month + 1);
-    DateTime currentDay = startDate;
-    DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
+    try {
+      DateTime nextMonth = DateTime(startDate.year, startDate.month + 1);
+      DateTime currentDay = startDate;
+      DateTime endOfMonth = DateTime(nextMonth.year, nextMonth.month + 1, 0);
 
-    DateTime startTime =
-        DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
-    DateTime endTime =
-        DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
-
-    while (currentDay.isBefore(endOfMonth)) {
-      if (currentDay.weekday >= DateTime.monday &&
-          currentDay.weekday <= DateTime.friday) {
-        while (startTime.isBefore(endTime)) {
-          DateTime sessionEndTime = startTime.add(Duration(minutes: 20));
-          AvailabilityModel availability = AvailabilityModel(
-            availabilityId: doctorId + startTime.toString(),
-            date: currentDay,
-            doctorId: doctorId,
-            startTime: startTime,
-            endTime: sessionEndTime,
-            status: true,
-          );
-          await availabilityCollection.add(availability.toMap());
-          startTime = startTime.add(Duration(minutes: 20));
-        }
-      }
-      currentDay = currentDay.add(Duration(days: 1));
-      startTime =
+      DateTime startTime =
           DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
-      endTime = DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+      DateTime endTime =
+          DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+
+      while (currentDay.isBefore(endOfMonth) &&
+          currentDay.month == startDate.month) {
+        if (currentDay.weekday >= DateTime.monday &&
+            currentDay.weekday <= DateTime.friday) {
+          while (startTime.isBefore(endTime)) {
+            //TODO: Duration minutes subject to change
+            DateTime sessionEndTime = startTime.add(Duration(minutes: 40));
+            AvailabilityModel availability = AvailabilityModel(
+              availabilityId: doctorId + startTime.toString(),
+              date: currentDay,
+              doctorId: doctorId,
+              startTime: startTime,
+              endTime: sessionEndTime,
+              status: true,
+            );
+            await availabilityCollection.add(availability.toMap());
+            //TODO: Duration minutes subject to change
+            startTime = startTime.add(Duration(minutes: 40));
+          }
+        }
+        currentDay = currentDay.add(Duration(days: 1));
+        startTime =
+            DateTime(currentDay.year, currentDay.month, currentDay.day, 9);
+        endTime =
+            DateTime(currentDay.year, currentDay.month, currentDay.day, 17);
+      }
+    } catch (e) {
+      throw Exception('Error creating availability for the month: $e');
     }
   }
 
   Future<void> createAvailabilitySignup(String doctorId) async {
-    DateTime now = DateTime.now();
-    await createAvailabilityForMonth(doctorId, now);
+    try {
+      DateTime now = DateTime.now();
+      await createAvailabilityForWeek(doctorId, now);
+    } catch (e) {
+      throw Exception('Error creating availability during signup: $e');
+    }
   }
 
   Future<void> createAvailabilityFromLastDate(String doctorId) async {
-    DateTime lastAvailabilityDate =
-        await getLastAvailabilityDateFromDatabase(doctorId);
-    lastAvailabilityDate = lastAvailabilityDate.add(Duration(days: 1));
-    await createAvailabilityForMonth(doctorId, lastAvailabilityDate);
+    try {
+      DateTime lastAvailabilityDate =
+          await getLastAvailabilityDateFromDatabase(doctorId);
+      lastAvailabilityDate = lastAvailabilityDate.add(Duration(days: 1));
+      await createAvailabilityForMonth(doctorId, lastAvailabilityDate);
+    } catch (e) {
+      throw Exception('Error creating availability from last date: $e');
+    }
   }
 
   Future<DateTime> getLastAvailabilityDateFromDatabase(String doctorId) async {
@@ -102,12 +164,13 @@ class AvailabilityService {
 
   Future<void> setAvailabilityToUnavailable(String availabilityId) async {
     try {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('availability')
-          .doc(availabilityId)
+          .where('availabilityId', isEqualTo: availabilityId)
           .get();
 
-      if (snapshot.exists) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot snapshot = querySnapshot.docs.first;
         await snapshot.reference.update({'status': false});
       } else {
         throw Exception('Availability not found');
@@ -153,12 +216,13 @@ class AvailabilityService {
   Future<void> addAppointmentIdToAvailability(
       String availabilityId, String appointmentId) async {
     try {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('availability')
-          .doc(availabilityId)
+          .where('availabilityId', isEqualTo: availabilityId)
           .get();
 
-      if (snapshot.exists) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot snapshot = querySnapshot.docs.first;
         await snapshot.reference.update({'appointmentId': appointmentId});
       } else {
         throw Exception('Availability not found');
@@ -186,6 +250,34 @@ class AvailabilityService {
       print(
           'Error occurred while removing appointment ID from availability: $e');
       rethrow;
+    }
+  }
+
+  Future<List<DateTimeRange>> getAvailableTimeSlotsForDay(
+      String doctorId, DateTime selectedDay) async {
+    try {
+      List<AvailabilityModel> availabilities =
+          await getDoctorAvailabilies(doctorId);
+
+      availabilities = availabilities.where((availability) {
+        return availability.date.year == selectedDay.year &&
+            availability.date.month == selectedDay.month &&
+            availability.date.day == selectedDay.day &&
+            availability.status == true;
+      }).toList();
+
+      List<DateTimeRange> timeSlots = availabilities
+          .map((availability) => DateTimeRange(
+                start: availability.startTime,
+                end: availability.endTime,
+              ))
+          .toList();
+
+      timeSlots.sort((a, b) => a.start.compareTo(b.start));
+
+      return timeSlots;
+    } catch (e) {
+      throw Exception('Error occurred while getting available time slots: $e');
     }
   }
 

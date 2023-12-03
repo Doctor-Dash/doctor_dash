@@ -1,5 +1,6 @@
 import 'package:doctor_dash/main.dart';
 import 'package:doctor_dash/views/auth_views/password_reset_view.dart';
+import 'package:doctor_dash/views/patient_views/doctor_search.dart';
 import 'package:doctor_dash/views/patient_views/patient_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,11 +25,7 @@ class _PatientSignInState extends State<PatientSignIn> {
         password: _passwordController.text.trim(),
       );
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (_) => const MyHomePage(
-                  title: "Patient's Search Page",
-                )),
-      );
+          MaterialPageRoute(builder: (_) => DoctorSearchView()));
     } on FirebaseAuthException catch (e) {
       setState(() {
         final regex = RegExp(r'\[([^)]+)\]');

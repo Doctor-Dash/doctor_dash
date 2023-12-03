@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_dash/views/auth_views/doctor_or_patient_choice_view.dart';
+import 'package:doctor_dash/views/patient_views/doctor_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-import './views/doctor_views/doctor_signup.dart';
-import './views/doctor_views/doctor_signin.dart';
-import './views/auth_views/doctor_or_patient_choice_view.dart';
 import 'views/patient_views/patient_profile.dart';
 
 Future<void> main() async {
@@ -41,11 +39,11 @@ class MyApp extends StatelessWidget {
                     ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (patientSnapshot.data == true) {
-                  return const MyHomePage(title: "Patient's Search Page:");
-                  //TODO: should be Patient's Search page
+                  return DoctorSearchView();
                 } else {
-                  return const MyHomePage(title: "Doctor's Profile Page:");
-                  //TODO: should be doctor profile page
+                  return const MyHomePage(
+                      title:
+                          "Doctor's Profile Page:"); //TODO: should be doctor profile page
                 }
               },
             );

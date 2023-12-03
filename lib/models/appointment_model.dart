@@ -6,8 +6,8 @@ class AppointmentModel {
   final String patientId;
   final String availabilityId;
   final String clinicId;
-  final List<String>? doctorFilesPath; 
-  final List<String>? patientFilesPath; 
+  final List<String>? doctorFilesPath;
+  final List<String>? patientFilesPath;
   final List<String>? doctorNotes;
   final List<String>? patientNotes;
 
