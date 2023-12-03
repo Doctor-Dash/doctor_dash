@@ -198,12 +198,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (!isPastAppointment) // For upcoming appointments
+              if (!isPastAppointment)
                 ElevatedButton(
                   onPressed: () => _navigateToBookingPage(appointmentDetails),
                   child: const Text('Reschedule'),
                 ),
-              if (isPastAppointment) // For past appointments
+              if (isPastAppointment)
                 ElevatedButton(
                   onPressed: () =>
                       _navigateToFeedbackPage(appointmentDetails.doctor!),
