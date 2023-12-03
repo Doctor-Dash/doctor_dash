@@ -1,5 +1,6 @@
 import 'package:doctor_dash/controllers/appointment_controller.dart';
 import 'package:doctor_dash/controllers/availability_controller.dart';
+import 'package:doctor_dash/controllers/patient_controller.dart';
 import 'package:doctor_dash/models/appointment_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class _BookingPageState extends State<BookingPage> {
 
   final AvailabilityService _availabilityService = AvailabilityService();
   final AppointmentService _appointmentService = AppointmentService();
+  final PatientService _patientService = PatientService();
 
   @override
   void initState() {
@@ -111,10 +113,15 @@ class _BookingPageState extends State<BookingPage> {
 
                     try {
                       await _appointmentService.addAppointment(appointment);
+
                       await _availabilityService.addAppointmentIdToAvailability(
                           currAvailabilityId, currAppointmentId);
+
                       await _availabilityService
                           .setAvailabilityToUnavailable(currAvailabilityId);
+
+                      await _patientService.addAppointmentIdToPatient(
+                          currPatient!, currAppointmentId);
 
                       showSnackBar(context, 'Appointment booked!');
                     } catch (e) {
