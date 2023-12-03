@@ -150,6 +150,9 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
         tempRatings[doctor.doctorId] = avgRating;
       }
 
+      filteredDoctors.sort((a, b) =>
+          tempRatings[b.doctorId]!.compareTo(tempRatings[a.doctorId] as num));
+
       setState(() {
         doctors = filteredDoctors;
         doctorRatings = tempRatings;
