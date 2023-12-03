@@ -38,6 +38,33 @@ class ClinicService {
       throw Exception('Error fetching clinic: $e');
     }
   }
+ Future<void> updateClinic(ClinicModel clinic) async {
+  if (user == null) {
+    throw FirebaseAuthException(
+      code: 'unauthenticated',
+      message: 'User must be logged in to update a clinic.'
+    );
+  }
+
+  try {
+    var querySnapshot = await clinicCollection
+        .where('clinicId', isEqualTo: clinic.clinicId)
+        .limit(1) 
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      throw Exception('No clinic found with the id: ${clinic.clinicId}');
+    }
+
+    String documentId = querySnapshot.docs.first.id;
+
+    await clinicCollection.doc(documentId).update(clinic.toMap());
+  } on FirebaseAuthException catch (authError) {
+    throw Exception('Authentication Error: ${authError.message}');
+  } on FirebaseException catch (firestoreError) {
+    throw Exception('Firestore Error: ${firestoreError.message}');
+  }
+}
 
   Future<ClinicModel?> getClinicModel(String clinicId) async {
     if (user == null) {

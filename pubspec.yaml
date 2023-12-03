@@ -45,6 +45,7 @@ dependencies:
   json_annotation: ^4.8.1
   table_calendar: ^3.0.9
   uuid: ^4.2.1
+  font_awesome_flutter: ^10.6.0 
 
 
 dev_dependencies:
