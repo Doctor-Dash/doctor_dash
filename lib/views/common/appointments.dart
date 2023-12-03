@@ -166,7 +166,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
           }
         },
       ),
-
     );
   }
 }
