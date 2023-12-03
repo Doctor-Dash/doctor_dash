@@ -46,9 +46,6 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
-
-    print(widget.existingAppointmentId);
-    print(widget.existingAvailabilityId);
     _focusedDay = DateTime.now();
     _fetchAvailableTimeSlots();
   }
