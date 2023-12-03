@@ -97,36 +97,11 @@ class _BookingPageState extends State<BookingPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                 child: ElevatedButton(
                   onPressed: () async {
-                    var currPatient = FirebaseAuth.instance.currentUser?.uid;
-
-                    String currAppointmentId =
-                        '${widget.doctorId}$_startTime$currPatient';
-                    String currAvailabilityId = '${widget.doctorId}$_startTime';
-
-                    AppointmentModel appointment = AppointmentModel(
-                      appointmentId: currAppointmentId,
-                      doctorId: widget.doctorId,
-                      patientId: '$currPatient',
-                      availabilityId: currAvailabilityId,
-                      clinicId: widget.clinicId,
-                    );
-
-                    try {
-                      await _appointmentService.addAppointment(appointment);
-
-                      await _availabilityService.addAppointmentIdToAvailability(
-                          currAvailabilityId, currAppointmentId);
-
-                      await _availabilityService
-                          .setAvailabilityToUnavailable(currAvailabilityId);
-
-                      await _patientService.addAppointmentIdToPatient(
-                          currPatient!, currAppointmentId);
-
-                      showSnackBar(context, 'Appointment booked!');
-                    } catch (e) {
+                    if (_dateSelected && _timeSelected) {
+                      await bookAppointment();
+                    } else {
                       showErrorSnackBar(
-                          context, 'Error booking appointment: $e');
+                          context, 'Please select a date and time');
                     }
                   },
                   child: const Text('Book Appointment'),
@@ -135,6 +110,38 @@ class _BookingPageState extends State<BookingPage> {
         ],
       ),
     );
+  }
+
+  Future<void> bookAppointment() async {
+    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+
+    String currAppointmentId = '${widget.doctorId}$_startTime$currPatient';
+    String currAvailabilityId = '${widget.doctorId}$_startTime';
+
+    AppointmentModel appointment = AppointmentModel(
+      appointmentId: currAppointmentId,
+      doctorId: widget.doctorId,
+      patientId: '$currPatient',
+      availabilityId: currAvailabilityId,
+      clinicId: widget.clinicId,
+    );
+
+    try {
+      await _appointmentService.addAppointment(appointment);
+
+      await _availabilityService.addAppointmentIdToAvailability(
+          currAvailabilityId, currAppointmentId);
+
+      await _availabilityService
+          .setAvailabilityToUnavailable(currAvailabilityId);
+
+      await _patientService.addAppointmentIdToPatient(
+          currPatient!, currAppointmentId);
+
+      showSnackBar(context, 'Appointment booked!');
+    } catch (e) {
+      showErrorSnackBar(context, 'Error booking appointment: $e');
+    }
   }
 
   Widget _tableCalendar() {
