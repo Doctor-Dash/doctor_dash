@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
+import 'package:doctor_dash/utils/specialties.dart';
 
 class EditDoctorProfile extends StatefulWidget {
   final DoctorModel doctor;
@@ -13,20 +14,21 @@ class EditDoctorProfile extends StatefulWidget {
 class _EditDoctorProfileState extends State<EditDoctorProfile> {
   final DoctorService _doctorService = DoctorService();
   final _formKey = GlobalKey<FormState>();
-  late DoctorModel doctor = widget.doctor;
-
+  late DoctorModel doctor;
+  
   late String name;
   late String phone;
   late String email;
-  late String specialty;
+  late String currentSpecialty; // Specialty selected in the dropdown
 
   @override
   void initState() {
     super.initState();
-    name = widget.doctor.name;
-    phone = widget.doctor.phone;
-    email = widget.doctor.email;
-    specialty = widget.doctor.speciality;
+    doctor = widget.doctor; // Use the doctor passed in to initialize form fields
+    name = doctor.name;
+    phone = doctor.phone;
+    email = doctor.email;
+    currentSpecialty = doctor.speciality; // Initialize with the current specialty from the doctor
   }
 
   Future<void> _updateDoctorData() async {
@@ -37,7 +39,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
         name: name,
         phone: phone,
         email: email,
-        speciality: specialty,
+        speciality: currentSpecialty, // Use the current specialty
         clinicId: doctor.clinicId,
         availability: doctor.availability,
         appointmentId: doctor.appointmentId,
@@ -88,24 +90,36 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
             TextFormField(
               initialValue: doctor.email,
               decoration: InputDecoration(labelText: 'Email'),
-              enabled: false, // Email is not editable
+              enabled: false, 
             ),
-            TextFormField(
-              initialValue: doctor.speciality,
-              decoration: InputDecoration(labelText: 'Specialty'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your specialty';
-                }
-                return null;
+ DropdownButtonFormField<String>(
+              value: currentSpecialty,
+              decoration: InputDecoration(
+                labelText: 'Specialty',
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  currentSpecialty = newValue!;
+                });
               },
+              items: MedicalSpecialistsUtil.getSpecialists().map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              validator: (value) => value == null ? 'Please select a specialty' : null,
               onSaved: (value) {
-                specialty = value!;
+                // No need for 'specialty' variable, 'currentSpecialty' is used for saving
+                currentSpecialty = value!;
               },
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 20.0),
+              padding: const EdgeInsets.only(top: 20.0),
               child: ElevatedButton(
                 onPressed: _updateDoctorData,
                 child: const Text('Update'),

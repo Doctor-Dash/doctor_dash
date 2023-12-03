@@ -162,12 +162,10 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
                   SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () async {
-                      // Wait for the result from ClinicViewPage
                       final result = await Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => ClinicViewPage()),
                       );
 
-                      // If a clinic was added, refresh the clinic list
                       if (result == true) {
                         _loadClinics();
                       }

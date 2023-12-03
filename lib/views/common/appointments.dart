@@ -118,7 +118,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   child: Card(
                     child: ListTile(
                       onTap: () {
-
+                        // Handle card tap
                       },
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
