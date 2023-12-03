@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_dash/controllers/appointment_controller.dart';
 import 'package:doctor_dash/controllers/availability_controller.dart';
 import 'package:doctor_dash/controllers/patient_controller.dart';
@@ -11,9 +12,17 @@ import 'package:doctor_dash/utils/utils.dart';
 class BookingPage extends StatefulWidget {
   final String doctorId;
   final String clinicId;
+  final String? existingAppointmentId;
+  final String? existingAvailabilityId;
+  final bool isEdit;
 
   const BookingPage(
-      {super.key, required this.doctorId, required this.clinicId});
+      {super.key,
+      required this.doctorId,
+      required this.clinicId,
+      this.existingAppointmentId,
+      this.existingAvailabilityId,
+      this.isEdit = false});
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -57,7 +66,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Appointment'),
+        title: Text(widget.isEdit ? 'Edit Appointment' : 'Book Appointment'),
       ),
       body: CustomScrollView(
         slivers: <Widget>[
@@ -97,14 +106,19 @@ class _BookingPageState extends State<BookingPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                 child: ElevatedButton(
                   onPressed: () async {
+                    if (widget.isEdit && widget.existingAppointmentId != null) {
+                      await _rescheduleAppointment();
+                    }
                     if (_dateSelected && _timeSelected) {
-                      await bookAppointment();
+                      await _bookAppointment();
                     } else {
                       showErrorSnackBar(
                           context, 'Please select a date and time');
                     }
                   },
-                  child: const Text('Book Appointment'),
+                  child: Text(widget.isEdit
+                      ? 'Update Appointment'
+                      : 'Book Appointment'),
                 )),
           ),
         ],
@@ -112,7 +126,23 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  Future<void> bookAppointment() async {
+  Future<void> _rescheduleAppointment() async {
+    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+    try {
+      await _patientService.deleteAppointmentIdToPatient(
+          currPatient!, widget.existingAppointmentId!);
+      await _availabilityService
+          .setAvailabilityToAvailable(widget.existingAvailabilityId!);
+      await _availabilityService
+          .removeAppointmentIdFromAvailability(widget.existingAvailabilityId!);
+      await _appointmentService
+          .deleteAppointment(widget.existingAppointmentId!);
+    } catch (e) {
+      throw Exception('Failed to reset appointment: $e');
+    }
+  }
+
+  Future<void> _bookAppointment() async {
     var currPatient = FirebaseAuth.instance.currentUser?.uid;
 
     String currAppointmentId = '${widget.doctorId}$_startTime$currPatient';

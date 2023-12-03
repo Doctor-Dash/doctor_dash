@@ -50,9 +50,16 @@ class AppointmentService {
     _ensureAuthenticated();
 
     try {
-      final appointmentDoc =
-          appointmentCollection.doc(updatedAppointment.appointmentId);
-      await appointmentDoc.update(updatedAppointment.toMap());
+      final QuerySnapshot querySnapshot = await appointmentCollection
+          .where('appointmentId', isEqualTo: updatedAppointment.appointmentId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final DocumentSnapshot appointmentDoc = querySnapshot.docs.first;
+        await appointmentDoc.reference.update(updatedAppointment.toMap());
+      } else {
+        throw Exception('Appointment not found');
+      }
     } catch (e) {
       throw Exception('Error updating appointment: $e');
     }
@@ -62,8 +69,13 @@ class AppointmentService {
     _ensureAuthenticated();
 
     try {
-      final appointmentDoc = appointmentCollection.doc(appointmentId);
-      await appointmentDoc.delete();
+      final QuerySnapshot querySnapshot = await appointmentCollection
+          .where('appointmentId', isEqualTo: appointmentId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
     } catch (e) {
       throw Exception('Error deleting appointment: $e');
     }

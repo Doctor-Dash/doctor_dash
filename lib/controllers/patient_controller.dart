@@ -60,6 +60,31 @@ class PatientService {
     }
   }
 
+  Future<void> deleteAppointmentIdToPatient(
+      String patientId, String appointmentId) async {
+    try {
+      DocumentSnapshot patientDoc =
+          await patientCollection.doc(patientId).get();
+
+      if (patientDoc.exists) {
+        PatientModel patient = PatientModel.fromMap(patientDoc);
+
+        if (patient.appointments != null &&
+            patient.appointments!.contains(appointmentId)) {
+          patient.appointments!.remove(appointmentId);
+        } else {
+          print('Appointment ID not found or no appointments for patient');
+        }
+
+        await patientCollection.doc(patientId).update(patient.toMap());
+      } else {
+        throw Exception('No document found with the patientId: $patientId');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete appointment ID from patient: $e');
+    }
+  }
+
   Future<void> updatePatient(PatientModel patient) async {
     try {
       QuerySnapshot querySnapshot = await patientCollection
