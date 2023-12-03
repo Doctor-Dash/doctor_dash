@@ -112,59 +112,59 @@ class _AppointmentPageState extends State<AppointmentPage> {
       ),
       body: FutureBuilder<List<AppointmentDetails>>(
         future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            List<AppointmentDetails> appointmentDetailsList = snapshot.data!;
-            return appointmentDetailsList.isEmpty
-                ? const Center(child: Text('You have no appointments'))
-                : ListView.builder(
-                    itemCount: appointmentDetailsList.length,
-                    itemBuilder: (context, index) {
-                      final appointmentDetails = appointmentDetailsList[index];
-                      final appointmentTime = appointmentDetails.availability;
-                      final dateFormatDate = DateFormat('d MMM yyyy');
-                      final dateFormatTime = DateFormat('h:mm a');
-                      final date =
-                          dateFormatDate.format(appointmentTime!.startTime);
-                      final startTime =
-                          dateFormatTime.format(appointmentTime.startTime);
-                      final endTime =
-                          dateFormatTime.format(appointmentTime.endTime);
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Card(
-                          child: ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AppointmentDetailsPage(
-                                      appointmentId:
-                                          appointmentDetails.appointmentId,
-                                      userId: widget.userId),
-                                ),
-                              );
-                            },
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(isPatient
-                                    ? appointmentDetails.doctor!.name
-                                    : appointmentDetails.patient!.name),
-                                Text('$date : $startTime - $endTime'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-          }
-        },
+        builder: (context, snapshot) => _buildBodyBasedOnSnapshot(snapshot),
+      ),
+    );
+  }
+
+  Widget _buildBodyBasedOnSnapshot(
+      AsyncSnapshot<List<AppointmentDetails>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator();
+    } else if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return const Center(child: Text('You have no appointments'));
+    }
+    return _buildAppointmentList(snapshot.data!);
+  }
+
+  Widget _buildAppointmentList(
+      List<AppointmentDetails> appointmentDetailsList) {
+    return ListView.builder(
+      itemCount: appointmentDetailsList.length,
+      itemBuilder: (context, index) =>
+          _buildAppointmentTile(appointmentDetailsList[index]),
+    );
+  }
+
+  Widget _buildAppointmentTile(AppointmentDetails appointmentDetails) {
+    final dateFormat = DateFormat('d MMM yyyy, h:mm a');
+    final startTime =
+        dateFormat.format(appointmentDetails.availability!.startTime);
+    final endTime = dateFormat.format(appointmentDetails.availability!.endTime);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Card(
+        child: ListTile(
+          onTap: () =>
+              _navigateToAppointmentDetails(appointmentDetails.appointmentId),
+          title: Text(isPatient
+              ? appointmentDetails.doctor!.name
+              : appointmentDetails.patient!.name),
+          subtitle: Text('$startTime - $endTime'),
+        ),
+      ),
+    );
+  }
+
+  void _navigateToAppointmentDetails(String appointmentId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AppointmentDetailsPage(
+            appointmentId: appointmentId, userId: widget.userId),
       ),
     );
   }
