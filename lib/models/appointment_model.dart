@@ -6,10 +6,10 @@ class AppointmentModel {
   final String patientId;
   final String availabilityId;
   final String clinicId;
-  final List<String>? doctorFilesPath;
-  final List<String>? patientFilesPath;
-  final List<String>? doctorNotes;
-  final List<String>? patientNotes;
+  List<String>? doctorFilesPath;
+  List<String>? patientFilesPath;
+  List<String>? doctorNotes;
+  List<String>? patientNotes;
 
   AppointmentModel({
     required this.appointmentId,
@@ -31,10 +31,26 @@ class AppointmentModel {
       patientId: map['patientId'] as String,
       availabilityId: map['availabilityId'] as String,
       clinicId: map['clinicId'] as String,
-      doctorFilesPath: map['doctorFilesPath'] as List<String>?,
-      patientFilesPath: map['patientFilesPath'] as List<String>?,
-      doctorNotes: map['doctorNotes'] as List<String>?,
-      patientNotes: map['patientNotes'] as List<String>?,
+      doctorFilesPath: map['doctorFilesPath'] != null
+          ? (map['doctorFilesPath'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      patientFilesPath: map['patientFilesPath'] != null
+          ? (map['patientFilesPath'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      doctorNotes: map['doctorNotes'] != null
+          ? (map['doctorNotes'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      patientNotes: map['patientNotes'] != null
+          ? (map['patientNotes'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
     );
   }
 

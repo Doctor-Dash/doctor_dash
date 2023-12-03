@@ -12,6 +12,8 @@ import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
+import 'uploadFilePage.dart';
+import 'upload_note_page.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   final String userId;
@@ -30,11 +32,35 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   final ClinicService clinicService = ClinicService();
   final AvailabilityService availabilityService = AvailabilityService();
   bool isPatient = false;
+  bool isPast = false;
 
   @override
   void initState() {
     super.initState();
+    isPastAppointment();
     checkPatient();
+  }
+
+  Future<void> isPastAppointment() async {
+    try {
+      QuerySnapshot appointmentSnapshot =
+          await appointmentService.getAppointment(widget.appointmentId);
+
+      AppointmentModel appointment =
+          AppointmentModel.fromMap(appointmentSnapshot.docs.first);
+
+      QuerySnapshot availabilitySnapshot =
+          await availabilityService.getAvailability(appointment.availabilityId);
+      AvailabilityModel availability =
+          AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
+
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+      isPast = availability.startTime.isBefore(today);
+    } catch (e) {
+      print('Error checking past appointment: $e');
+      rethrow;
+    }
   }
 
   Future<void> checkPatient() async {
@@ -83,8 +109,6 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         doctorNotes: appointment.doctorNotes,
         patientNotes: appointment.patientNotes,
       );
-
-      print(appointmentDetails);
       return appointmentDetails;
     } catch (e) {
       print('Error fetching data: $e');
@@ -110,7 +134,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             final appointmentTime = appointment.availability;
             final dateFormatDate = DateFormat('d MMM yyyy');
             final dateFormatTime = DateFormat('h:mm a');
-            final date = dateFormatDate.format(appointmentTime.startTime);
+            final date = dateFormatDate.format(appointmentTime!.startTime);
             final startTime = dateFormatTime.format(appointmentTime.startTime);
             final endTime = dateFormatTime.format(appointmentTime.endTime);
             return ListView(
@@ -140,8 +164,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold)),
                                 Text(isPatient
-                                    ? appointment.doctor.name
-                                    : appointment.patient.name),
+                                    ? appointment.doctor!.name
+                                    : appointment.patient!.name),
                               ],
                             ),
                             Row(
@@ -163,8 +187,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold)),
                                 Text(isPatient
-                                    ? appointment.clinic.phoneNumber
-                                    : appointment.patient.phone),
+                                    ? appointment.clinic!.phoneNumber
+                                    : appointment.patient!.phone),
                               ],
                             ),
                             Row(
@@ -177,8 +201,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold)),
                                 Text(isPatient
-                                    ? '${appointment.clinic.street} ${appointment.clinic.city} ${appointment.clinic.province} ${appointment.clinic.postalCode}'
-                                    : '${appointment.patient.street} ${appointment.patient.city} ${appointment.patient.province} ${appointment.patient.postalCode}'),
+                                    ? '${appointment.clinic!.street} ${appointment.clinic!.city} ${appointment.clinic!.province} ${appointment.clinic!.postalCode}'
+                                    : '${appointment.patient!.street} ${appointment.patient!.city} ${appointment.patient!.province} ${appointment.patient!.postalCode}'),
                               ],
                             ),
                           ],
@@ -215,7 +239,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Age:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('${appointment.patient.age}'),
+                                      Text('${appointment.patient!.age}'),
                                     ],
                                   ),
                                   Row(
@@ -225,7 +249,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Weight:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('${appointment.patient.weight}'),
+                                      Text('${appointment.patient!.weight}'),
                                     ],
                                   ),
                                   Row(
@@ -235,7 +259,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       const Text('Height:',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('${appointment.patient.height}'),
+                                      Text('${appointment.patient!.height}'),
                                     ],
                                   ),
                                 ],
@@ -244,6 +268,40 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                           ),
                         ),
                       ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UploadFilePage(
+                                    appointmentId: appointment.appointmentId),
+                              ),
+                            );
+                          },
+                          child: Text('Upload File'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UploadNotePage(
+                                    appointmentId: appointment.appointmentId),
+                              ),
+                            );
+                          },
+                          child: Text('Upload Notes'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             );
           }
