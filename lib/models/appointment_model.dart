@@ -41,8 +41,16 @@ class AppointmentModel {
               .map((item) => item as String)
               .toList()
           : null,
-      doctorNotes: map['doctorNotes'],
-      patientNotes: map['patientNotes'],
+      doctorNotes: map['doctorNotes'] != null
+          ? (map['doctorNotes'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      patientNotes: map['patientNotes'] != null
+          ? (map['patientNotes'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
     );
   }
 

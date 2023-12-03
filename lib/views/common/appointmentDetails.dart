@@ -13,6 +13,7 @@ import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
 import 'uploadFilePage.dart';
+import 'upload_note_page.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   final String userId;
@@ -270,17 +271,34 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UploadFilePage(
-                                appointmentId: appointment.appointmentId),
-                          ),
-                        );
-                      },
-                      child: Text('Upload File/Notes'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UploadFilePage(
+                                    appointmentId: appointment.appointmentId),
+                              ),
+                            );
+                          },
+                          child: Text('Upload File'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UploadNotePage(
+                                    appointmentId: appointment.appointmentId),
+                              ),
+                            );
+                          },
+                          child: Text('Upload Notes'),
+                        ),
+                      ],
                     ),
                   ),
                 ),

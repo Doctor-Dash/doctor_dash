@@ -97,7 +97,7 @@ class _UploadFilePageState extends State<UploadFilePage> {
                   Image.file(
                     File(_image!.path),
                     height: 100,
-                    width: 100, 
+                    width: 100,
                   ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -194,12 +194,13 @@ class _UploadFilePageState extends State<UploadFilePage> {
       appBar: AppBar(
         title: const Text('View/Upload Files'),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _selectImage,
+        child: Icon(Icons.add_a_photo),
+        tooltip: 'Select Image',
+      ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: _selectImage,
-            child: const Text('Select Image'),
-          ),
           const Text('Patient Files',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Expanded(
