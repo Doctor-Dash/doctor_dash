@@ -89,4 +89,29 @@ class DoctorService {
       throw Exception('Error fetching doctor: $e');
     }
   }
+
+  Future<void> addAppointmentIdToDoctor(
+      String doctorId, String appointmentId) async {
+    try {
+      QuerySnapshot doctorsQuery =
+          await doctorsCollection.where('doctorId', isEqualTo: doctorId).get();
+
+      if (doctorsQuery.docs.isNotEmpty) {
+        DocumentSnapshot doctorDoc = doctorsQuery.docs.first;
+        DoctorModel doctor = DoctorModel.fromMap(doctorDoc);
+
+        if (doctor.appointmentId == null) {
+          doctor.appointmentId = [appointmentId];
+        } else {
+          doctor.appointmentId!.add(appointmentId);
+        }
+
+        await doctorsCollection.doc(doctorId).update(doctor.toMap());
+      } else {
+        throw Exception('No document found with the doctorId: $doctorId');
+      }
+    } catch (e) {
+      throw Exception('Failed to add appointment ID to doctor: $e');
+    }
+  }
 }
