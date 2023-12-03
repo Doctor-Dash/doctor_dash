@@ -36,8 +36,31 @@ class PatientService {
     return patient.appointments ?? [];
   }
 
+  Future<void> addAppointmentIdToPatient(
+      String patientId, String appointmentId) async {
+    try {
+      DocumentSnapshot patientDoc =
+          await patientCollection.doc(patientId).get();
+
+      if (patientDoc.exists) {
+        PatientModel patient = PatientModel.fromMap(patientDoc);
+
+        if (patient.appointments == null) {
+          patient.appointments = [appointmentId];
+        } else {
+          patient.appointments!.add(appointmentId);
+        }
+
+        await patientCollection.doc(patientId).update(patient.toMap());
+      } else {
+        throw Exception('No document found with the patientId: $patientId');
+      }
+    } catch (e) {
+      throw Exception('Failed to add appointment ID to patient: $e');
+    }
+  }
+
   Future<void> updatePatient(PatientModel patient) async {
-    print(patient.patientId);
     try {
       QuerySnapshot querySnapshot = await patientCollection
           .where('patientId', isEqualTo: patient.patientId)
