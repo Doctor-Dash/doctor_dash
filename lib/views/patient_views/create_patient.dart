@@ -1,4 +1,5 @@
 import 'package:doctor_dash/main.dart';
+import 'package:doctor_dash/views/patient_views/doctor_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor_dash/models/patient_model.dart';
@@ -158,30 +159,25 @@ class _CreatePatientState extends State<CreatePatient> {
       String? userEmail = _auth.currentUser!.email;
 
       PatientModel newPatient = PatientModel(
-        patientId: userId,
-        name: _nameController.text,
-        phone: _phoneController.text,
-        email: userEmail ?? '',
-        age: int.parse(_ageController.text),
-        weight: int.parse(_weightController.text),
-        height: int.parse(_heightController.text),
-        street: _streetController.text,
-        city: _cityController.text,
-        province: _provinceController.text,
-        postalCode: _postalCodeController.text,
-      );
+          patientId: userId,
+          name: _nameController.text,
+          phone: _phoneController.text,
+          email: userEmail ?? '',
+          age: int.parse(_ageController.text),
+          weight: int.parse(_weightController.text),
+          height: int.parse(_heightController.text),
+          street: _streetController.text,
+          city: _cityController.text,
+          province: _provinceController.text,
+          postalCode: _postalCodeController.text,
+          appointments: []);
 
       _patientService.addPatient(newPatient);
     } catch (e) {
       showSnackBar(context, e.toString());
     }
 
-    // TODO: Navigate to Patient Home Screen (Search Page)
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-                  title: 'Patient Search Page',
-                )));
+        context, MaterialPageRoute(builder: (context) => DoctorSearchView()));
   }
 }
