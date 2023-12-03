@@ -38,8 +38,13 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   }
 
   Future<void> checkPatient() async {
-    isPatient = await patientService.isPatient();
-    setState(() {});
+    try {
+      isPatient = await patientService.isPatient();
+      setState(() {});
+    } catch (e) {
+      print('Error checking patient: $e');
+      rethrow;
+    }
   }
 
   Future<AppointmentDetails> fetchData() async {
