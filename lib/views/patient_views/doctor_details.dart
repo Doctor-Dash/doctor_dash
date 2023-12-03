@@ -52,7 +52,7 @@ class DoctorDetails extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'Feedbacks',
+              'Feedback',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Expanded(
@@ -119,7 +119,7 @@ class DoctorDetails extends StatelessWidget {
                   ),
                   TextSpan(
                     text: doctor.name,
-                    style: const TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ],
               ),
@@ -172,29 +172,75 @@ class DoctorDetails extends StatelessWidget {
   }
 
   Widget clinicInfo(ClinicModel clinic) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Name: ${clinic.name}',
-          style: TextStyle(fontSize: 20),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Name: ',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: clinic.name,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Address: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text:
+                        '${clinic.street}, ${clinic.city}, ${clinic.province}, ${clinic.postalCode}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.phone, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  clinic.phoneNumber,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.email, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  clinic.email,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
         ),
-        SizedBox(height: 8),
-        Text(
-          'Address: ${clinic.street}, ${clinic.city}, ${clinic.province}, ${clinic.postalCode}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Phone: ${clinic.phoneNumber}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Email: ${clinic.email}',
-          style: TextStyle(fontSize: 18),
-        ),
-      ],
+      ),
     );
   }
 
