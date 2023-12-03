@@ -79,7 +79,7 @@ Widget build(BuildContext context) {
               children: [
                 _buildDoctorInfoCard(),
                 for (var clinic in clinics) _buildClinicInfoCard(clinic),
-                _buildAppointmentsButton(), // Appointments button is part of the scrollable content
+                _buildAppointmentsButton(), 
               ],
             ),
           ),
