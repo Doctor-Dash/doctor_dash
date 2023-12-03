@@ -26,8 +26,16 @@ class DoctorDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            const Text(
+              'Doctor Info',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             doctorInfo(doctor),
             const SizedBox(height: 16),
+            const Text(
+              'Clinic Info',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             FutureBuilder<ClinicModel?>(
               future: clinicService.getClinicModel(doctor.clinicId[0]),
               builder: (context, snapshot) {
@@ -43,6 +51,10 @@ class DoctorDetails extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
+            const Text(
+              'Feedbacks',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<List<FeedbackModel>>(
@@ -92,10 +104,6 @@ class DoctorDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Doctor Info',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        Text(
           'Name: ${doctor.name}',
           style: TextStyle(fontSize: 20),
         ),
@@ -123,10 +131,6 @@ class DoctorDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Clinic Info',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        Text(
           'Name: ${clinic.name}',
           style: TextStyle(fontSize: 20),
         ),
@@ -153,10 +157,6 @@ class DoctorDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Text(
-          'Feedbacks',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
         for (var feedback in feedbacks)
           Card(
             elevation: 4,
