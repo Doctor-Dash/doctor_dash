@@ -6,12 +6,13 @@ class ClinicService {
   final User? user = FirebaseAuth.instance.currentUser;
   final CollectionReference clinicCollection;
 
-  ClinicService() : clinicCollection = FirebaseFirestore.instance.collection('clinics');
- Future<DocumentReference> addClinic(ClinicModel clinic) async {
+  ClinicService()
+      : clinicCollection = FirebaseFirestore.instance.collection('clinics');
+  Future<DocumentReference> addClinic(ClinicModel clinic) async {
     if (user == null) {
       throw FirebaseAuthException(
-        code: 'unauthenticated',
-        message: 'User must be logged in to add a clinic.');
+          code: 'unauthenticated',
+          message: 'User must be logged in to add a clinic.');
     }
 
     try {
@@ -23,7 +24,22 @@ class ClinicService {
     }
   }
 
-  Future<ClinicModel?> getClinic(String clinicId) async {
+  Future<QuerySnapshot> getClinic(String clinicId) async {
+    if (user == null) {
+      throw FirebaseAuthException(
+          code: 'unauthenticated',
+          message: 'User must be logged in to get clinic information.');
+    }
+    try {
+      return await clinicCollection
+          .where('clinicId', isEqualTo: clinicId)
+          .get();
+    } catch (e) {
+      throw Exception('Error fetching clinic: $e');
+    }
+  }
+
+  Future<ClinicModel?> getClinicModel(String clinicId) async {
     if (user == null) {
       throw FirebaseAuthException(
           code: 'unauthenticated',
@@ -39,27 +55,6 @@ class ClinicService {
       }
     } catch (e) {
       throw Exception('Error fetching clinic: $e');
-    }
-  }
-
-  Future<ClinicModel?> getClinicOfDoctor(String doctorId) async {
-    if (user == null) {
-      throw FirebaseAuthException(
-        code: 'unauthenticated',
-        message: 'User must be logged in to get clinic information.',
-      );
-    }
-    try {
-      var querySnapshot = await clinicCollection
-          .where('doctors', arrayContains: doctorId)
-          .get();
-      if (querySnapshot.docs.isNotEmpty) {
-        return ClinicModel.fromMap(querySnapshot.docs.first);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      throw Exception('Error fetching clinic of doctor: $e');
     }
   }
 
@@ -81,12 +76,11 @@ class ClinicService {
     }
   }
 
- Future<List<Map<String, String>>> streamClinicNamesAndIds() async {
+  Future<List<Map<String, String>>> streamClinicNamesAndIds() async {
     if (user == null) {
       throw FirebaseAuthException(
-        code: 'unauthenticated',
-        message: 'User must be logged in to access clinics.'
-      );
+          code: 'unauthenticated',
+          message: 'User must be logged in to access clinics.');
     }
 
     try {
@@ -94,7 +88,7 @@ class ClinicService {
       return querySnapshot.docs.map((doc) {
         var clinic = ClinicModel.fromMap(doc);
         return {
-          'id': clinic.clinicId, 
+          'id': clinic.clinicId,
           'name': clinic.name,
         };
       }).toList();

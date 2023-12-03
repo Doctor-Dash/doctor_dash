@@ -29,7 +29,7 @@ class DoctorDetails extends StatelessWidget {
             doctorInfo(doctor),
             const SizedBox(height: 16),
             FutureBuilder<ClinicModel?>(
-              future: clinicService.getClinic(doctor.clinicId[0]),
+              future: clinicService.getClinicModel(doctor.clinicId[0]),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
