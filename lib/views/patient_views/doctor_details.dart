@@ -100,29 +100,74 @@ class DoctorDetails extends StatelessWidget {
   }
 
   Widget doctorInfo(DoctorModel doctor) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Name: ${doctor.name}',
-          style: TextStyle(fontSize: 20),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Name: ',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: doctor.name,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Speciality: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: doctor.speciality,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.phone, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  doctor.phone,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.email, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  doctor.email,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
         ),
-        SizedBox(height: 8),
-        Text(
-          'Speciality: ${doctor.speciality}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Phone: ${doctor.phone}',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Email: ${doctor.email}',
-          style: TextStyle(fontSize: 18),
-        ),
-      ],
+      ),
     );
   }
 
