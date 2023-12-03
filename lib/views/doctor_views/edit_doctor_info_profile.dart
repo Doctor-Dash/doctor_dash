@@ -19,16 +19,16 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
   late String name;
   late String phone;
   late String email;
-  late String currentSpecialty; // Specialty selected in the dropdown
+  late String currentSpecialty;  
 
   @override
   void initState() {
     super.initState();
-    doctor = widget.doctor; // Use the doctor passed in to initialize form fields
+    doctor = widget.doctor;  
     name = doctor.name;
     phone = doctor.phone;
     email = doctor.email;
-    currentSpecialty = doctor.speciality; // Initialize with the current specialty from the doctor
+    currentSpecialty = doctor.speciality;  
   }
 
   Future<void> _updateDoctorData() async {
@@ -39,7 +39,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
         name: name,
         phone: phone,
         email: email,
-        speciality: currentSpecialty, // Use the current specialty
+        speciality: currentSpecialty,  
         clinicId: doctor.clinicId,
         availability: doctor.availability,
         appointmentId: doctor.appointmentId,
@@ -114,8 +114,7 @@ class _EditDoctorProfileState extends State<EditDoctorProfile> {
               }).toList(),
               validator: (value) => value == null ? 'Please select a specialty' : null,
               onSaved: (value) {
-                // No need for 'specialty' variable, 'currentSpecialty' is used for saving
-                currentSpecialty = value!;
+                 currentSpecialty = value!;
               },
             ),
             Padding(

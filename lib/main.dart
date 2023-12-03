@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle), // Icon for Doctor Profile
+            icon: const Icon(Icons.account_circle), 
             onPressed: () {
               Navigator.push(
                 context,
