@@ -40,8 +40,13 @@ dependencies:
   firebase_storage: ^11.5.1
   cloud_firestore: ^4.13.1
   firebase_ui_auth: ^1.10.0
+  booking_calendar: ^1.1.10
+  intl: ^0.18.1
+  json_annotation: ^4.8.1
+  table_calendar: ^3.0.9
   uuid: ^4.2.1
   font_awesome_flutter: ^10.6.0 
+
 
 dev_dependencies:
   flutter_test:

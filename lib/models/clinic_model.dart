@@ -51,4 +51,9 @@ class ClinicModel {
       doctors: map['doctors'] != null ? List<String>.from(map['doctors']) : [],
     );
   }
+
+  @override
+  String toString() {
+    return 'ClinicModel {clinicId: $clinicId, name: $name, street: $street, city: $city, province: $province, postalCode: $postalCode, phoneNumber: $phoneNumber, email: $email, doctors: $doctors}';
+  }
 }
