@@ -50,7 +50,6 @@ class DoctorService {
     }
   }
 
-  // Get list of doctors by search parameters (input doctor_speciality, List<String> clinic_id's in city of user)
   Future<List<DoctorModel>> getDoctors(
       String speciality, List<String> cityClinicId) async {
     if (user == null) {
@@ -61,7 +60,6 @@ class DoctorService {
     }
 
     try {
-      // Fetch doctors with the specified specialty and city clinic IDs
       var doctorsQuery = doctorsCollection
           .where('speciality', isEqualTo: speciality)
           .where('clinicId', arrayContainsAny: cityClinicId);

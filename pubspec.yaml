@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^4.13.1
   firebase_ui_auth: ^1.10.0
   uuid: ^4.2.1
+  font_awesome_flutter: ^10.6.0 
 
 dev_dependencies:
   flutter_test:

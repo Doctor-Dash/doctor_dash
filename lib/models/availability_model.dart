@@ -42,4 +42,9 @@ class AvailabilityModel {
         status: data['status'] as bool,
         appointmentId: data['appointmentId'] as String?);
   }
+
+  @override
+  String toString() {
+    return 'AvailabilityModel {availabilityId: $availabilityId, doctorId: $doctorId, date: $date, startTime: $startTime, endTime: $endTime, status: $status, appointmentId: $appointmentId}';
+  }
 }

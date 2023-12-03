@@ -8,6 +8,7 @@ import './views/doctor_views/doctor_signup.dart';
 import './views/doctor_views/doctor_signin.dart';
 import './views/auth_views/doctor_or_patient_choice_view.dart';
 import 'views/patient_views/patient_profile.dart';
+import 'package:doctor_dash/views/doctor_views/doctor_profile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,13 +97,20 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
+            icon: const Icon(Icons.account_circle), // Icon for Doctor Profile
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const DoctorProfilePage()),
+              );
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => const DoctorOrPatientChoice(),
-                ),
+                MaterialPageRoute(builder: (_) => const DoctorOrPatientChoice()),
               );
             },
           ),
@@ -113,8 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
             String userId = FirebaseAuth.instance.currentUser!.uid;
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => PatientProfilePage(patientId: userId)),
+              MaterialPageRoute(builder: (context) => PatientProfilePage(patientId: userId)),
             );
           },
         ),
