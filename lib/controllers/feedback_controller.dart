@@ -10,59 +10,19 @@ class FeedbackService {
   FeedbackService()
       : feedbackCollection = FirebaseFirestore.instance.collection('feedback');
 
-  String generateRandomId() {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random();
-    return String.fromCharCodes(
-      List.generate(
-          10, (index) => chars.codeUnitAt(random.nextInt(chars.length))),
-    );
-  }
-
-  Future<String> createFeedback(int rating, String feedbackNote) async {
-    String feedbackId = '';
-    bool isUnique = false;
-
-    while (!isUnique) {
-      feedbackId = generateRandomId();
-      try {
-        final QuerySnapshot querySnapshot = await feedbackCollection
-            .where('feedbackId', isEqualTo: feedbackId)
-            .get();
-
-        if (querySnapshot.docs.isEmpty) {
-          isUnique = true;
-        }
-      } catch (e) {
-        throw Exception('Failed to check uniqueness of feedbackId: $e');
-      }
-    }
-
-    FeedbackModel feedback = FeedbackModel(
-      feedbackId: feedbackId,
-      rating: rating,
-      feedbackNote: feedbackNote,
-    );
-
+  Future<void> createFeedback(FeedbackModel feedback) async {
     try {
       await feedbackCollection.add(feedback.toMap());
     } catch (e) {
       throw Exception('Failed to add feedback: $e');
     }
-
-    return feedbackId;
   }
 
-  Future<void> updateFeedback(
-      String feedbackId, int rating, String feedbackNote) async {
-    FeedbackModel feedback = FeedbackModel(
-      feedbackId: feedbackId,
-      rating: rating,
-      feedbackNote: feedbackNote,
-    );
-
+  Future<void> updateFeedback(FeedbackModel feedback) async {
     try {
-      await feedbackCollection.doc(feedbackId).update(feedback.toMap());
+      await feedbackCollection
+          .doc(feedback.feedbackId)
+          .update(feedback.toMap());
     } catch (e) {
       throw Exception('Failed to update feedback: $e');
     }
@@ -93,5 +53,27 @@ class FeedbackService {
     }
 
     return feedbacks;
+  }
+
+  Future<String> generateUniqueFeedbackId() async {
+    String feedbackId = '';
+    bool isUnique = false;
+    final random = Random();
+
+    while (!isUnique) {
+      feedbackId = String.fromCharCodes(
+        List.generate(10, (_) => random.nextInt(33) + 89),
+      );
+
+      var existingFeedback = await feedbackCollection
+          .where('feedbackId', isEqualTo: feedbackId)
+          .get();
+
+      if (existingFeedback.docs.isEmpty) {
+        isUnique = true;
+      }
+    }
+
+    return feedbackId;
   }
 }
