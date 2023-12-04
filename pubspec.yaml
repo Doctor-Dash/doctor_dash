@@ -47,6 +47,9 @@ dependencies:
   uuid: ^4.2.1
   font_awesome_flutter: ^10.6.0 
   image_picker: ^1.0.4
+  pdf: ^3.10.7
+  printing: ^5.11.1
+  http: ^1.1.0
 
 
 dev_dependencies:
