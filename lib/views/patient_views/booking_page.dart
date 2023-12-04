@@ -104,31 +104,50 @@ class _BookingPageState extends State<BookingPage> {
               : _buildTimeSlots(),
           SliverToBoxAdapter(
             child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (widget.isEdit && widget.existingAppointmentId != null) {
-                      await _rescheduleAppointment();
-                    }
-                    if (_dateSelected && _timeSelected) {
-                      await _bookAppointment();
-                    } else {
-                      showErrorSnackBar(
-                          context, 'Please select a date and time');
-                    }
-                  },
-                  child: Text(widget.isEdit
-                      ? 'Update Appointment'
-                      : 'Book Appointment'),
-                )),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (widget.isEdit &&
+                            widget.existingAppointmentId != null) {
+                          await _deleteBooking();
+                        }
+                        if (_dateSelected && _timeSelected) {
+                          await _bookAppointment();
+                        } else {
+                          showErrorSnackBar(
+                              context, 'Please select a date and time');
+                        }
+                      },
+                      child: Text(widget.isEdit
+                          ? 'Update Appointment'
+                          : 'Book Appointment'),
+                    ),
+                  ),
+                  const SizedBox(width: 10), // Spacing between the buttons
+                  if (widget.isEdit)
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _deleteBooking,
+                        child: const Text('Cancel Appointment'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _rescheduleAppointment() async {
+  Future<void> _deleteBooking() async {
     var currPatient = FirebaseAuth.instance.currentUser?.uid;
     try {
       await _patientService.deleteAppointmentIdToPatient(
@@ -139,7 +158,9 @@ class _BookingPageState extends State<BookingPage> {
           .removeAppointmentIdFromAvailability(widget.existingAvailabilityId!);
       await _appointmentService
           .deleteAppointment(widget.existingAppointmentId!);
+      showSnackBar(context, 'Appointment deleted!');
     } catch (e) {
+      showErrorSnackBar(context, 'Error rescheduling appointment: $e');
       throw Exception('Failed to reset appointment: $e');
     }
   }
