@@ -99,7 +99,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
       appointmentDetailsList.sort((a, b) =>
           b.availability!.startTime.compareTo(a.availability!.startTime));
 
-      DateTime now = DateTime.now().add(Duration(days: 3));
+      DateTime now = DateTime.now().add(Duration(days: 2));
       List<AppointmentDetails> upcomingAppointments = [];
       List<AppointmentDetails> pastAppointments = [];
 
