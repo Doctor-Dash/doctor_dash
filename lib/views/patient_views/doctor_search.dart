@@ -10,9 +10,6 @@ import '../../models/feedback_model.dart';
 import '../../models/doctor_model.dart';
 import '../../utils/specialties.dart';
 
-// TODO import doctor_detail_view
-//import './doctor_profile.dart';
-
 class DoctorSearchView extends StatefulWidget {
   @override
   _DoctorSearchViewState createState() => _DoctorSearchViewState();

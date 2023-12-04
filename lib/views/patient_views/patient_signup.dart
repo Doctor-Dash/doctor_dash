@@ -2,7 +2,6 @@ import 'package:doctor_dash/views/patient_views/create_patient.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'patient_signin.dart';
-import 'package:doctor_dash/views/patient_views/patient_home.dart';
 
 class PatientSignUp extends StatefulWidget {
   const PatientSignUp({super.key});
@@ -16,22 +15,21 @@ class _PatientSignUpState extends State<PatientSignUp> {
   final _passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String _errorMessage = '';
-Future<void> _signUp() async {
-  try {
-    await _auth.createUserWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => CreatePatient()),
-    );
-  } on FirebaseAuthException catch (e) {
-    setState(() {
-      _errorMessage = e.message ?? 'An error occurred';
-    });
+  Future<void> _signUp() async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => CreatePatient()),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _errorMessage = e.message ?? 'An error occurred';
+      });
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {

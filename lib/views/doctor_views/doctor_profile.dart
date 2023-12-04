@@ -1,7 +1,6 @@
 import 'package:doctor_dash/views/auth_views/doctor_or_patient_choice_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor_dash/main.dart';
 import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';

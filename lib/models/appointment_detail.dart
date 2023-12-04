@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'appointment_model.dart';
 import 'availability_model.dart';
 import 'clinic_model.dart';
 import 'doctor_model.dart';

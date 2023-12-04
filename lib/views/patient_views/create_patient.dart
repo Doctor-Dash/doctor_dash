@@ -1,5 +1,3 @@
-import 'package:doctor_dash/main.dart';
-import 'package:doctor_dash/views/patient_views/doctor_search.dart';
 import 'package:doctor_dash/views/patient_views/patient_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -3,10 +3,8 @@ import 'package:doctor_dash/controllers/feedback_controller.dart';
 import 'package:doctor_dash/models/clinic_model.dart';
 import 'package:doctor_dash/models/feedback_model.dart';
 import 'package:doctor_dash/views/patient_views/booking_page.dart';
-import '../../controllers/doctor_controller.dart';
 import '../../models/doctor_model.dart';
 import 'package:flutter/material.dart';
-import '../../controllers/availability_controller.dart';
 
 class DoctorDetails extends StatelessWidget {
   final DoctorModel doctor;
