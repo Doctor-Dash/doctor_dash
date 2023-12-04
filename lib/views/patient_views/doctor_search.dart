@@ -101,25 +101,54 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
               );
             }).toList(),
           ),
+          const SizedBox(height: 8),
           Expanded(
             child: ListView.builder(
               itemCount: doctors.length,
               itemBuilder: (context, index) {
                 final doctor = doctors[index];
                 final avgRating = doctorRatings[doctor.doctorId] ?? 0.0;
-                return ListTile(
-                  title: Text(doctor.name),
-                  subtitle: Text(doctor.speciality),
-                  trailing: avgRating > 0
-                      ? Text("Rating: ${avgRating.toStringAsFixed(1)}")
-                      : Text("No Ratings"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DoctorDetails(doctor)),
-                    );
-                  },
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      // Replace with the doctor's image if available
+                      child: Icon(Icons.person),
+                      backgroundColor: Colors.white,
+                    ),
+                    title: Text(
+                      doctor.name,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(doctor.speciality),
+                    trailing: avgRating > 0
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star,
+                                  color: Colors.yellow[600], size: 20),
+                              SizedBox(width: 4),
+                              Text(
+                                avgRating.toStringAsFixed(1),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.grey[600]),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            "No Ratings",
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DoctorDetails(doctor),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),
