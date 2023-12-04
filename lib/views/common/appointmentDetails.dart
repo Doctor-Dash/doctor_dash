@@ -43,32 +43,32 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   @override
   void initState() {
     super.initState();
-    isPastAppointment();
+    // isPastAppointment();
     checkPatient();
     fetchData();
   }
 
-  Future<void> isPastAppointment() async {
-    try {
-      QuerySnapshot appointmentSnapshot =
-          await appointmentService.getAppointment(widget.appointmentId);
+  // Future<void> isPastAppointment() async {
+  //   try {
+  //     QuerySnapshot appointmentSnapshot =
+  //         await appointmentService.getAppointment(widget.appointmentId);
 
-      AppointmentModel appointment =
-          AppointmentModel.fromMap(appointmentSnapshot.docs.first);
+  //     AppointmentModel appointment =
+  //         AppointmentModel.fromMap(appointmentSnapshot.docs.first);
 
-      QuerySnapshot availabilitySnapshot =
-          await availabilityService.getAvailability(appointment.availabilityId);
-      AvailabilityModel availability =
-          AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
+  //     QuerySnapshot availabilitySnapshot =
+  //         await availabilityService.getAvailability(appointment.availabilityId);
+  //     AvailabilityModel availability =
+  //         AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
 
-      DateTime now = DateTime.now();
-      DateTime today = DateTime(now.year, now.month, now.day);
-      isPast = availability.startTime.isBefore(today);
-    } catch (e) {
-      print('Error checking past appointment: $e');
-      rethrow;
-    }
-  }
+  //     DateTime now = DateTime.now();
+  //     DateTime today = DateTime(now.year, now.month, now.day);
+  //     isPast = availability.startTime.isBefore(today);
+  //   } catch (e) {
+  //     print('Error checking past appointment: $e');
+  //     rethrow;
+  //   }
+  // }
 
   Future<void> checkPatient() async {
     try {
@@ -202,14 +202,20 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(
+                                  isPatient
+                                      ? 'Clinic Address:'
+                                      : 'Patient Address:',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Flexible(
+                                  child: Text(
                                     isPatient
-                                        ? 'Clinic Address:'
-                                        : 'Patient Address:',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                Text(isPatient
-                                    ? '${appointment.clinic!.street} ${appointment.clinic!.city} ${appointment.clinic!.province} ${appointment.clinic!.postalCode}'
-                                    : '${appointment.patient!.street} ${appointment.patient!.city} ${appointment.patient!.province} ${appointment.patient!.postalCode}'),
+                                        ? '${appointment.clinic!.street} ${appointment.clinic!.city} ${appointment.clinic!.province} ${appointment.clinic!.postalCode}'
+                                        : '${appointment.patient!.street} ${appointment.patient!.city} ${appointment.patient!.province} ${appointment.patient!.postalCode}',
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
