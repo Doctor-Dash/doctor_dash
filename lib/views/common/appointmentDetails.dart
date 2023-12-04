@@ -343,10 +343,15 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   Future<void> generatePDF(AppointmentDetails appointment) async {
     var doctorImages = await Future.wait(
       (appointment.doctorFilesPath?.map((path) async {
-                if (path.isNotEmpty) {
-                  var image = await loadImage(path);
-                  return image;
-                } else {
+                try {
+                  if (path.isNotEmpty) {
+                    var image = await loadImage(path);
+                    return image;
+                  } else {
+                    return null;
+                  }
+                } catch (e) {
+                  print('Error loading doctor image: $e');
                   return null;
                 }
               }) ??
@@ -356,10 +361,15 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
     var patientImages = await Future.wait(
       (appointment.patientFilesPath?.map((path) async {
-                if (path.isNotEmpty) {
-                  var image = await loadImage(path);
-                  return image;
-                } else {
+                try {
+                  if (path.isNotEmpty) {
+                    var image = await loadImage(path);
+                    return image;
+                  } else {
+                    return null;
+                  }
+                } catch (e) {
+                  print('Error loading patient image: $e');
                   return null;
                 }
               }) ??
