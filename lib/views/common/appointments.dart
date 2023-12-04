@@ -220,23 +220,26 @@ class _AppointmentPageState extends State<AppointmentPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BookingPage(
-          doctorId: appointmentDetails.doctor!.doctorId,
-          clinicId: appointmentDetails.clinic!.clinicId,
-          existingAppointmentId: appointmentDetails.appointmentId,
-          existingAvailabilityId:
-              appointmentDetails.availability!.availabilityId,
-          isEdit: true,
-        ),
-      ),
-    );
+          builder: (context) => BookingPage(
+                doctorId: appointmentDetails.doctor!.doctorId,
+                clinicId: appointmentDetails.clinic!.clinicId,
+                existingAppointmentId: appointmentDetails.appointmentId,
+                existingAvailabilityId:
+                    appointmentDetails.availability!.availabilityId,
+                isEdit: true,
+              )),
+    ).then((_) {
+      setState(() {});
+    });
   }
 
   void _navigateToFeedbackPage(DoctorModel doctor) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DoctorFeedback(doctor)),
-    );
+    ).then((_) {
+      setState(() {});
+    });
   }
 
   void _navigateToAppointmentDetails(String appointmentId) {
@@ -246,6 +249,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
         builder: (context) => AppointmentDetailsPage(
             appointmentId: appointmentId, userId: widget.userId),
       ),
-    );
+    ).then((_) {
+      setState(() {});
+    });
   }
 }
