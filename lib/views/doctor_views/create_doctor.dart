@@ -1,14 +1,12 @@
-import 'package:doctor_dash/controllers/availability_controller.dart';
-import 'package:doctor_dash/models/availability_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:doctor_dash/controllers/doctor_controller.dart';
 import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:doctor_dash/utils/specialties.dart';
 import 'package:doctor_dash/controllers/clinic_controller.dart';
-import 'doctor_clinic.dart';
-import 'doctor_signup.dart';
+import 'package:doctor_dash/controllers/doctor_controller.dart';
+import 'package:doctor_dash/controllers/availability_controller.dart';
 import 'package:doctor_dash/views/doctor_views/doctor_profile.dart';
+import 'package:doctor_dash/views/doctor_views/doctor_clinic.dart';
 
 class DoctorSignUpPage extends StatefulWidget {
   const DoctorSignUpPage({super.key});
@@ -26,6 +24,7 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
   List<Map<String, String>> clinics = [];
   final ClinicService clinicService = ClinicService();
   final AvailabilityService _availabilityService = AvailabilityService();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -44,58 +43,59 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
     }
   }
 
-void _signUp() async {
-  if (_formKey.currentState!.validate()) {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No authenticated user found. Please log in.')),
-      );
-      return;
-    }
+  void _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true; 
+      });
 
-    try {
-      String userId = currentUser.uid;
-      String userEmail = currentUser.email ?? '';
-      DoctorModel doctor = DoctorModel(
-        doctorId: userId,
-        name: nameController.text,
-        phone: phoneController.text,
-        email: userEmail,
-        speciality: selectedSpecialty ?? '',
-        clinicId: selectedClinicId != null ? [selectedClinicId!] : [],
-        availability: [],
-        appointmentId: [],
-        feedbackId: [],
-      );
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No authenticated user found. Please log in.')),
+        );
+        setState(() => _isLoading = false); 
+        return;
+      }
 
-      DoctorService doctorService = DoctorService();
-      await doctorService.addDoctor(doctor);
-      await _availabilityService.createAvailabilitySignup(userId);
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Doctor details successfully added')),
-      );
+      try {
+        String userId = currentUser.uid;
+        String userEmail = currentUser.email ?? '';
+        DoctorModel doctor = DoctorModel(
+          doctorId: userId,
+          name: nameController.text,
+          phone: phoneController.text,
+          email: userEmail,
+          speciality: selectedSpecialty ?? '',
+          clinicId: selectedClinicId != null ? [selectedClinicId!] : [],
+          availability: [],
+          appointmentId: [],
+          feedbackId: [],
+        );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DoctorProfilePage()),
-      );
+        DoctorService doctorService = DoctorService();
+        await doctorService.addDoctor(doctor);
+        await _availabilityService.createAvailabilitySignup(userId);
 
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add doctor details: ${e.toString()}')),
-      );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DoctorProfilePage()),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add doctor details: ${e.toString()}')),
+        );
+        setState(() => _isLoading = false); 
+      } finally {
+        setState(() => _isLoading = false); 
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<String>> specialtyItems =
-        MedicalSpecialistsUtil.getSpecialists()
-            .map<DropdownMenuItem<String>>((String value) {
+    List<DropdownMenuItem<String>> specialtyItems = MedicalSpecialistsUtil.getSpecialists()
+        .map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,
         child: Text(value),
@@ -148,8 +148,7 @@ void _signUp() async {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      decoration:
-                          const InputDecoration(labelText: 'Select Clinic'),
+                      decoration: const InputDecoration(labelText: 'Select Clinic'),
                       value: selectedClinicId,
                       onChanged: (newValue) {
                         setState(() {
@@ -181,10 +180,12 @@ void _signUp() async {
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: _signUp,
-                child: const Text('Sign Up'),
-              ),
+              _isLoading 
+                ? Center(child: CircularProgressIndicator()) 
+                : ElevatedButton(
+                    onPressed: _signUp,
+                    child: const Text('Sign Up'),
+                  ),
             ],
           ),
         ),
