@@ -27,6 +27,9 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
   ClinicService clinicService = ClinicService();
   DoctorService doctorService = DoctorService();
 
+  TextEditingController searchController = TextEditingController();
+  TextEditingController specialtyController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,47 +64,91 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
       ),
       body: Column(
         children: [
-          TextField(
-            decoration: const InputDecoration(labelText: 'Enter your city'),
-            onChanged: (value) {
-              setState(() => selectedCity = value);
-              _searchDoctors();
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SearchBar(
+              controller: searchController,
+              leading: const Icon(Icons.search),
+              hintText: 'Search by city',
+              onSubmitted: (value) {
+                _searchDoctors();
+              },
+              onChanged: (value) => setState(() => selectedCity = value),
+            ),
           ),
-          DropdownButton<String>(
-            value: selectedSpecialty.isEmpty ? null : selectedSpecialty,
-            hint: const Text('Select Specialty'),
-            onChanged: (String? newValue) {
-              setState(() => selectedSpecialty = newValue!);
+          const SizedBox(height: 8),
+          DropdownMenu<String>(
+            initialSelection:
+                selectedSpecialty.isEmpty ? null : selectedSpecialty,
+            controller: specialtyController,
+            requestFocusOnTap: true,
+            label: const Text('Select Specialty'),
+            onSelected: (String? specialty) {
+              setState(() {
+                selectedSpecialty = specialty!;
+              });
               _searchDoctors();
             },
-            items: specialties.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
+            dropdownMenuEntries:
+                specialties.map<DropdownMenuEntry<String>>((String specialty) {
+              return DropdownMenuEntry<String>(
+                value: specialty,
+                label: specialty,
+                enabled: true,
+                style: MenuItemButton.styleFrom(
+                  foregroundColor: Colors.black,
+                ),
               );
             }).toList(),
           ),
+          const SizedBox(height: 8),
           Expanded(
             child: ListView.builder(
               itemCount: doctors.length,
               itemBuilder: (context, index) {
                 final doctor = doctors[index];
                 final avgRating = doctorRatings[doctor.doctorId] ?? 0.0;
-                return ListTile(
-                  title: Text(doctor.name),
-                  subtitle: Text(doctor.speciality),
-                  trailing: avgRating > 0
-                      ? Text("Rating: ${avgRating.toStringAsFixed(1)}")
-                      : Text("No Ratings"),
-                  onTap: () {
-                    // TODO: Implement navigation to patient profile view
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DoctorDetails(doctor)),
-                    );
-                  },
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      //TODO: Add image of Doctor when available
+                      child: Icon(Icons.person),
+                      backgroundColor: Colors.white,
+                    ),
+                    title: Text(
+                      doctor.name,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(doctor.speciality),
+                    trailing: avgRating > 0
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star,
+                                  color: Colors.yellow[600], size: 20),
+                              SizedBox(width: 4),
+                              Text(
+                                avgRating.toStringAsFixed(1),
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.grey[600]),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            "No Ratings",
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DoctorDetails(doctor),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),

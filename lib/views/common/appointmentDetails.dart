@@ -276,20 +276,23 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                         appointmentId:
                                             appointment.appointmentId),
                                   ),
-                                );
+                                ).then((_) {
+                                  setState(() {});
+                                });
                               },
                               child: Text('Upload File'),
                             ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UploadNotePage(
-                                        appointmentId:
-                                            appointment.appointmentId),
-                                  ),
-                                );
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UploadNotePage(
+                                          appointmentId:
+                                              appointment.appointmentId),
+                                    )).then((_) {
+                                  setState(() {});
+                                });
                               },
                               child: Text('Upload Notes'),
                             ),
