@@ -4,7 +4,7 @@ import 'package:doctor_dash/views/patient_views/doctor_search.dart';
 import 'package:doctor_dash/views/patient_views/patient_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:doctor_dash/views/patient_views/patient_home.dart';
 class PatientSignIn extends StatefulWidget {
   const PatientSignIn({super.key});
 
@@ -18,25 +18,26 @@ class _PatientSignInState extends State<PatientSignIn> {
   final _auth = FirebaseAuth.instance;
   String _errorMessage = '';
 
-  Future<void> _signIn() async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => DoctorSearchView()));
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        final regex = RegExp(r'\[([^)]+)\]');
-        final match = regex.firstMatch(e.message ?? '');
-        String extractedError = match?.group(1) ?? 'Invalid email';
-        _errorMessage = extractedError.toLowerCase().replaceAll('_', ' ');
-        _errorMessage =
-            _errorMessage[0].toUpperCase() + _errorMessage.substring(1);
-      });
-    }
+Future<void> _signIn() async {
+  try {
+    await _auth.signInWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => PatientHome()),
+    );
+  } on FirebaseAuthException catch (e) {
+    setState(() {
+      final regex = RegExp(r'\[([^)]+)\]');
+      final match = regex.firstMatch(e.message ?? '');
+      String extractedError = match?.group(1) ?? 'Invalid email';
+      _errorMessage = extractedError.toLowerCase().replaceAll('_', ' ');
+      _errorMessage =
+          _errorMessage[0].toUpperCase() + _errorMessage.substring(1);
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {

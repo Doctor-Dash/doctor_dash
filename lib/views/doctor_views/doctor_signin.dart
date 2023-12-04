@@ -4,6 +4,7 @@ import 'doctor_signup.dart';
 import 'package:doctor_dash/views/auth_views/password_reset_view.dart'; 
 import 'package:doctor_dash/main.dart';
 import 'package:doctor_dash/views/doctor_views/create_doctor.dart';
+import 'package:doctor_dash/views/doctor_views/doctor_profile.dart';
 class DoctorSignIn extends StatefulWidget {
   const DoctorSignIn({super.key});
 
@@ -24,7 +25,7 @@ class _DoctorSignInState extends State<DoctorSignIn> {
         password: _passwordController.text.trim(),
       );
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => MyHomePage(title: "Doctor's Profile Page:")),
+        MaterialPageRoute(builder: (_) => DoctorProfilePage()),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
