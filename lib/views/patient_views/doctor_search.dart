@@ -28,6 +28,7 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
   DoctorService doctorService = DoctorService();
 
   TextEditingController searchController = TextEditingController();
+  TextEditingController specialtyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,17 +76,28 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
               onChanged: (value) => setState(() => selectedCity = value),
             ),
           ),
-          DropdownButton<String>(
-            value: selectedSpecialty.isEmpty ? null : selectedSpecialty,
-            hint: const Text('Select Specialty'),
-            onChanged: (String? newValue) {
-              setState(() => selectedSpecialty = newValue!);
+          const SizedBox(height: 8),
+          DropdownMenu<String>(
+            initialSelection:
+                selectedSpecialty.isEmpty ? null : selectedSpecialty,
+            controller: specialtyController,
+            requestFocusOnTap: true,
+            label: const Text('Select Specialty'),
+            onSelected: (String? specialty) {
+              setState(() {
+                selectedSpecialty = specialty!;
+              });
               _searchDoctors();
             },
-            items: specialties.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
+            dropdownMenuEntries:
+                specialties.map<DropdownMenuEntry<String>>((String specialty) {
+              return DropdownMenuEntry<String>(
+                value: specialty,
+                label: specialty,
+                enabled: true,
+                style: MenuItemButton.styleFrom(
+                  foregroundColor: Colors.black,
+                ),
               );
             }).toList(),
           ),
@@ -102,7 +114,6 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                       ? Text("Rating: ${avgRating.toStringAsFixed(1)}")
                       : Text("No Ratings"),
                   onTap: () {
-                    // TODO: Implement navigation to patient profile view
                     Navigator.push(
                       context,
                       MaterialPageRoute(
