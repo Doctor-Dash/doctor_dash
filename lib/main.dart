@@ -4,58 +4,75 @@ import 'package:doctor_dash/views/patient_views/doctor_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'firebase_options.dart';
 import 'views/patient_views/patient_profile.dart';
 import 'package:doctor_dash/views/doctor_views/doctor_profile.dart';
-import 'package:doctor_dash/views/chatbot_view/chat_interface_view.dart'; 
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(App());
 }
+final ThemeData myCustomTheme = ThemeData(
+  primarySwatch: Colors.teal,
+);
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Doctor Dash',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ThemeProvider(
+      saveThemesOnChange: true, 
+      loadThemeOnInit: true, 
+      themes: [
+        AppTheme.light(), 
+        AppTheme.dark(), 
+        AppTheme(
+          id: 'custom_theme', 
+          description: 'My Custom Theme', 
+          data: myCustomTheme, 
+        ),      ],
+      child: ThemeConsumer(
+        child: Builder(
+          builder: (themeContext) => MaterialApp(
+            title: 'Doctor Dash',
+            theme: ThemeProvider.themeOf(themeContext).data,
+            home: Home(),
+          ),
+        ),
       ),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasData) {
-            return FutureBuilder<bool>(
-              future: isPatient(),
-              builder: (context, patientSnapshot) {
-                if (patientSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (patientSnapshot.data == true) {
-                  return DoctorSearchView();
-                } else {
-                  return const MyHomePage(
-                      title:
-                          "Doctor's Profile Page:"); //TODO: should be doctor profile page
-                }
-              },
-            );
-          } else {
-            return const DoctorOrPatientChoice();
-          }
-        },
-      ),
+    );
+  }
+}
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasData) {
+          return FutureBuilder<bool>(
+            future: isPatient(),
+            builder: (context, patientSnapshot) {
+              if (patientSnapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (patientSnapshot.data == true) {
+                return DoctorSearchView();
+              } else {
+                return const MyHomePage(
+                    title: "Doctor's Profile Page:"); 
+              }
+            },
+          );
+        } else {
+          return const DoctorOrPatientChoice();
+        }
+      },
     );
   }
 
@@ -98,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle), 
+            icon: const Icon(Icons.account_circle),
             onPressed: () {
               Navigator.push(
                 context,
@@ -113,6 +130,12 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const DoctorOrPatientChoice()),
               );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              ThemeProvider.controllerOf(context).nextTheme();
             },
           ),
         ],
