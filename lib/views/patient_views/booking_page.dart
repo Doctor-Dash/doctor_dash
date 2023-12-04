@@ -113,7 +113,7 @@ class _BookingPageState extends State<BookingPage> {
                       onPressed: () async {
                         if (widget.isEdit &&
                             widget.existingAppointmentId != null) {
-                          await _deleteBooking();
+                          await _rescheduleAppointment();
                         }
                         if (_dateSelected && _timeSelected) {
                           await _bookAppointment();
@@ -127,7 +127,7 @@ class _BookingPageState extends State<BookingPage> {
                           : 'Book Appointment'),
                     ),
                   ),
-                  const SizedBox(width: 10), // Spacing between the buttons
+                  const SizedBox(width: 10),
                   if (widget.isEdit)
                     Expanded(
                       child: ElevatedButton(
@@ -159,6 +159,25 @@ class _BookingPageState extends State<BookingPage> {
       await _appointmentService
           .deleteAppointment(widget.existingAppointmentId!);
       showSnackBar(context, 'Appointment deleted!');
+      Navigator.pop(context);
+    } catch (e) {
+      showErrorSnackBar(context, 'Error rescheduling appointment: $e');
+      throw Exception('Failed to reset appointment: $e');
+    }
+  }
+
+  Future<void> _rescheduleAppointment() async {
+    var currPatient = FirebaseAuth.instance.currentUser?.uid;
+    try {
+      await _patientService.deleteAppointmentIdToPatient(
+          currPatient!, widget.existingAppointmentId!);
+      await _availabilityService
+          .setAvailabilityToAvailable(widget.existingAvailabilityId!);
+      await _availabilityService
+          .removeAppointmentIdFromAvailability(widget.existingAvailabilityId!);
+      await _appointmentService
+          .deleteAppointment(widget.existingAppointmentId!);
+      showSnackBar(context, 'Appointment rescheduling!');
     } catch (e) {
       showErrorSnackBar(context, 'Error rescheduling appointment: $e');
       throw Exception('Failed to reset appointment: $e');
@@ -195,6 +214,7 @@ class _BookingPageState extends State<BookingPage> {
           widget.doctorId, currAppointmentId);
 
       showSnackBar(context, 'Appointment booked!');
+      Navigator.pop(context);
     } catch (e) {
       showErrorSnackBar(context, 'Error booking appointment: $e');
     }

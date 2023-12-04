@@ -53,6 +53,7 @@ class _DoctorFeedbackState extends State<DoctorFeedback> {
 
     ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Feedback submitted successfully!')));
+    Navigator.pop(context);
   }
 
   void _rateDoctor(int rating) {
