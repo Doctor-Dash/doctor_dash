@@ -12,7 +12,7 @@ import '../../controllers/clinic_controller.dart';
 import '../../controllers/availability_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
-import 'uploadFilePage.dart';
+import 'upload_file_page.dart';
 import 'upload_note_page.dart';
 
 import 'package:pdf/pdf.dart';
