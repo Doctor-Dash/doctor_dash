@@ -25,9 +25,8 @@ class _ClinicViewPageState extends State<ClinicViewPage> {
 void _submitClinic() async {
     if (_formKey.currentState!.validate()) {
       try {
-        String clinicId = Uuid().v4(); // Generate a unique clinicId here
+        String clinicId = Uuid().v4(); 
 
-        // Create a ClinicModel instance with the generated clinicId
         ClinicModel newClinic = ClinicModel(
           clinicId: clinicId,
           name: _nameController.text,
@@ -40,14 +39,13 @@ void _submitClinic() async {
           doctors: [],
         );
 
-        // Pass the clinic model to the service for adding to Firestore
         await _clinicService.addClinic(newClinic);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Clinic details submitted successfully')),
         );
 
-        Navigator.of(context).pop(true); // Pop with true indicating success
+        Navigator.of(context).pop(true); 
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to submit clinic details: $error')),

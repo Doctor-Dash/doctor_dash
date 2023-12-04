@@ -71,24 +71,18 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       title: const Text('Doctor Profile'),
     ),
-    body: Column(
-      children: [
-        Expanded(
-          child: doctorInfo == null
-              ? const CircularProgressIndicator()
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      _buildDoctorInfoCard(),
-                      for (var clinic in clinics) _buildClinicInfoCard(clinic),
-                    ],
-                  ),
-                ),
-        ),
-        _buildAppointmentsButton(), 
-      ],
-    ),
+    body: doctorInfo == null
+        ? const CircularProgressIndicator()
+        : SingleChildScrollView(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                _buildDoctorInfoCard(),
+                for (var clinic in clinics) _buildClinicInfoCard(clinic),
+                _buildAppointmentsButton(), 
+              ],
+            ),
+          ),
   );
 }
 
@@ -187,23 +181,37 @@ Widget _buildClinicInfoCard(ClinicModel clinic) {
     );
   }
 
-  Widget _buildAppointmentsButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
-        onPressed: () {
-          String doctorId = doctorInfo?.doctorId ?? '';
-          if (doctorId.isNotEmpty) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AppointmentPage(userId: doctorId)),
-            );
-          } else {
-            print('Doctor ID is not available');
-          }
+ Widget _buildAppointmentsButton() {
+  return Column(
+    children: <Widget>[
+      LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Container(
+            width: constraints.maxWidth,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  String doctorId = doctorInfo?.doctorId ?? '';
+                  if (doctorId.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppointmentPage(userId: doctorId),
+                      ),
+                    );
+                  } else {
+                    print('Doctor ID is not available');
+                  }
+                },
+                child: const Text('Appointments'),
+              ),
+            ),
+          );
         },
-        child: const Text('Appointments'),
       ),
-    );
-  }
+    ],
+  );
+}
+
 }

@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'views/patient_views/patient_profile.dart';
 import 'package:doctor_dash/views/doctor_views/doctor_profile.dart';
+import 'package:doctor_dash/views/chatbot_view/chat_interface_view.dart'; 
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

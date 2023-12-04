@@ -46,6 +46,8 @@ dependencies:
   table_calendar: ^3.0.9
   uuid: ^4.2.1
   font_awesome_flutter: ^10.6.0 
+  chat_gpt_sdk: ^2.2.5
+  dash_chat_2: ^0.0.19
   image_picker: ^1.0.4
 
 
