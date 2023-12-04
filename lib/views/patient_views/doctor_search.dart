@@ -113,7 +113,7 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
                     leading: CircleAvatar(
-                      // Replace with the doctor's image if available
+                      //TODO: Add image of Doctor when available
                       child: Icon(Icons.person),
                       backgroundColor: Colors.white,
                     ),
