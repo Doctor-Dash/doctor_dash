@@ -43,32 +43,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   @override
   void initState() {
     super.initState();
-    // isPastAppointment();
     checkPatient();
     fetchData();
   }
-
-  // Future<void> isPastAppointment() async {
-  //   try {
-  //     QuerySnapshot appointmentSnapshot =
-  //         await appointmentService.getAppointment(widget.appointmentId);
-
-  //     AppointmentModel appointment =
-  //         AppointmentModel.fromMap(appointmentSnapshot.docs.first);
-
-  //     QuerySnapshot availabilitySnapshot =
-  //         await availabilityService.getAvailability(appointment.availabilityId);
-  //     AvailabilityModel availability =
-  //         AvailabilityModel.fromMap(availabilitySnapshot.docs.first);
-
-  //     DateTime now = DateTime.now();
-  //     DateTime today = DateTime(now.year, now.month, now.day);
-  //     isPast = availability.startTime.isBefore(today);
-  //   } catch (e) {
-  //     print('Error checking past appointment: $e');
-  //     rethrow;
-  //   }
-  // }
 
   Future<void> checkPatient() async {
     try {
