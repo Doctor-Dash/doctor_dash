@@ -15,12 +15,6 @@ import '../../models/appointment_detail.dart';
 import 'uploadFilePage.dart';
 import 'upload_note_page.dart';
 
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
-
 class AppointmentDetailsPage extends StatefulWidget {
   final String userId;
   final String appointmentId;
@@ -45,7 +39,6 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     super.initState();
     isPastAppointment();
     checkPatient();
-    fetchData();
   }
 
   Future<void> isPastAppointment() async {
@@ -278,45 +271,32 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   child: Center(
-                    child: Column(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UploadFilePage(
-                                        appointmentId:
-                                            appointment.appointmentId),
-                                  ),
-                                );
-                              },
-                              child: Text('Upload File'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UploadNotePage(
-                                        appointmentId:
-                                            appointment.appointmentId),
-                                  ),
-                                );
-                              },
-                              child: Text('Upload Notes'),
-                            ),
-                          ],
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UploadFilePage(
+                                    appointmentId: appointment.appointmentId),
+                              ),
+                            );
+                          },
+                          child: Text('Upload File'),
                         ),
                         ElevatedButton(
-                          onPressed: () async {
-                            await generatePDF(appointment);
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UploadNotePage(
+                                    appointmentId: appointment.appointmentId),
+                              ),
+                            );
                           },
-                          child: Text('Download as PDF'),
+                          child: Text('Upload Notes'),
                         ),
                       ],
                     ),
@@ -328,161 +308,5 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         },
       ),
     );
-  }
-
-  Future<Uint8List?> loadImage(String imageUrl) async {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      return response.bodyBytes;
-    } catch (e) {
-      print('Could not load image $imageUrl: $e');
-      return null;
-    }
-  }
-
-  Future<void> generatePDF(AppointmentDetails appointment) async {
-    var doctorImages = await Future.wait(
-      (appointment.doctorFilesPath?.map((path) async {
-                if (path.isNotEmpty) {
-                  var image = await loadImage(path);
-                  return image;
-                } else {
-                  return null;
-                }
-              }) ??
-              const Iterable<Future<Uint8List?>>.empty())
-          .toList(),
-    );
-
-    var patientImages = await Future.wait(
-      (appointment.patientFilesPath?.map((path) async {
-                if (path.isNotEmpty) {
-                  var image = await loadImage(path);
-                  return image;
-                } else {
-                  return null;
-                }
-              }) ??
-              const Iterable<Future<Uint8List?>>.empty())
-          .toList(),
-    );
-
-    var patientNotes =
-        (appointment.patientNotes?.map((note) => note).toList()) ?? [];
-
-    var doctorNotes =
-        (appointment.doctorNotes?.map((note) => note).toList()) ?? [];
-
-    final pdf = pw.Document();
-    pdf.addPage(
-      pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        build: (context) => [
-          pw.Center(child: pw.Text('Appointment Details')),
-          pw.SizedBox(height: 10),
-          pw.Align(
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text('Doctor: ${appointment.doctor!.name}')),
-          pw.SizedBox(height: 10),
-          pw.Align(
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text('Patient: ${appointment.patient!.name}')),
-          pw.SizedBox(height: 10),
-          pw.Align(
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text('Clinic: ${appointment.clinic!.name}')),
-          pw.SizedBox(height: 10),
-          pw.Align(
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(
-                  'Clinic Address: ${appointment.clinic!.street} ${appointment.clinic!.city} ${appointment.clinic!.province} ${appointment.clinic!.postalCode}')),
-          pw.SizedBox(height: 10),
-          pw.Align(
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(
-                  'Appointment Time: ${DateFormat('h:mm a d MMM yyyy').format(appointment.availability!.startTime)}')),
-          pw.SizedBox(height: 10),
-          pw.Center(child: pw.Text('Doctor Notes:')),
-          doctorNotes.isNotEmpty
-              ? pw.Column(
-                  children: doctorNotes
-                      .map((note) => pw.Padding(
-                          padding: const pw.EdgeInsets.all(5.0),
-                          child: pw.Column(
-                            children: [
-                              pw.Text(note),
-                              pw.SizedBox(height: 10),
-                            ],
-                          )))
-                      .toList(),
-                )
-              : pw.Center(child: pw.Text('Not available')),
-          pw.SizedBox(height: 10),
-          pw.Center(child: pw.Text('Patient Notes:')),
-          patientNotes.isNotEmpty
-              ? pw.Column(
-                  children: patientNotes
-                      .map((note) => pw.Padding(
-                          padding: const pw.EdgeInsets.all(5.0),
-                          child: pw.Column(
-                            children: [
-                              pw.Text(note),
-                              pw.SizedBox(height: 10),
-                            ],
-                          )))
-                      .toList(),
-                )
-              : pw.Center(child: pw.Text('Not available')),
-          pw.SizedBox(height: 10),
-          pw.Center(child: pw.Text('Doctor Files:')),
-          doctorImages.any((image) => image != null)
-              ? pw.Center(
-                  child: pw.Wrap(
-                    alignment: pw.WrapAlignment.center,
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: doctorImages
-                        .map((image) => image != null
-                            ? pw.Container(
-                                width: 200,
-                                height: 200,
-                                child: pw.Image(pw.MemoryImage(image)),
-                              )
-                            : pw.Container())
-                        .toList(),
-                  ),
-                )
-              : pw.Center(child: pw.Text('Not available')),
-          pw.SizedBox(height: 10),
-          pw.Center(child: pw.Text('Patient Files:')),
-          patientImages.any((image) => image != null)
-              ? pw.Center(
-                  child: pw.Wrap(
-                    alignment: pw.WrapAlignment.center,
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: patientImages
-                        .map((image) => image != null
-                            ? pw.Container(
-                                width: 200,
-                                height: 200,
-                                child: pw.Image(pw.MemoryImage(image)),
-                              )
-                            : pw.Container())
-                        .toList(),
-                  ),
-                )
-              : pw.Center(child: pw.Text('Not available')),
-        ],
-      ),
-    );
-
-    DateTime startTime = appointment.availability!.startTime;
-    String formattedTime = DateFormat('h:mm a d MMM yyyy').format(startTime);
-
-    String fileName =
-        '${isPatient ? appointment.doctor!.name : appointment.patient!.name}$formattedTime${appointment.clinic!.street}${appointment.clinic!.city}${appointment.clinic!.province}${appointment.clinic!.postalCode}.pdf';
-
-    await Printing.sharePdf(bytes: await pdf.save(), filename: fileName);
   }
 }
