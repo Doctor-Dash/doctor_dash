@@ -36,10 +36,26 @@ class AppointmentDetails {
       patient: PatientModel.fromMap(map['patient']),
       clinic: ClinicModel.fromMap(map['clinic']),
       availability: AvailabilityModel.fromMap(map['availability']),
-      doctorFilesPath: map['doctorFilesPath'] ,
-      patientFilesPath: map['patientFilesPath'],
-      doctorNotes: map['doctorNotes'] ,
-      patientNotes: map['patientNotes'] ,
+      doctorFilesPath: map['doctorFilesPath'] != null
+          ? (map['doctorFilesPath'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      patientFilesPath: map['patientFilesPath'] != null
+          ? (map['patientFilesPath'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      doctorNotes: map['doctorNotes'] != null
+          ? (map['doctorNotes'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
+      patientNotes: map['patientNotes'] != null
+          ? (map['patientNotes'] as List<dynamic>)
+              .map((item) => item as String)
+              .toList()
+          : null,
     );
   }
 
