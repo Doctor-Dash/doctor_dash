@@ -132,7 +132,7 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                               Text(
                                 avgRating.toStringAsFixed(1),
                                 style: TextStyle(
-                                    fontSize: 20, color: Colors.grey[600]),
+                                    fontSize: 15, color: Colors.grey[600]),
                               ),
                             ],
                           )
