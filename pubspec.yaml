@@ -49,6 +49,7 @@ dependencies:
   chat_gpt_sdk: ^2.2.5
   dash_chat_2: ^0.0.19
   image_picker: ^1.0.4
+  theme_provider: ^0.6.0 
   pdf: ^3.10.7
   printing: ^5.11.1
   http: ^1.1.0
