@@ -27,6 +27,8 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
   ClinicService clinicService = ClinicService();
   DoctorService doctorService = DoctorService();
 
+  TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,12 +63,17 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
       ),
       body: Column(
         children: [
-          TextField(
-            decoration: const InputDecoration(labelText: 'Enter your city'),
-            onChanged: (value) {
-              setState(() => selectedCity = value);
-              _searchDoctors();
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SearchBar(
+              controller: searchController,
+              leading: const Icon(Icons.search),
+              hintText: 'Search by city',
+              onSubmitted: (value) {
+                _searchDoctors();
+              },
+              onChanged: (value) => setState(() => selectedCity = value),
+            ),
           ),
           DropdownButton<String>(
             value: selectedSpecialty.isEmpty ? null : selectedSpecialty,
