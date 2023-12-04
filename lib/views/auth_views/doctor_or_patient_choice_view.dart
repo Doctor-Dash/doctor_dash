@@ -1,7 +1,6 @@
 import 'package:doctor_dash/views/doctor_views/doctor_signin.dart';
 import 'package:doctor_dash/views/patient_views/patient_signin.dart';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart'; 
 
 class DoctorOrPatientChoice extends StatelessWidget {
   const DoctorOrPatientChoice({super.key});
@@ -11,14 +10,6 @@ class DoctorOrPatientChoice extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Doctor-Patient Sign Up/Login'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () {
-              ThemeProvider.controllerOf(context).nextTheme();
-            },
-          ),
-        ],
       ),
       body: Center(
         child: Column(
