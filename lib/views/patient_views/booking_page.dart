@@ -113,7 +113,7 @@ class _BookingPageState extends State<BookingPage> {
                       onPressed: () async {
                         if (widget.isEdit &&
                             widget.existingAppointmentId != null) {
-                          await _rescheduleAppointment();
+                          await _deleteBooking();
                         }
                         if (_dateSelected && _timeSelected) {
                           await _bookAppointment();
@@ -131,8 +131,8 @@ class _BookingPageState extends State<BookingPage> {
                   if (widget.isEdit)
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _rescheduleAppointment,
-                        child: const Text('Delete Booking'),
+                        onPressed: _deleteBooking,
+                        child: const Text('Cancel Appointment'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                         ),
@@ -147,7 +147,7 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  Future<void> _rescheduleAppointment() async {
+  Future<void> _deleteBooking() async {
     var currPatient = FirebaseAuth.instance.currentUser?.uid;
     try {
       await _patientService.deleteAppointmentIdToPatient(
