@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_dash/views/auth_views/doctor_or_patient_choice_view.dart';
-import 'package:doctor_dash/views/patient_views/doctor_search.dart';
+import 'package:doctor_dash/views/patient_views/patient_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'views/patient_views/patient_profile.dart';
 import 'package:doctor_dash/views/doctor_views/doctor_profile.dart';
-import 'package:doctor_dash/views/chatbot_view/chat_interface_view.dart'; 
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,11 +40,9 @@ class MyApp extends StatelessWidget {
                     ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (patientSnapshot.data == true) {
-                  return DoctorSearchView();
+                  return const PatientHome();
                 } else {
-                  return const MyHomePage(
-                      title:
-                          "Doctor's Profile Page:"); //TODO: should be doctor profile page
+                  return const DoctorProfilePage();
                 }
               },
             );
@@ -98,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle), 
+            icon: const Icon(Icons.account_circle),
             onPressed: () {
               Navigator.push(
                 context,
@@ -111,7 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const DoctorOrPatientChoice()),
+                MaterialPageRoute(
+                    builder: (_) => const DoctorOrPatientChoice()),
               );
             },
           ),
@@ -122,7 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
             String userId = FirebaseAuth.instance.currentUser!.uid;
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PatientProfilePage(patientId: userId)),
+              MaterialPageRoute(
+                  builder: (context) => PatientProfilePage(patientId: userId)),
             );
           },
         ),

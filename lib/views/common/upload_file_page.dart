@@ -1,19 +1,9 @@
 import 'dart:io';
-
-import 'package:doctor_dash/models/availability_model.dart';
-import 'package:doctor_dash/models/clinic_model.dart';
-import 'package:doctor_dash/models/doctor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../models/patient_model.dart';
 import '../../models/appointment_model.dart';
 import '../../controllers/patient_controller.dart';
 import '../../controllers/appointment_controller.dart';
-import '../../controllers/doctor_controller.dart';
-import '../../controllers/clinic_controller.dart';
-import '../../controllers/availability_controller.dart';
-import 'package:intl/intl.dart';
-import '../../models/appointment_detail.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 

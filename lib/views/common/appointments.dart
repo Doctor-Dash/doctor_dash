@@ -14,7 +14,7 @@ import 'package:intl/intl.dart';
 import '../../models/appointment_detail.dart';
 import '../patient_views/booking_page.dart';
 import '../patient_views/doctor_feedback.dart';
-import 'appointmentDetails.dart';
+import 'appointment_details.dart';
 
 class AppointmentPage extends StatefulWidget {
   final String userId;
