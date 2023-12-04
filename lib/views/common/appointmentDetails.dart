@@ -335,8 +335,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       final response = await http.get(Uri.parse(imageUrl));
       return response.bodyBytes;
     } catch (e) {
-      print('Could not load image $imageUrl: $e');
-      return null;
+      throw Exception('Could not load image $imageUrl: $e');
     }
   }
 
@@ -351,8 +350,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     return null;
                   }
                 } catch (e) {
-                  print('Error loading doctor image: $e');
-                  return null;
+                  throw Exception('Error loading doctor image: $e');
                 }
               }) ??
               const Iterable<Future<Uint8List?>>.empty())
@@ -369,8 +367,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     return null;
                   }
                 } catch (e) {
-                  print('Error loading patient image: $e');
-                  return null;
+                  throw Exception('Error loading patient image: $e');
                 }
               }) ??
               const Iterable<Future<Uint8List?>>.empty())
